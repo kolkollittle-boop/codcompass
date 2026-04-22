@@ -96,8 +96,9 @@ const updateUserStatus = (id: number, status: Status) => {
   },
 ];
 
-export default function ArticlePage({ params }: { params: { slug: string } }) {
-  const articleId = parseInt(params.slug);
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolved = await params;
+  const articleId = parseInt(resolved.slug);
   const article = articles.find(a => a.id === articleId);
 
   if (!article) {
