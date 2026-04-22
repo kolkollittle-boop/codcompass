@@ -29,10 +29,10 @@ declare namespace __next_route_internal_types__ {
     S extends `${string}${SearchOrHash}` ? never : S
 
   type StaticRoutes = 
-    | `/login`
+    | `/api/webhooks/lemonsqueezy`
     | `/`
     | `/pricing`
-    | `/api/webhooks/lemonsqueezy`
+    | `/login`
     | `/kb`
   type DynamicRoutes<T extends string = string> = 
     | `/api/auth/${CatchAllSlug<T>}`

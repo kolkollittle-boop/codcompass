@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PricingCard from '@/components/PricingCard';
@@ -85,11 +84,7 @@ export default function PricingPage() {
 
             <div className="mt-16 text-center">
               <p className="text-lg text-gray-500">
-                Need custom solutions?{' '}
-                <Link href="/contact" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Contact us
-                </Link>{' '}
-                for enterprise options.
+                Need custom solutions? Contact us for enterprise options.
               </p>
             </div>
           </div>
