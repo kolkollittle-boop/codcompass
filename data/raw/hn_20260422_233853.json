@@ -1,0 +1,145 @@
+{
+  "count": 20,
+  "items": [
+    {
+      "id": 47861270,
+      "title": "Windows 9x Subsystem for Linux",
+      "url": "https://social.hails.org/@hailey/116446826733136456",
+      "score": 508,
+      "type": "hn"
+    },
+    {
+      "id": 47864393,
+      "title": "Show HN submissions tripled and now mostly have the same vibe-coded look",
+      "url": "https://www.adriankrebs.ch/blog/design-slop/",
+      "score": 69,
+      "type": "hn"
+    },
+    {
+      "id": 47862386,
+      "title": "3.4M Solar Panels",
+      "url": "https://tech.marksblogg.com/american-solar-farms-v2.html",
+      "score": 160,
+      "type": "hn"
+    },
+    {
+      "id": 47862497,
+      "title": "Our eighth generation TPUs: two chips for the agentic era",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/eighth-generation-tpu-agentic-era/",
+      "score": 170,
+      "type": "hn"
+    },
+    {
+      "id": 47863324,
+      "title": "Treetops glowing during storms captured on film for first time",
+      "url": "https://www.psu.edu/news/earth-and-mineral-sciences/story/treetops-glowing-during-storms-captured-film-first-time",
+      "score": 71,
+      "type": "hn"
+    },
+    {
+      "id": 47863217,
+      "title": "Qwen3.6-27B: Flagship-Level Coding in a 27B Dense Model",
+      "url": "https://qwen.ai/blog?id=qwen3.6-27b",
+      "score": 68,
+      "type": "hn"
+    },
+    {
+      "id": 47862331,
+      "title": "GitHub CLI now collects pseudoanonymous telemetry",
+      "url": "https://cli.github.com/telemetry",
+      "score": 210,
+      "type": "hn"
+    },
+    {
+      "id": 47862626,
+      "title": "Columnar Storage Is Normalization",
+      "url": "https://buttondown.com/jaffray/archive/columnar-storage-is-normalization/",
+      "score": 43,
+      "type": "hn"
+    },
+    {
+      "id": 47842569,
+      "title": "Making RAM at Home [video]",
+      "url": "https://www.youtube.com/watch?v=h6GWikWlAQA",
+      "score": 497,
+      "type": "hn"
+    },
+    {
+      "id": 47852835,
+      "title": "ChatGPT Images 2.0",
+      "url": "https://openai.com/index/introducing-chatgpt-images-2-0/",
+      "score": 951,
+      "type": "hn"
+    },
+    {
+      "id": 47861087,
+      "title": "How does GPS work?",
+      "url": "https://perthirtysix.com/how-the-heck-does-gps-work",
+      "score": 132,
+      "type": "hn"
+    },
+    {
+      "id": 47862230,
+      "title": "Kernel code removals driven by LLM-created security reports",
+      "url": "https://lwn.net/Articles/1068928/",
+      "score": 73,
+      "type": "hn"
+    },
+    {
+      "id": 47859861,
+      "title": "XOR'ing a register with itself is the idiom for zeroing it out. Why not sub?",
+      "url": "https://devblogs.microsoft.com/oldnewthing/20260421-00/?p=112247",
+      "score": 123,
+      "type": "hn"
+    },
+    {
+      "id": 47864454,
+      "title": "DuckDB 1.5.2 \u2013 SQL database that runs on laptop, server, in the browser",
+      "url": "https://duckdb.org/2026/04/13/announcing-duckdb-152",
+      "score": 29,
+      "type": "hn"
+    },
+    {
+      "id": 47864808,
+      "title": "Top MAGA influencer revealed to be AI",
+      "url": "https://nypost.com/2026/04/21/us-news/top-maga-influencer-emily-hart-revealed-to-be-ai-created-by-a-guy-in-india/",
+      "score": 33,
+      "type": "hn"
+    },
+    {
+      "id": 47854365,
+      "title": "Another Day Has Come",
+      "url": "https://daringfireball.net/2026/04/another_day_has_come",
+      "score": 84,
+      "type": "hn"
+    },
+    {
+      "id": 47832720,
+      "title": "All your agents are going async",
+      "url": "https://zknill.io/posts/all-your-agents-are-going-async/",
+      "score": 98,
+      "type": "hn"
+    },
+    {
+      "id": 47822117,
+      "title": "Prefill-as-a-Service:KVCache of Next-Generation Models Could Go Cross-Datacenter",
+      "url": "https://arxiv.org/abs/2604.15039",
+      "score": 28,
+      "type": "hn"
+    },
+    {
+      "id": 47820791,
+      "title": "MuJoCo \u2013 Advanced Physics Simulation",
+      "url": "https://github.com/google-deepmind/mujoco",
+      "score": 76,
+      "type": "hn"
+    },
+    {
+      "id": 47838680,
+      "title": "Expansion Artifacts",
+      "url": "https://mattstromawn.com/writing/expansion-artifacts/",
+      "score": 16,
+      "type": "hn"
+    }
+  ]
+}

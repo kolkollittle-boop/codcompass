@@ -2,58 +2,110 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+const features = [
+  {
+    icon: '📚',
+    title: 'Curated Technical Content',
+    desc: 'No fluff. Every article is reviewed for accuracy and practical value.',
+  },
+  {
+    icon: '💻',
+    title: 'Production-Ready Code',
+    desc: 'All code examples come from real projects, not toy examples.',
+  },
+  {
+    icon: '🔄',
+    title: 'Updated Weekly',
+    desc: 'Fresh content on the latest frameworks, tools, and best practices.',
+  },
+];
+
+const stats = [
+  { value: '50+', label: 'Articles' },
+  { value: '12', label: 'Topics' },
+  { value: '4.8', label: 'Avg Rating' },
+  { value: 'Weekly', label: 'Updates' },
+];
+
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-grow">
+        {/* Hero */}
+        <section className="bg-gradient-to-b from-indigo-50/50 to-white py-20 sm:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight">
+              Level Up Your
+              <span className="block text-indigo-600 mt-2">Development Skills</span>
+            </h1>
+            <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              Premium tutorials and expert insights for developers who want to build better software. No fluff, just practical knowledge.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+              <Link
+                href="/kb"
+                className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+              >
+                Browse Articles
+              </Link>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center justify-center px-8 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                View Pricing
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats */}
+        <section className="border-y border-gray-200 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              {stats.map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <div className="text-3xl font-bold text-gray-900">{stat.value}</div>
+                  <div className="mt-1 text-sm text-gray-500">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Features */}
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-                <span className="block">Premium Knowledge Base</span>
-                <span className="block text-indigo-600 mt-2">For Developers & Professionals</span>
-              </h1>
-              <p className="mt-6 max-w-lg mx-auto text-xl text-gray-500">
-                Access curated content, tutorials, and resources to accelerate your professional growth.
-              </p>
-              <div className="mt-10 flex justify-center gap-4">
-                <Link
-                  href="/pricing"
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
-                >
-                  View Pricing
-                </Link>
-                <Link
-                  href="/kb"
-                  className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  Browse Knowledge Base
-                </Link>
-              </div>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-gray-900">Why Developers Choose CPKB</h2>
+              <p className="mt-4 text-lg text-gray-600">Quality content that actually helps you build better software.</p>
             </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {features.map((f) => (
+                <div key={f.title} className="bg-gray-50 rounded-xl p-8 hover:bg-gray-100 transition-colors">
+                  <div className="text-4xl mb-4">{f.icon}</div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{f.title}</h3>
+                  <p className="text-gray-600">{f.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-            <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900">Curated Content</h3>
-                <p className="mt-2 text-gray-500">
-                  High-quality articles and tutorials reviewed by industry experts.
-                </p>
-              </div>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900">Expert Authors</h3>
-                <p className="mt-2 text-gray-500">
-                  Content from experienced professionals and thought leaders.
-                </p>
-              </div>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900">Always Updated</h3>
-                <p className="mt-2 text-gray-500">
-                  Fresh content added weekly to keep you current with trends.
-                </p>
-              </div>
-            </div>
+        {/* CTA */}
+        <section className="bg-indigo-600 py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl font-bold text-white">Start Learning Today</h2>
+            <p className="mt-4 text-lg text-indigo-100 max-w-xl mx-auto">
+              Get unlimited access to all tutorials, code examples, and expert insights for just $9.99/month.
+            </p>
+            <Link
+              href="/pricing"
+              className="mt-8 inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-indigo-700 bg-white hover:bg-indigo-50 transition-colors"
+            >
+              Get Started
+            </Link>
           </div>
         </section>
       </main>
