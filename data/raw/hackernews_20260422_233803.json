@@ -1,0 +1,307 @@
+{
+  "source": "hackernews",
+  "fetched_at": "20260422_233803",
+  "count": 30,
+  "items": [
+    {
+      "id": 47861270,
+      "title": "Windows 9x Subsystem for Linux",
+      "url": "https://social.hails.org/@hailey/116446826733136456",
+      "score": 508,
+      "by": "sohkamyung",
+      "descendants": 131,
+      "time": 1776851572,
+      "type": "hackernews"
+    },
+    {
+      "id": 47864393,
+      "title": "Show HN submissions tripled and are now mostly \"look\" vibe-coded",
+      "url": "https://www.adriankrebs.ch/blog/design-slop/",
+      "score": 68,
+      "by": "hubraumhugo",
+      "descendants": 33,
+      "time": 1776869072,
+      "type": "hackernews"
+    },
+    {
+      "id": 47862386,
+      "title": "3.4M Solar Panels",
+      "url": "https://tech.marksblogg.com/american-solar-farms-v2.html",
+      "score": 160,
+      "by": "marklit",
+      "descendants": 102,
+      "time": 1776859470,
+      "type": "hackernews"
+    },
+    {
+      "id": 47862497,
+      "title": "Our eighth generation TPUs: two chips for the agentic era",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/eighth-generation-tpu-agentic-era/",
+      "score": 170,
+      "by": "xnx",
+      "descendants": 99,
+      "time": 1776860129,
+      "type": "hackernews"
+    },
+    {
+      "id": 47863324,
+      "title": "Treetops glowing during storms captured on film for first time",
+      "url": "https://www.psu.edu/news/earth-and-mineral-sciences/story/treetops-glowing-during-storms-captured-film-first-time",
+      "score": 71,
+      "by": "t-3",
+      "descendants": 12,
+      "time": 1776864520,
+      "type": "hackernews"
+    },
+    {
+      "id": 47863217,
+      "title": "Qwen3.6-27B: Flagship-Level Coding in a 27B Dense Model",
+      "url": "https://qwen.ai/blog?id=qwen3.6-27b",
+      "score": 68,
+      "by": "mfiguiere",
+      "descendants": 24,
+      "time": 1776863998,
+      "type": "hackernews"
+    },
+    {
+      "id": 47862331,
+      "title": "GitHub CLI now collects pseudoanonymous telemetry",
+      "url": "https://cli.github.com/telemetry",
+      "score": 210,
+      "by": "ingve",
+      "descendants": 169,
+      "time": 1776859138,
+      "type": "hackernews"
+    },
+    {
+      "id": 47862626,
+      "title": "Columnar Storage Is Normalization",
+      "url": "https://buttondown.com/jaffray/archive/columnar-storage-is-normalization/",
+      "score": 43,
+      "by": "ibobev",
+      "descendants": 19,
+      "time": 1776861014,
+      "type": "hackernews"
+    },
+    {
+      "id": 47842569,
+      "title": "Making RAM at Home [video]",
+      "url": "https://www.youtube.com/watch?v=h6GWikWlAQA",
+      "score": 496,
+      "by": "kaipereira",
+      "descendants": 140,
+      "time": 1776728106,
+      "type": "hackernews"
+    },
+    {
+      "id": 47852835,
+      "title": "ChatGPT Images 2.0",
+      "url": "https://openai.com/index/introducing-chatgpt-images-2-0/",
+      "score": 951,
+      "by": "wahnfrieden",
+      "descendants": 831,
+      "time": 1776797400,
+      "type": "hackernews"
+    },
+    {
+      "id": 47861087,
+      "title": "How does GPS work?",
+      "url": "https://perthirtysix.com/how-the-heck-does-gps-work",
+      "score": 132,
+      "by": "alfanick",
+      "descendants": 30,
+      "time": 1776849725,
+      "type": "hackernews"
+    },
+    {
+      "id": 47862230,
+      "title": "Kernel code removals driven by LLM-created security reports",
+      "url": "https://lwn.net/Articles/1068928/",
+      "score": 73,
+      "by": "edward",
+      "descendants": 52,
+      "time": 1776858487,
+      "type": "hackernews"
+    },
+    {
+      "id": 47859861,
+      "title": "XOR'ing a register with itself is the idiom for zeroing it out. Why not sub?",
+      "url": "https://devblogs.microsoft.com/oldnewthing/20260421-00/?p=112247",
+      "score": 123,
+      "by": "ingve",
+      "descendants": 135,
+      "time": 1776839885,
+      "type": "hackernews"
+    },
+    {
+      "id": 47864454,
+      "title": "DuckDB 1.5.2 \u2013 SQL database that runs on laptop, server, in the browser",
+      "url": "https://duckdb.org/2026/04/13/announcing-duckdb-152",
+      "score": 29,
+      "by": "janandonly",
+      "descendants": 2,
+      "time": 1776869342,
+      "type": "hackernews"
+    },
+    {
+      "id": 47854365,
+      "title": "Another Day Has Come",
+      "url": "https://daringfireball.net/2026/04/another_day_has_come",
+      "score": 84,
+      "by": "ndr42",
+      "descendants": 78,
+      "time": 1776804739,
+      "type": "hackernews"
+    },
+    {
+      "id": 47864808,
+      "title": "Top MAGA influencer revealed to be AI",
+      "url": "https://nypost.com/2026/04/21/us-news/top-maga-influencer-emily-hart-revealed-to-be-ai-created-by-a-guy-in-india/",
+      "score": 33,
+      "by": "java-man",
+      "descendants": 13,
+      "time": 1776870904,
+      "type": "hackernews"
+    },
+    {
+      "id": 47832720,
+      "title": "All your agents are going async",
+      "url": "https://zknill.io/posts/all-your-agents-are-going-async/",
+      "score": 97,
+      "by": "zknill",
+      "descendants": 57,
+      "time": 1776683937,
+      "type": "hackernews"
+    },
+    {
+      "id": 47822117,
+      "title": "Prefill-as-a-Service:KVCache of Next-Generation Models Could Go Cross-Datacenter",
+      "url": "https://arxiv.org/abs/2604.15039",
+      "score": 28,
+      "by": "matt_d",
+      "descendants": 1,
+      "time": 1776578296,
+      "type": "hackernews"
+    },
+    {
+      "id": 47820791,
+      "title": "MuJoCo \u2013 Advanced Physics Simulation",
+      "url": "https://github.com/google-deepmind/mujoco",
+      "score": 76,
+      "by": "modinfo",
+      "descendants": 15,
+      "time": 1776558851,
+      "type": "hackernews"
+    },
+    {
+      "id": 47838680,
+      "title": "Expansion Artifacts",
+      "url": "https://mattstromawn.com/writing/expansion-artifacts/",
+      "score": 16,
+      "by": "tobr",
+      "descendants": 1,
+      "time": 1776710302,
+      "type": "hackernews"
+    },
+    {
+      "id": 47823654,
+      "title": "Contact Lens Uses Microfluidics to Monitor and Treat Glaucoma",
+      "url": "https://spectrum.ieee.org/smart-contact-lens-glaucoma-microfluidics",
+      "score": 78,
+      "by": "pseudolus",
+      "descendants": 2,
+      "time": 1776599611,
+      "type": "hackernews"
+    },
+    {
+      "id": 47822783,
+      "title": "Monitor your Pi / OMP sessions",
+      "url": "https://github.com/BlackBeltTechnology/pi-agent-dashboard",
+      "score": 11,
+      "by": "ankitg12",
+      "descendants": 1,
+      "time": 1776588129,
+      "type": "hackernews"
+    },
+    {
+      "id": 47856535,
+      "title": "Drunk post: Things I've learned as a senior engineer (2021)",
+      "url": "https://luminousmen.substack.com/p/drunk-post-things-ive-learned-as",
+      "score": 234,
+      "by": "zdw",
+      "descendants": 174,
+      "time": 1776815625,
+      "type": "hackernews"
+    },
+    {
+      "id": 47821853,
+      "title": "Garbage Collection Without Unsafe Code",
+      "url": "https://fitzgen.com/2024/02/06/safe-gc.html",
+      "score": 86,
+      "by": "foota",
+      "descendants": 30,
+      "time": 1776573719,
+      "type": "hackernews"
+    },
+    {
+      "id": 47821801,
+      "title": "Windows Server 2025 Runs Better on ARM",
+      "url": "https://jasoneckert.github.io/myblog/server-2025-arm64/",
+      "score": 163,
+      "by": "jasoneckert",
+      "descendants": 124,
+      "time": 1776572911,
+      "type": "hackernews"
+    },
+    {
+      "id": 47851634,
+      "title": "The Vercel breach: OAuth attack exposes risk in platform environment variables",
+      "url": "https://www.trendmicro.com/en_us/research/26/d/vercel-breach-oauth-supply-chain.html",
+      "score": 350,
+      "by": "queenelvis",
+      "descendants": 114,
+      "time": 1776791675,
+      "type": "hackernews"
+    },
+    {
+      "id": 47861703,
+      "title": "CATL's new LFP battery can charge from 10 to 98% in less than 7 minutes",
+      "url": "https://arstechnica.com/cars/2026/04/catls-new-lfp-battery-can-charge-from-10-to-98-in-less-than-7-minutes/",
+      "score": 97,
+      "by": "PotatoNinja",
+      "descendants": 41,
+      "time": 1776855069,
+      "type": "hackernews"
+    },
+    {
+      "id": 47835635,
+      "title": "Acetaminophen vs. ibuprofen",
+      "url": "https://asteriskmag.com/issues/14/the-mystery-in-the-medicine-cabinet",
+      "score": 576,
+      "by": "nkurz",
+      "descendants": 367,
+      "time": 1776698476,
+      "type": "hackernews"
+    },
+    {
+      "id": 47855293,
+      "title": "SpaceX says it has agreement to acquire Cursor for $60B",
+      "url": "https://twitter.com/spacex/status/2046713419978453374",
+      "score": 740,
+      "by": "dmarcos",
+      "descendants": 894,
+      "time": 1776809598,
+      "type": "hackernews"
+    },
+    {
+      "id": 47851948,
+      "title": "Meta to start capturing employee mouse movements, keystrokes for AI training",
+      "url": "https://www.reuters.com/sustainability/boards-policy-regulation/meta-start-capturing-employee-mouse-movements-keystrokes-ai-training-data-2026-04-21/",
+      "score": 711,
+      "by": "dlx",
+      "descendants": 471,
+      "time": 1776793239,
+      "type": "hackernews"
+    }
+  ]
+}
