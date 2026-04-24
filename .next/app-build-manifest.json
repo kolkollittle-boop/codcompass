@@ -12,7 +12,7 @@
       "static/chunks/4bd1b696-52a6696c08e3276c.js",
       "static/chunks/684-4fbcbb3a16540564.js",
       "static/chunks/main-app-7b01a56483f927d5.js",
-      "static/css/e364f51e7f967925.css",
+      "static/css/b8c9bb2a6f8e8126.css",
       "static/chunks/app/layout-c0211cf47c6d442f.js"
     ],
     "/api/auth/[...nextauth]/route": [
@@ -35,7 +35,7 @@
       "static/chunks/684-4fbcbb3a16540564.js",
       "static/chunks/main-app-7b01a56483f927d5.js",
       "static/chunks/874-8826d48c805a2f7c.js",
-      "static/chunks/app/(marketing)/page-5efa357e8e8221a1.js"
+      "static/chunks/app/(marketing)/page-45cd86151587ac3e.js"
     ],
     "/(auth)/login/page": [
       "static/chunks/webpack-68f22649503f8e75.js",
@@ -67,7 +67,7 @@
       "static/chunks/684-4fbcbb3a16540564.js",
       "static/chunks/main-app-7b01a56483f927d5.js",
       "static/chunks/874-8826d48c805a2f7c.js",
-      "static/chunks/app/(kb)/kb/page-00b6c725e957355e.js"
+      "static/chunks/app/(kb)/kb/page-3f1bd454056ca4fa.js"
     ],
     "/(kb)/kb/[slug]/page": [
       "static/chunks/webpack-68f22649503f8e75.js",

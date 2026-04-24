@@ -25,6 +25,30 @@
         "x-next-revalidate-tag-token"
       ]
     },
+    "/login": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/login",
+      "dataRoute": "/login.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
     "/": {
       "experimentalBypassFor": [
         {
@@ -72,37 +96,13 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
-    },
-    "/login": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/login",
-      "dataRoute": "/login.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "9dfe3834752e6f3894124585446b9137",
-    "previewModeSigningKey": "62c5d08617646798a4bb64c8a0ae95edd23631fc304db0c9ac4fa071464a5bac",
-    "previewModeEncryptionKey": "95f2a7b6c346add5dd7151319aca5a846ccc359000c1cf7b419e32ac74278de4"
+    "previewModeId": "510d1df3616728b38f242c4db0912151",
+    "previewModeSigningKey": "dd9321bc0907975a16abc2fe7e4aeff4398fdc26dcf56a6399c4602fd1eb9f8a",
+    "previewModeEncryptionKey": "4cd9af4d83bdb642a327463d637e1c0b06c22f49e7954bbb746f1c7beea214c9"
   }
 }
