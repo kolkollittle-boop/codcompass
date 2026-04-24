@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { MDXRemote } from 'next-mdx-remote/rsc';
 
 interface Article {
   id: number;
