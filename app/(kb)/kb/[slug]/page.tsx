@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import Paywall from '@/components/Paywall';
+import { getArticleBySlug, incrementViewCount } from '@/lib/supabase';
 
 interface Article {
   id: number;
@@ -17,7 +18,8 @@ interface Article {
   sources: string[];
 }
 
-const articles: Article[] = [
+// Fallback static articles (will be replaced by Supabase data)
+const staticArticles: Article[] = [
   {
     id: 1,
     slug: 'getting-started-react-hooks',
@@ -70,7 +72,7 @@ function UserProfile({ userId }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() =&gt; {
+  useEffect(() => {
     async function fetchUser() {
       const res = await fetch(\`/api/users/\${userId}\`);
       const data = await res.json();
@@ -213,9 +215,31 @@ function difficultyColor(d: string) {
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const resolved = await params;
   
-  const article = articles.find(a => 
+  // Try Supabase first, fallback to static articles
+  let article = staticArticles.find(a => 
     a.slug === resolved.slug || a.id === parseInt(resolved.slug)
   );
+
+  // Try to fetch from Supabase
+  const dbArticle = await getArticleBySlug(resolved.slug);
+  if (dbArticle) {
+    article = {
+      id: parseInt(dbArticle.id) || staticArticles.length + 1,
+      slug: dbArticle.slug,
+      title: dbArticle.titleEn,
+      category: dbArticle.categories?.[0]?.Category?.[0]?.name || 'General',
+      difficulty: 'Intermediate',
+      date: dbArticle.publishedAt ? new Date(dbArticle.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      readTime: `${Math.max(3, Math.ceil(dbArticle.contentEn.length / 2000))} min read`,
+      isPremium: dbArticle.isPremium,
+      author: dbArticle.sourceAuthor || 'CPKB Team',
+      sources: dbArticle.sourceSite ? [`Source: ${dbArticle.sourceSite}`] : [],
+      freeContent: dbArticle.excerptEn || dbArticle.contentEn.slice(0, 1000),
+      premiumContent: dbArticle.contentEn.slice(1000),
+    };
+    // Increment view count
+    await incrementViewCount(dbArticle.id);
+  }
 
   if (!article) {
     notFound();
@@ -278,43 +302,48 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           {/* Premium Content with Paywall */}
           {article.isPremium && article.premiumContent && (
-            <div className="relative mt-10">
+            <>
+              {/* Inline paywall banner */}
+              <Paywall variant="inline" />
+              
               {/* Blurred preview */}
-              <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
-                <div 
-                  className="prose prose-lg max-w-none
-                    prose-headings:font-bold prose-p:text-gray-700
-                    prose-pre:bg-gray-900 prose-pre:text-gray-100"
-                  dangerouslySetInnerHTML={{ __html: article.premiumContent }}
-                />
-              </div>
+              <div className="relative mt-10">
+                <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
+                  <div 
+                    className="prose prose-lg max-w-none
+                      prose-headings:font-bold prose-p:text-gray-700
+                      prose-pre:bg-gray-900 prose-pre:text-gray-100"
+                    dangerouslySetInnerHTML={{ __html: article.premiumContent }}
+                  />
+                </div>
 
-              {/* Paywall overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-gradient-to-t from-white via-white/95 to-transparent w-full h-full flex items-end sm:items-center justify-center pb-8 sm:pb-0">
-                  <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-8 max-w-md mx-4 text-center">
-                    <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
+                {/* Paywall overlay */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-gradient-to-t from-white via-white/95 to-transparent w-full h-full flex items-end sm:items-center justify-center pb-8 sm:pb-0">
+                    <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-8 max-w-md mx-4 text-center">
+                      <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">Unlock Full Article</h3>
+                      <p className="text-gray-600 mb-6">
+                        Get unlimited access to all premium tutorials, code examples, and expert insights.
+                      </p>
+                      <Link
+                        href="/pricing"
+                        className="block w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+                      >
+                        Subscribe from $9.99/mo
+                      </Link>
+                      <p className="text-xs text-gray-500 mt-3">
+                        Cancel anytime · 30-day money-back guarantee
+                      </p>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Unlock Full Article</h3>
-                    <p className="text-gray-600 mb-6">
-                      Get unlimited access to all premium tutorials, code examples, and expert insights.
-                    </p>
-                    <Link
-                      href="/pricing"
-                      className="block w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
-                    >
-                      Subscribe from $9.99/mo
-                    </Link>
-                    <p className="text-xs text-gray-500 mt-3">
-                      Cancel anytime · 30-day money-back guarantee
-                    </p>
                   </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
 
           {/* Free article - show premium content directly */}
