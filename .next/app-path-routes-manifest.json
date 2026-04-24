@@ -2,9 +2,9 @@
   "/_not-found/page": "/_not-found",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
   "/api/webhooks/lemonsqueezy/route": "/api/webhooks/lemonsqueezy",
+  "/(marketing)/page": "/",
   "/(auth)/login/page": "/login",
   "/(marketing)/pricing/page": "/pricing",
-  "/(marketing)/page": "/",
   "/(kb)/kb/page": "/kb",
   "/(kb)/kb/[slug]/page": "/kb/[slug]"
 }

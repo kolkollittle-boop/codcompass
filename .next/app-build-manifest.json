@@ -12,7 +12,7 @@
       "static/chunks/4bd1b696-52a6696c08e3276c.js",
       "static/chunks/684-4fbcbb3a16540564.js",
       "static/chunks/main-app-7b01a56483f927d5.js",
-      "static/css/a55217b751e67bd1.css",
+      "static/css/e364f51e7f967925.css",
       "static/chunks/app/layout-c0211cf47c6d442f.js"
     ],
     "/api/auth/[...nextauth]/route": [
@@ -29,6 +29,14 @@
       "static/chunks/main-app-7b01a56483f927d5.js",
       "static/chunks/app/api/webhooks/lemonsqueezy/route-3094ed257f561daf.js"
     ],
+    "/(marketing)/page": [
+      "static/chunks/webpack-68f22649503f8e75.js",
+      "static/chunks/4bd1b696-52a6696c08e3276c.js",
+      "static/chunks/684-4fbcbb3a16540564.js",
+      "static/chunks/main-app-7b01a56483f927d5.js",
+      "static/chunks/874-8826d48c805a2f7c.js",
+      "static/chunks/app/(marketing)/page-5efa357e8e8221a1.js"
+    ],
     "/(auth)/login/page": [
       "static/chunks/webpack-68f22649503f8e75.js",
       "static/chunks/4bd1b696-52a6696c08e3276c.js",
@@ -44,14 +52,6 @@
       "static/chunks/main-app-7b01a56483f927d5.js",
       "static/chunks/874-8826d48c805a2f7c.js",
       "static/chunks/app/(marketing)/pricing/page-96bc4b6eb4c3a6b1.js"
-    ],
-    "/(marketing)/page": [
-      "static/chunks/webpack-68f22649503f8e75.js",
-      "static/chunks/4bd1b696-52a6696c08e3276c.js",
-      "static/chunks/684-4fbcbb3a16540564.js",
-      "static/chunks/main-app-7b01a56483f927d5.js",
-      "static/chunks/874-8826d48c805a2f7c.js",
-      "static/chunks/app/(marketing)/page-5efa357e8e8221a1.js"
     ],
     "/(kb)/layout": [
       "static/chunks/webpack-68f22649503f8e75.js",

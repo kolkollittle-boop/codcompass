@@ -1,81 +1,15 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { getPublishedArticles } from '@/lib/supabase';
 
-const articles = [
-  {
-    id: 1,
-    slug: 'getting-started-react-hooks',
-    title: 'Getting Started with React Hooks',
-    excerpt: 'Master useState, useEffect, and custom hooks. From basics to pro patterns.',
-    category: 'React',
-    difficulty: 'Beginner',
-    date: '2026-04-15',
-    readTime: '5 min',
-    isPremium: true,
-  },
-  {
-    id: 2,
-    slug: 'typescript-best-practices',
-    title: 'TypeScript Best Practices',
-    excerpt: 'Strict mode, avoid any, interfaces vs types — everything you need to write better TS.',
-    category: 'TypeScript',
-    difficulty: 'Intermediate',
-    date: '2026-04-12',
-    readTime: '8 min',
-    isPremium: true,
-  },
-  {
-    id: 3,
-    slug: 'nextjs-15-features',
-    title: 'Next.js 15 Features You Need to Know',
-    excerpt: 'Params as promises, caching changes, and everything breaking in the upgrade.',
-    category: 'Next.js',
-    difficulty: 'Intermediate',
-    date: '2026-04-10',
-    readTime: '10 min',
-    isPremium: false,
-  },
-  // AI/ML trending from crawler data
-  {
-    id: 4,
-    slug: 'ai-ml-trending-2026-04-22',
-    title: 'AI/ML Trending: Meta Employee Tracking & More',
-    excerpt: 'This week in AI: Meta monitoring employees, open-source model releases, and the agent economy.',
-    category: 'AI/ML',
-    difficulty: 'Intermediate',
-    date: '2026-04-22',
-    readTime: '8 min',
-    isPremium: true,
-    isTrending: true,
-  },
-  // Rust trending from crawler
-  {
-    id: 5,
-    slug: 'rust-trending-2026-04-22',
-    title: 'Rust Trending: Agents Going Async',
-    excerpt: 'All your agents are going async — what this means for Rust systems programming.',
-    category: 'Rust',
-    difficulty: 'Advanced',
-    date: '2026-04-22',
-    readTime: '6 min',
-    isPremium: true,
-    isTrending: true,
-  },
-  // Systems trending
-  {
-    id: 6,
-    slug: 'systems-trending-2026-04-22',
-    title: 'Systems Trending: Windows 9x Subsystem for Linux',
-    excerpt: 'A wild new project brings WSL-like functionality to legacy Windows 9x systems.',
-    category: 'Systems',
-    difficulty: 'Advanced',
-    date: '2026-04-22',
-    readTime: '5 min',
-    isPremium: false,
-    isTrending: true,
-  },
-];
+const difficultyMap: Record<string, string> = {
+  'React': 'Beginner',
+  'TypeScript': 'Intermediate',
+  'Next.js': 'Intermediate',
+  'AI/ML': 'Advanced',
+  'DevOps': 'Advanced',
+};
 
 const difficultyColor = (d: string) => {
   switch (d) {
@@ -87,7 +21,63 @@ const difficultyColor = (d: string) => {
   }
 };
 
-export default function KbIndexPage() {
+export default async function KbIndexPage() {
+  // Fetch articles from Supabase
+  const dbArticles = await getPublishedArticles(20, 0);
+
+  // Fallback static articles (if DB is empty)
+  const staticArticles = [
+    {
+      id: 1,
+      slug: 'getting-started-react-hooks',
+      titleEn: 'Getting Started with React Hooks',
+      excerptEn: 'Master useState, useEffect, and custom hooks. From basics to pro patterns.',
+      category: 'React',
+      difficulty: 'Beginner',
+      date: '2026-04-15',
+      readTime: '5 min',
+      isPremium: true,
+    },
+    {
+      id: 2,
+      slug: 'typescript-best-practices',
+      titleEn: 'TypeScript Best Practices',
+      excerptEn: 'Strict mode, avoid any, interfaces vs types — everything you need to write better TS.',
+      category: 'TypeScript',
+      difficulty: 'Intermediate',
+      date: '2026-04-12',
+      readTime: '8 min',
+      isPremium: true,
+    },
+    {
+      id: 3,
+      slug: 'nextjs-15-features',
+      titleEn: 'Next.js 15 Features You Need to Know',
+      excerptEn: 'Params as promises, caching changes, and everything breaking in the upgrade.',
+      category: 'Next.js',
+      difficulty: 'Intermediate',
+      date: '2026-04-10',
+      readTime: '10 min',
+      isPremium: false,
+    },
+  ];
+
+  // Use DB articles if available, otherwise fallback to static
+  const articles = dbArticles.length > 0 
+    ? dbArticles.map((a: any) => ({
+        id: a.id,
+        slug: a.slug,
+        titleEn: a.titleEn,
+        excerptEn: a.excerptEn || '',
+        category: a.categories?.[0]?.Category?.[0]?.name || 'General',
+        difficulty: difficultyMap[a.categories?.[0]?.Category?.[0]?.name] || 'Intermediate',
+        date: a.publishedAt ? new Date(a.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        readTime: `${Math.max(3, Math.ceil((a.contentEn?.length || 1000) / 2000))} min`,
+        isPremium: a.isPremium,
+        isTrending: a.viewCount > 100,
+      }))
+    : staticArticles;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -98,7 +88,7 @@ export default function KbIndexPage() {
             <p className="mt-4 text-lg text-gray-600">
               Curated technical tutorials and expert insights for developers
             </p>
-            <div className="mt-6 flex justify-center gap-2">
+            <div className="mt-6 flex justify-center gap-2 flex-wrap">
               <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">All Topics</span>
               <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">React</span>
               <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">TypeScript</span>
@@ -108,7 +98,7 @@ export default function KbIndexPage() {
           </div>
 
           <div className="space-y-6">
-            {articles.map((article) => (
+            {articles.map((article: any) => (
               <article
                 key={article.id}
                 className="bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all group"
@@ -127,13 +117,18 @@ export default function KbIndexPage() {
                           🔒 Premium
                         </span>
                       )}
+                      {article.isTrending && (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          🔥 Trending
+                        </span>
+                      )}
                     </div>
                     <h2 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
                       <Link href={`/kb/${article.slug}`}>
-                        {article.title}
+                        {article.titleEn}
                       </Link>
                     </h2>
-                    <p className="mt-2 text-gray-600">{article.excerpt}</p>
+                    <p className="mt-2 text-gray-600">{article.excerptEn}</p>
                     <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
                       <time>{article.date}</time>
                       <span>·</span>
@@ -152,6 +147,14 @@ export default function KbIndexPage() {
               </article>
             ))}
           </div>
+
+          {articles.length === 0 && (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">📚</div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">No articles yet</h2>
+              <p className="text-gray-600">We're working on adding content. Check back soon!</p>
+            </div>
+          )}
         </div>
       </main>
       <Footer />

@@ -49,30 +49,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/login": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/login",
-      "dataRoute": "/login.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/kb": {
       "experimentalBypassFor": [
         {
@@ -96,13 +72,37 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
+    },
+    "/login": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/login",
+      "dataRoute": "/login.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "5abbd3780e66ada8f457539c8551c66a",
-    "previewModeSigningKey": "d4a9fbe4e9850a35cc9c70fd0b4a611e8a0d148f530fd65907cd1682670609cd",
-    "previewModeEncryptionKey": "970631c3af5aacfd14d6a95ab2cd6d64f8239e4a56846df66c4a9e481dba3bb2"
+    "previewModeId": "9dfe3834752e6f3894124585446b9137",
+    "previewModeSigningKey": "62c5d08617646798a4bb64c8a0ae95edd23631fc304db0c9ac4fa071464a5bac",
+    "previewModeEncryptionKey": "95f2a7b6c346add5dd7151319aca5a846ccc359000c1cf7b419e32ac74278de4"
   }
 }
