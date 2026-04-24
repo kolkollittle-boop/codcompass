@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Seed script for CPKB database
+ * Seed script for Codcompass database
  * Populates Supabase with sample articles, categories, and tags
  * 
  * Usage: npx tsx scripts/seed.ts
@@ -137,8 +137,8 @@ async function main() {
         publishedAt: new Date('2026-04-20'),
         viewCount: 142,
         likeCount: 28,
-        sourceSite: 'CPKB',
-        sourceAuthor: 'CPKB Team',
+        sourceSite: 'Codcompass',
+        sourceAuthor: 'Codcompass Team',
         categories: {
           connect: [{ id: categories[0].id }],
         },
@@ -196,8 +196,8 @@ async function fetchData<T>(url: string): Promise<ApiResponse<T>> {
         publishedAt: new Date('2026-04-18'),
         viewCount: 98,
         likeCount: 19,
-        sourceSite: 'CPKB',
-        sourceAuthor: 'CPKB Team',
+        sourceSite: 'Codcompass',
+        sourceAuthor: 'Codcompass Team',
         categories: {
           connect: [{ id: categories[1].id }],
         },
@@ -242,8 +242,8 @@ async function fetchData<T>(url: string): Promise<ApiResponse<T>> {
         publishedAt: new Date('2026-04-15'),
         viewCount: 256,
         likeCount: 45,
-        sourceSite: 'CPKB',
-        sourceAuthor: 'CPKB Team',
+        sourceSite: 'Codcompass',
+        sourceAuthor: 'Codcompass Team',
         categories: {
           connect: [{ id: categories[2].id }],
         },

@@ -13,7 +13,7 @@ export default function Header() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="text-2xl font-bold text-primary-600 tracking-tight">
-                CPKB
+                Codcompass
               </Link>
             </div>
             <nav className="ml-8 flex space-x-6">

@@ -29,7 +29,7 @@ const staticArticles: Article[] = [
     date: '2026-04-15',
     readTime: '5 min read',
     isPremium: true,
-    author: 'CPKB Team',
+    author: 'Codcompass Team',
     sources: ['React Docs', 'Kent C. Dodds Blog', 'Dan Abramov Twitter'],
     freeContent: `
 <p>React Hooks were introduced in React 16.8 and fundamentally changed how we write components. If you're still using class components, you're missing out on cleaner, more readable code.</p>
@@ -115,7 +115,7 @@ function UserProfile({ userId }) {
     date: '2026-04-12',
     readTime: '8 min read',
     isPremium: true,
-    author: 'CPKB Team',
+    author: 'Codcompass Team',
     sources: ['TypeScript Handbook', 'Matt Pocock Blog', 'Total TypeScript'],
     freeContent: `
 <p>TypeScript isn't just JavaScript with types — it's a fundamentally better way to write software. Once you've experienced the safety net of a good type system, going back feels like walking without a railing.</p>
@@ -165,7 +165,7 @@ type Result&lt;T&gt; = { success: true; data: T } | { success: false; error: str
     date: '2026-04-10',
     readTime: '10 min read',
     isPremium: false,
-    author: 'CPKB Team',
+    author: 'Codcompass Team',
     sources: ['Next.js Blog', 'Lee Robinson Twitter'],
     freeContent: `
 <p>Next.js 15 shipped with some significant changes. If you're upgrading from 14, there are a few breaking changes you need to know about — and some exciting new features worth exploring.</p>
@@ -232,7 +232,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       date: dbArticle.publishedAt ? new Date(dbArticle.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       readTime: `${Math.max(3, Math.ceil(dbArticle.contentEn.length / 2000))} min read`,
       isPremium: dbArticle.isPremium,
-      author: dbArticle.sourceAuthor || 'CPKB Team',
+      author: dbArticle.sourceAuthor || 'Codcompass Team',
       sources: dbArticle.sourceSite ? [`Source: ${dbArticle.sourceSite}`] : [],
       freeContent: dbArticle.excerptEn || dbArticle.contentEn.slice(0, 1000),
       premiumContent: dbArticle.contentEn.slice(1000),
@@ -250,7 +250,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <Link href="/" className="text-2xl font-bold text-indigo-600 tracking-tight">CPKB</Link>
+            <Link href="/" className="text-2xl font-bold text-indigo-600 tracking-tight">Codcompass</Link>
             <Link href="/kb" className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -375,7 +375,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       <footer className="border-t border-gray-200 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} CPKB. All rights reserved.
+          © {new Date().getFullYear()} Codcompass. All rights reserved.
         </div>
       </footer>
     </div>

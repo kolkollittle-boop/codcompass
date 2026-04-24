@@ -30,7 +30,7 @@
 | **电子邮箱** | Gmail 推荐（海外服务兼容性好） | yourname@gmail.com |
 | **身份证件** | 护照 或 身份证（彩色照片） | passport_photo.jpg |
 | **收款账户** | PayPal 或 Wise 账户 | PayPal 邮箱 |
-| **产品信息** | 产品名称、描述、价格 | CyberPunk KB - $29/月 |
+| **产品信息** | 产品名称、描述、价格 | Codcompass KB - $29/月 |
 | **网站 URL** | 可有可无，有更好 | https://cyberpunkkb.com |
 
 ### 提前注册这些账户
@@ -285,7 +285,7 @@ Dashboard → Stores → Create Store
 
 | 字段 | 填写建议 |
 |------|----------|
-| **Store Name** | CyberPunk Knowledge Base |
+| **Store Name** | Codcompass Knowledge Base |
 | **Store URL** | cyberpunkkb (会自动生成) |
 | **Description** | AI-powered technical knowledge platform for developers |
 | **Logo** | 上传 400x400px logo |
@@ -303,7 +303,7 @@ Dashboard → Products → Create Product
 ┌─────────────────────────────────────────────────────────────┐
 │  Product Details                                            │
 │                                                             │
-│  Name:              [CyberPunk KB - Builder]                │
+│  Name:              [Codcompass KB - Builder]                │
 │  Description:       [Monthly subscription for unlimited     │
 │                      access to technical tutorials]         │
 │                                                             │
@@ -328,9 +328,9 @@ Dashboard → Products → Create Product
 
 | 套餐 | 名称 | 价格 | 描述 |
 |------|------|------|------|
-| **Builder** | CyberPunk KB - Builder | $29/月 | Unlimited access + code downloads |
-| **Pro** | CyberPunk KB - Pro | $59/月 | Builder + video tutorials + source code |
-| **Enterprise** | CyberPunk KB - Enterprise | $99/月 | Pro + 1v1 consultation + team license |
+| **Builder** | Codcompass KB - Builder | $29/月 | Unlimited access + code downloads |
+| **Pro** | Codcompass KB - Pro | $59/月 | Builder + video tutorials + source code |
+| **Enterprise** | Codcompass KB - Enterprise | $99/月 | Pro + 1v1 consultation + team license |
 
 ### 产品设置详情
 
@@ -383,7 +383,7 @@ https://cyberpunkkb.lemonsqueezy.com/buy/builder-plan?discount=LAUNCH20
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  CyberPunk Knowledge Base                                   │
+│  Codcompass Knowledge Base                                   │
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐   │
 │  │  Builder Plan                            $29.00/mo  │   │

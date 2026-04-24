@@ -1,4 +1,4 @@
-# 📚 CyberPunk Knowledge Base
+# 📚 Codcompass Knowledge Base
 
 > **High-Quality Technical Knowledge for Developers**
 > 
@@ -105,7 +105,7 @@ Target Launch: June 30, 2026
 ## 📂 项目结构
 
 ```
-CyberPunkApp/
+CodcompassApp/
 ├── docs/                    # 项目文档
 │   ├── 项目文档.md          # 详细文档
 │   └── README.md            # 本文件
@@ -126,7 +126,7 @@ CyberPunkApp/
 ```bash
 # 1. 克隆项目
 git clone <repo-url>
-cd CyberPunkApp
+cd CodcompassApp
 
 # 2. 安装依赖
 npm install
@@ -161,7 +161,7 @@ npm run dev
 
 ## 📬 联系方式
 
-**项目地址**: ~/Desktop/CyberPunkWeb
+**项目地址**: ~/Desktop/CodcompassWeb
 
 **目标市场**: 🇺🇸 🇨🇦 🇬🇧 🇩🇪 🇦🇪
 

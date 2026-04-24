@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">CPKB</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Codcompass</h3>
             <p className="mt-4 text-base text-gray-500">
               Premium knowledge base for developers and professionals.
             </p>
@@ -63,7 +63,7 @@ export default function Footer() {
             {/* Social media icons would go here */}
           </div>
           <p className="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
-            &copy; {new Date().getFullYear()} CPKB. All rights reserved.
+            &copy; {new Date().getFullYear()} Codcompass. All rights reserved.
           </p>
         </div>
       </div>

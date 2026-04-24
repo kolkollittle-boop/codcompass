@@ -1,4 +1,4 @@
-# CPKB Deployment Guide
+# Codcompass Deployment Guide
 
 ## 🚀 Deploy to Vercel
 

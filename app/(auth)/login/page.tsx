@@ -8,7 +8,7 @@ export default function LoginPage() {
       <main className="flex-grow flex items-center justify-center py-20">
         <div className="max-w-md w-full px-4">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Sign in to CPKB</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Sign in to Codcompass</h1>
             <p className="mt-2 text-gray-600">Access premium content and tutorials</p>
           </div>
 
