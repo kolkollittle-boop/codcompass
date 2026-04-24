@@ -3,8 +3,8 @@
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/api/webhooks/lemonsqueezy/route": "app/api/webhooks/lemonsqueezy/route.js",
   "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/(marketing)/page": "app/(marketing)/page.js",
   "/(marketing)/pricing/page": "app/(marketing)/pricing/page.js",
+  "/(marketing)/page": "app/(marketing)/page.js",
   "/(kb)/kb/page": "app/(kb)/kb/page.js",
   "/(kb)/kb/[slug]/page": "app/(kb)/kb/[slug]/page.js"
 }
