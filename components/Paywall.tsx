@@ -1,36 +1,106 @@
 import Link from 'next/link';
 
-export default function Paywall() {
-  return (
-    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
-      <div className="flex">
-        <div className="flex-shrink-0">
-          <svg
-            className="h-5 w-5 text-yellow-400"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fillRule="evenodd"
-              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
-        <div className="ml-3">
-          <p className="text-sm text-yellow-700">
-            <span className="font-medium">Premium Content</span> {' '}
-            This article is available to subscribers only. {' '}
-            <Link
-              href="/pricing"
-              className="font-medium underline text-yellow-700 hover:text-yellow-600"
-            >
-              Upgrade your account
-            </Link>{' '}
-            to read the full article.
+interface PaywallProps {
+  price?: string;
+  href?: '/pricing' | '/login';
+  variant?: 'inline' | 'overlay' | 'card';
+}
+
+export default function Paywall({ 
+  price = '$9.99/mo', 
+  href = '/pricing' as const,
+  variant = 'overlay'
+}: PaywallProps) {
+  if (variant === 'card') {
+    return (
+      <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 p-8 my-8">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Unlock Full Access</h3>
+          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            Get unlimited access to all premium tutorials, code examples, and expert insights.
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href={href}
+              className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Subscribe from {price}
+            </Link>
+            <Link
+              href="/login"
+              className="px-8 py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors"
+            >
+              Already subscribed? Sign in
+            </Link>
+          </div>
+          <p className="text-xs text-gray-500 mt-4">
+            Cancel anytime · 30-day money-back guarantee
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === 'inline') {
+    return (
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 my-8 text-white">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold mb-1">🔒 Premium Content</h3>
+            <p className="text-indigo-100 text-sm">
+              Subscribe to unlock this article and all premium content
+            </p>
+          </div>
+          <Link
+            href={href}
+            className="flex-shrink-0 px-6 py-2.5 bg-white text-indigo-600 font-medium rounded-lg hover:bg-indigo-50 transition-colors"
+          >
+            Upgrade for {price}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Default: overlay (for blurring premium content)
+  return (
+    <div className="relative mt-10">
+      {/* Blurred preview */}
+      <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
+        <div className="prose prose-lg max-w-none">
+          <p>This is premium content that requires a subscription to view.</p>
+          <p>Subscribe to unlock full access to all articles.</p>
+        </div>
+      </div>
+
+      {/* Paywall overlay */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="bg-gradient-to-t from-white via-white/95 to-transparent w-full h-full flex items-end sm:items-center justify-center pb-8 sm:pb-0">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-8 max-w-md mx-4 text-center">
+            <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Unlock Full Article</h3>
+            <p className="text-gray-600 mb-6">
+              Get unlimited access to all premium tutorials, code examples, and expert insights.
+            </p>
+            <Link
+              href={href}
+              className="block w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Subscribe from {price}
+            </Link>
+            <p className="text-xs text-gray-500 mt-3">
+              Cancel anytime · 30-day money-back guarantee
+            </p>
+          </div>
         </div>
       </div>
     </div>
