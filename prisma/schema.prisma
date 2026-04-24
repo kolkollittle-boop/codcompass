@@ -1,7 +1,3 @@
-// CyberPunk Knowledge Base - Prisma Schema
-// Tech Stack: PostgreSQL (Supabase) + Prisma
-// No Redis/Meilisearch needed for MVP.
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,116 +7,215 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================
-// 用户系统 (Authentication & Profile)
-// ============================================
-
 model User {
-  id            String    @id @default(cuid())
-  
-  // 认证信息
-  email         String    @unique
-  emailVerified DateTime?
-  passwordHash  String?
-  name          String?
-  image         String?
-  
-  // OAuth 关联
-  accounts      Account[]
-  
-  // 订阅关系 (1:N 以保留历史记录)
-  subscriptions Subscription[]
-  
-  // 行为关联
-  bookmarks     Bookmark[]
-  views         ArticleView[]
-  feedbacks     TranslationFeedback[]
-  
-  // 权限字段 (反范式化，避免频繁 join 查订阅状态)
-  planType        PlanType           @default(FREE)
-  subscriptionStatus SubscriptionStatus @default(INACTIVE)
-  
-  // 元数据
-  role          UserRole  @default(USER)
-  isBanned      Boolean   @default(false)
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLoginAt   DateTime?
-  
+  id                 String                @id @default(cuid())
+  email              String                @unique
+  emailVerified      DateTime?
+  passwordHash       String?
+  name               String?
+  image              String?
+  planType           PlanType              @default(FREE)
+  subscriptionStatus SubscriptionStatus    @default(INACTIVE)
+  role               UserRole              @default(USER)
+  isBanned           Boolean               @default(false)
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  lastLoginAt        DateTime?
+  accounts           Account[]
+  views              ArticleView[]
+  bookmarks          Bookmark[]
+  subscriptions      Subscription[]
+  feedbacks          TranslationFeedback[]
+
   @@index([email])
   @@index([createdAt])
   @@index([planType])
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   userId            String
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  provider          String  // e.g. "google", "github"
+  provider          String
   providerAccountId String
-  
   access_token      String?
   refresh_token     String?
   expires_at        Int?
   token_type        String?
   scope             String?
   id_token          String?
-  
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
   @@index([userId])
+}
+
+model Subscription {
+  id             String             @id @default(cuid())
+  userId         String
+  lemonSqueezyId String             @unique
+  orderId        Int
+  variantId      Int
+  status         SubscriptionStatus @default(INACTIVE)
+  planType       PlanType
+  price          Int
+  currency       String             @default("USD")
+  renewsAt       DateTime?
+  endsAt         DateTime?
+  cancelledAt    DateTime?
+  trialStart     DateTime?
+  trialEnd       DateTime?
+  metadata       Json?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  user           User               @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([lemonSqueezyId])
+}
+
+model Article {
+  id             String               @id @default(cuid())
+  slug           String               @unique
+  originalUrl    String?
+  titleEn        String
+  contentEn      String
+  descriptionEn  String?
+  excerptEn      String?
+  sourceSite     String?
+  sourceAuthor   String?
+  crawledAt      DateTime?
+  status         ArticleStatus        @default(DRAFT)
+  isPublished    Boolean              @default(false)
+  isPremium      Boolean              @default(true)
+  publishedAt    DateTime?
+  viewCount      Int                  @default(0)
+  likeCount      Int                  @default(0)
+  qualityScore   Int?
+  qualityDetails Json?
+  seoTitle       String?
+  seoDescription String?
+  canonicalUrl   String?
+  publishedBy    String?
+  editedAt       DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  translations   ArticleTranslation[]
+  views          ArticleView[]
+  bookmarks      Bookmark[]
+  categories     Category[]           @relation("ArticleToCategory")
+  tags           Tag[]                @relation("ArticleToTag")
+
+  @@index([slug])
+  @@index([status])
+  @@index([isPublished])
+  @@index([publishedAt])
+  @@index([sourceSite])
+}
+
+model ArticleTranslation {
+  id               String    @id @default(cuid())
+  articleId        String
+  locale           String
+  title            String
+  content          String
+  description      String?
+  excerpt          String?
+  seoTitle         String?
+  seoDescription   String?
+  isAutoTranslated Boolean   @default(true)
+  isReviewed       Boolean   @default(false)
+  reviewedAt       DateTime?
+  reviewedBy       String?
+  qualityScore     Float?
+  feedbackCount    Int       @default(0)
+  translatedAt     DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  article          Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, locale])
+  @@index([locale])
+  @@index([isReviewed])
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  nameEn      String
+  description String?
+  parentId    String?
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  parent      Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryToCategory")
+  articles    Article[]  @relation("ArticleToCategory")
+
+  @@index([slug])
+  @@index([parentId])
+}
+
+model Tag {
+  id         String    @id @default(cuid())
+  slug       String    @unique
+  name       String
+  nameEn     String
+  usageCount Int       @default(0)
+  createdAt  DateTime  @default(now())
+  articles   Article[] @relation("ArticleToTag")
+
+  @@index([slug])
+}
+
+model ArticleView {
+  id             String   @id @default(cuid())
+  articleId      String
+  userId         String?
+  sessionId      String?
+  ipAddress      String?
+  readPercentage Int      @default(0)
+  readTime       Int      @default(0)
+  createdAt      DateTime @default(now())
+  article        Article  @relation(fields: [articleId], references: [id])
+  user           User?    @relation(fields: [userId], references: [id])
+
+  @@unique([articleId, userId, sessionId])
+  @@index([articleId])
+  @@index([userId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  articleId String
+  userId    String
+  folder    String?
+  createdAt DateTime @default(now())
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, articleId])
+  @@index([userId])
+}
+
+model TranslationFeedback {
+  id        String   @id @default(cuid())
+  articleId String
+  locale    String
+  userId    String?
+  score     Int
+  comment   String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([articleId, locale])
 }
 
 enum UserRole {
   USER
   ADMIN
   EDITOR
-}
-
-// ============================================
-// 订阅系统 (Subscription & Payments)
-// ============================================
-
-model Subscription {
-  id              String   @id @default(cuid())
-  userId          String   
-  user            User     @relation(fields: [userId], references: [id])
-  
-  // Lemon Squeezy 标识
-  lemonSqueezyId  String   @unique
-  orderId         Int
-  variantId       Int
-  
-  // 状态
-  status          SubscriptionStatus @default(INACTIVE)
-  
-  // 套餐
-  planType        PlanType
-  price           Int
-  currency        String   @default("USD")
-  
-  // 周期
-  renewsAt        DateTime?
-  endsAt          DateTime?
-  cancelledAt     DateTime?
-  
-  // 试用
-  trialStart      DateTime?
-  trialEnd        DateTime?
-  
-  // 支付日志/元数据 (JSON 存 webhook payload 以备排查)
-  metadata        Json?
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  @@index([userId])
-  @@index([status])
-  @@index([lemonSqueezyId])
 }
 
 enum SubscriptionStatus {
@@ -139,212 +234,10 @@ enum PlanType {
   ENTERPRISE
 }
 
-// ============================================
-// 内容系统 (Articles & Translations)
-// ============================================
-
-model Article {
-  id            String   @id @default(cuid())
-  
-  // 标识
-  slug          String   @unique
-  originalUrl   String?
-  
-  // 原文（英语）
-  titleEn       String
-  contentEn     String   @db.Text
-  descriptionEn String?  @db.Text
-  excerptEn     String?
-  
-  // 翻译关联
-  translations  ArticleTranslation[]
-  
-  // 分类与标签 (多对多)
-  categories    Category[]
-  tags          Tag[]
-  
-  // 来源
-  sourceSite    String?
-  sourceAuthor  String?
-  crawledAt     DateTime?
-  
-  // 状态
-  status        ArticleStatus @default(DRAFT)
-  isPublished   Boolean  @default(false)
-  isPremium     Boolean  @default(true)
-  publishedAt   DateTime?
-  
-  // 统计
-  viewCount     Int      @default(0)
-  likeCount     Int      @default(0)
-  
-  // 质量 (AI 评分)
-  qualityScore  Int?
-  qualityDetails Json?
-  
-  // SEO
-  seoTitle      String?
-  seoDescription String?
-  canonicalUrl  String?
-  
-  // 发布
-  publishedBy   String?
-  editedAt      DateTime?
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  // 关联
-  views         ArticleView[]
-  bookmarks     Bookmark[]
-  
-  // 索引
-  @@index([slug])
-  @@index([status])
-  @@index([isPublished])
-  @@index([publishedAt])
-  @@index([sourceSite])
-  // PostgreSQL Full Text Search 索引 (需通过 SQL 迁移或原生查询实现)
-}
-
-model ArticleTranslation {
-  id        String  @id @default(cuid())
-  articleId String
-  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  
-  locale    String // e.g. "zh-CN", "de"
-  
-  title       String
-  content     String @db.Text
-  description String? @db.Text
-  excerpt     String?
-  
-  seoTitle      String?
-  seoDescription String?
-  
-  isAutoTranslated Boolean @default(true)
-  isReviewed       Boolean @default(false)
-  reviewedAt       DateTime?
-  reviewedBy       String?
-  
-  qualityScore     Float?
-  feedbackCount    Int      @default(0)
-  
-  translatedAt DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
-  @@unique([articleId, locale])
-  @@index([locale])
-  @@index([isReviewed])
-}
-
 enum ArticleStatus {
   DRAFT
   PROCESSING
   REVIEW
   PUBLISHED
   ARCHIVED
-}
-
-// ============================================
-// 分类与标签 (Taxonomy)
-// ============================================
-
-model Category {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  name        String
-  nameEn      String
-  description String?
-  
-  // 层级分类 (可选)
-  parentId    String?
-  parent      Category? @relation("CategoryToCategory", fields: [parentId], references: [id])
-  children    Category[] @relation("CategoryToCategory")
-  
-  // 文章关联
-  articles    Article[]
-  
-  order       Int      @default(0)
-  
-  createdAt   DateTime @default(now())
-  
-  @@index([slug])
-  @@index([parentId])
-}
-
-model Tag {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  name      String
-  nameEn    String
-  
-  // 文章关联
-  articles  Article[]
-  
-  usageCount Int @default(0)
-  
-  createdAt DateTime @default(now())
-  
-  @@index([slug])
-}
-
-// ============================================
-// 用户行为 (User Actions)
-// ============================================
-
-model ArticleView {
-  id        String  @id @default(cuid())
-  articleId String
-  article   Article @relation(fields: [articleId], references: [id])
-  
-  userId    String?
-  user      User?   @relation(fields: [userId], references: [id])
-  
-  sessionId String?
-  ipAddress String?
-  
-  readPercentage Int @default(0)
-  readTime       Int @default(0)
-  
-  createdAt DateTime @default(now())
-  
-  @@index([articleId])
-  @@index([userId])
-  @@unique([articleId, userId, sessionId])
-}
-
-model Bookmark {
-  id        String  @id @default(cuid())
-  articleId String
-  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  
-  userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  // 可选：文件夹功能
-  folder    String?
-  
-  createdAt DateTime @default(now())
-  
-  @@unique([userId, articleId])
-  @@index([userId])
-}
-
-model TranslationFeedback {
-  id        String  @id @default(cuid())
-  
-  articleId String
-  locale    String
-  
-  userId    String?
-  user      User?   @relation(fields: [userId], references: [id])
-  
-  score     Int     // 1-5 评分
-  
-  comment   String?
-  
-  createdAt DateTime @default(now())
-  
-  @@index([articleId, locale])
 }

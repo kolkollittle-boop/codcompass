@@ -31,8 +31,8 @@ declare namespace __next_route_internal_types__ {
   type StaticRoutes = 
     | `/api/webhooks/lemonsqueezy`
     | `/login`
-    | `/`
     | `/pricing`
+    | `/`
     | `/kb`
   type DynamicRoutes<T extends string = string> = 
     | `/api/auth/${CatchAllSlug<T>}`

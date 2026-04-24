@@ -1,0 +1,141 @@
+{
+  "generatedAt": "2026-04-22T15:44:35.996Z",
+  "totalDrafts": 5,
+  "drafts": [
+    {
+      "id": 1,
+      "slug": "ai-ml-trending-2026-04-22",
+      "topic": "ai-ml",
+      "title": "Trending in AI-ML: Meta to start capturing employee mouse movements, keystrokes for AI training",
+      "sources": [
+        {
+          "title": "Meta to start capturing employee mouse movements, keystrokes for AI training",
+          "url": "https://www.reuters.com/sustainability/boards-policy-regulation/meta-start-capturing-employee-mouse-movements-keystrokes-ai-training-data-2026-04-21/",
+          "score": 711
+        },
+        {
+          "title": "Top MAGA influencer revealed to be AI",
+          "url": "https://nypost.com/2026/04/21/us-news/top-maga-influencer-emily-hart-revealed-to-be-ai-created-by-a-guy-in-india/",
+          "score": 33
+        },
+        {
+          "title": "Top MAGA influencer revealed to be AI",
+          "url": "https://nypost.com/2026/04/21/us-news/top-maga-influencer-emily-hart-revealed-to-be-ai-created-by-a-guy-in-india/",
+          "score": 33
+        },
+        {
+          "title": "How I Saved a Mumbai CA Firm ₹18 Lakh/Year by Automating GST Invoice Reconciliation",
+          "url": "https://dev.to/automate-archit/how-i-saved-a-mumbai-ca-firm-18-lakhyear-by-automating-gst-invoice-reconciliation-3fdj",
+          "score": 0
+        },
+        {
+          "title": "OpenAI Just Shipped an Image Model That Thinks Before It Draws. Free Tier Gets It Day One.",
+          "url": "https://dev.to/alanwest/openai-just-shipped-an-image-model-that-thinks-before-it-draws-free-tier-gets-it-day-one-576n",
+          "score": 0
+        }
+      ],
+      "status": "pending_review"
+    },
+    {
+      "id": 2,
+      "slug": "general-trending-2026-04-22",
+      "topic": "general",
+      "title": "Trending in GENERAL: ChatGPT Images 2.0",
+      "sources": [
+        {
+          "title": "ChatGPT Images 2.0",
+          "url": "https://openai.com/index/introducing-chatgpt-images-2-0/",
+          "score": 951
+        },
+        {
+          "title": "ChatGPT Images 2.0",
+          "url": "https://openai.com/index/introducing-chatgpt-images-2-0/",
+          "score": 951
+        },
+        {
+          "title": "SpaceX says it has agreement to acquire Cursor for $60B",
+          "url": "https://twitter.com/spacex/status/2046713419978453374",
+          "score": 740
+        },
+        {
+          "title": "Acetaminophen vs. ibuprofen",
+          "url": "https://asteriskmag.com/issues/14/the-mystery-in-the-medicine-cabinet",
+          "score": 576
+        },
+        {
+          "title": "Making RAM at Home [video]",
+          "url": "https://www.youtube.com/watch?v=h6GWikWlAQA",
+          "score": 497
+        }
+      ],
+      "status": "pending_review"
+    },
+    {
+      "id": 3,
+      "slug": "rust-trending-2026-04-22",
+      "topic": "rust",
+      "title": "Trending in RUST: All your agents are going async",
+      "sources": [
+        {
+          "title": "All your agents are going async",
+          "url": "https://zknill.io/posts/all-your-agents-are-going-async/",
+          "score": 98
+        },
+        {
+          "title": "All your agents are going async",
+          "url": "https://zknill.io/posts/all-your-agents-are-going-async/",
+          "score": 97
+        },
+        {
+          "title": "Coroutine series 1) What are Coroutine, Asyncio, I/O bound?",
+          "url": "https://dev.to/jun07/coroutine-series-1-what-are-coroutine-asyncio-io-bound-2gh5",
+          "score": 0
+        }
+      ],
+      "status": "pending_review"
+    },
+    {
+      "id": 4,
+      "slug": "systems-trending-2026-04-22",
+      "topic": "systems",
+      "title": "Trending in SYSTEMS: Windows 9x Subsystem for Linux",
+      "sources": [
+        {
+          "title": "Windows 9x Subsystem for Linux",
+          "url": "https://social.hails.org/@hailey/116446826733136456",
+          "score": 508
+        },
+        {
+          "title": "Windows 9x Subsystem for Linux",
+          "url": "https://social.hails.org/@hailey/116446826733136456",
+          "score": 508
+        },
+        {
+          "title": "Windows Server 2025 Runs Better on ARM",
+          "url": "https://jasoneckert.github.io/myblog/server-2025-arm64/",
+          "score": 163
+        }
+      ],
+      "status": "pending_review"
+    },
+    {
+      "id": 5,
+      "slug": "javascript-trending-2026-04-22",
+      "topic": "javascript",
+      "title": "Trending in JAVASCRIPT: Prefill-as-a-Service:KVCache of Next-Generation Models Could Go Cross-Datacenter",
+      "sources": [
+        {
+          "title": "Prefill-as-a-Service:KVCache of Next-Generation Models Could Go Cross-Datacenter",
+          "url": "https://arxiv.org/abs/2604.15039",
+          "score": 28
+        },
+        {
+          "title": "Prefill-as-a-Service:KVCache of Next-Generation Models Could Go Cross-Datacenter",
+          "url": "https://arxiv.org/abs/2604.15039",
+          "score": 28
+        }
+      ],
+      "status": "pending_review"
+    }
+  ]
+}

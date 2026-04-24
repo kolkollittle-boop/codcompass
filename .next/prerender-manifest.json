@@ -49,30 +49,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/kb": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/kb",
-      "dataRoute": "/kb.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/login": {
       "experimentalBypassFor": [
         {
@@ -96,13 +72,37 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
+    },
+    "/kb": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/kb",
+      "dataRoute": "/kb.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "f9303e8b8398bef44de8f11595343a07",
-    "previewModeSigningKey": "5a69e29c87efddc0d16fb573fb34932151f013991d7d8646811499d1c0b93707",
-    "previewModeEncryptionKey": "86cb37e4db8c23c073d12b9976a868d47de48aa45b3381c5bc1da9237bfa3a02"
+    "previewModeId": "0aabf1301fa88a087593a6353f149e33",
+    "previewModeSigningKey": "50caf913e8e344d7d712f903d6ccb509247f55611ab46f9f3e7ecb907367655c",
+    "previewModeEncryptionKey": "4edd3b4577d346ef243f4b0cd7a2c439e01b9356de960c9831efa9b52ec2a60c"
   }
 }
