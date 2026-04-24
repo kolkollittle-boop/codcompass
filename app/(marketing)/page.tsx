@@ -79,7 +79,7 @@ export default function HomePage() {
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900">Why Developers Choose CPKB</h2>
+              <h2 className="text-3xl font-bold text-gray-900">Why Developers Choose Codcompass</h2>
               <p className="mt-4 text-lg text-gray-600">Quality content that actually helps you build better software.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8">

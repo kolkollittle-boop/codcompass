@@ -31,7 +31,7 @@ ps aux | grep clash
 ### 2. 安装依赖
 
 ```bash
-cd ~/Desktop/CyberPunkWeb/crawler
+cd ~/Desktop/CodcompassWeb/crawler
 pnpm install
 ```
 

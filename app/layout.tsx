@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Providers from '@/components/Providers';
 
 export const metadata: Metadata = {
-  title: 'CPKB - Premium Knowledge Base for Developers',
+  title: 'Codcompass - Premium Knowledge Base for Developers',
   description: 'High-quality technical tutorials and resources for developers and professionals.',
 };
 

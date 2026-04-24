@@ -1,4 +1,4 @@
-# CPKB - CyberPunk Knowledge Base
+# Codcompass - Codcompass Knowledge Base
 
 A premium technical knowledge base built with Next.js 15, Supabase, and Lemon Squeezy.
 
@@ -225,6 +225,6 @@ This project is licensed under the MIT License.
 
 ---
 
-**Built with ❤️ by the CPKB Team**
+**Built with ❤️ by the Codcompass Team**
 
 **Last Updated:** 2026-04-24
