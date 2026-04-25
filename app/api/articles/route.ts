@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
           continue;
         }
 
-        result = { slug: article.slug, status: 'created', id: data.id };
+        result = { slug: article.slug, status: 'created', id: data.id } as any;
 
         // Link to category if provided
         if (article.categorySlug && categoryMap[article.categorySlug]) {
@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
               articleId: data.id,
               categoryId: categoryMap[article.categorySlug],
             });
-          result.categoryLinked = article.categorySlug;
+          (result as any).categoryLinked = article.categorySlug;
         }
       }
 

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authConfig } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 
 /**
  * Authentication middleware for API routes
@@ -30,13 +29,13 @@ export async function authenticateRequest(req: NextRequest): Promise<{
     };
   }
 
-  // Method 2: User Session Authentication (NextAuth)
+  // Method 2: User Session Authentication (NextAuth v5)
   try {
-    const session = await getServerSession(authConfig);
+    const session = await auth();
     
     if (session?.user) {
       // Check if user has admin/editor role
-      const userRole = session.user.role || 'USER';
+      const userRole = (session.user as any).role || 'USER';
       
       if (userRole === 'ADMIN' || userRole === 'EDITOR') {
         return {

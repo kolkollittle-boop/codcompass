@@ -1,8 +1,8 @@
-import { NextAuthConfig } from 'next-auth';
+import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
 
-export const authConfig = {
+export const { auth, handlers } = NextAuth({
   providers: [
     // Google OAuth Provider
     Google({
@@ -45,7 +45,7 @@ export const authConfig = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub as string;
-        session.user.role = token.role as string || 'USER';
+        (session.user as any).role = token.role as string || 'USER';
         session.user.image = token.picture as string;
       }
       return session;
@@ -63,4 +63,4 @@ export const authConfig = {
       return true;
     },
   },
-} satisfies NextAuthConfig;
+});

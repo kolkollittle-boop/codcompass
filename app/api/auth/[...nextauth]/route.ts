@@ -1,8 +1,3 @@
-// Auth placeholder - coming soon
-export async function GET() {
-  return Response.json({ message: 'Authentication coming soon' });
-}
+import { handlers } from '@/lib/auth';
 
-export async function POST() {
-  return Response.json({ message: 'Authentication coming soon' });
-}
+export const { GET, POST } = handlers;
