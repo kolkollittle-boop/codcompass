@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Providers from '@/components/Providers';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 export const metadata: Metadata = {
   title: 'Codcompass - Premium Knowledge Base for Developers',
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-white antialiased">
+        <GoogleAnalytics gaId="G-F3G2ZECQ0V" />
         <Providers>{children}</Providers>
       </body>
     </html>
