@@ -10,7 +10,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Back Link */}
           <Link href="/blog" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium mb-8 inline-block">
-            ← 返回博客列表
+            ← Back to Blog
           </Link>
 
           {/* Header */}
@@ -24,7 +24,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
               <span className="text-sm text-gray-500">8 min read</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              React Hooks 入门指南
+              Getting Started with React Hooks
             </h1>
             <div className="flex items-center text-gray-500 text-sm">
               <span>By Codcompass Team</span>
@@ -34,19 +34,19 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
           {/* Content */}
           <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed">
             <p>
-              React Hooks 在 React 16.8 中引入，彻底改变了我们编写组件的方式。如果你还在使用类组件，那么你错过了更简洁、更易读的代码风格。
+              React Hooks were introduced in React 16.8 and fundamentally changed how we write components. If you're still using class components, you're missing out on cleaner, more readable code.
             </p>
 
-            <h2>为什么 Hooks 很重要</h2>
+            <h2>Why Hooks Matter</h2>
             <p>
-              在 Hooks 之前，函数组件的能力有限——它们不能保持状态，不能访问生命周期方法，不能轻松复用逻辑。Hooks 改变了这一切。
+              Before Hooks, functional components were limited — they couldn't hold state, couldn't access lifecycle methods, and couldn't reuse logic easily. Hooks changed all of that.
             </p>
             <p>
-              把 Hooks 想象成给函数赋予超能力。一个曾经只接收 props 并返回 JSX 的简单函数，现在可以管理状态、执行副作用，并在组件之间共享逻辑。
+              Think of Hooks as giving superpowers to functions. A simple function that used to just receive props and return JSX can now manage state, perform side effects, and share logic across components.
             </p>
 
             <h2>useState Hook</h2>
-            <p>这是你最常用的 Hook。它允许你在任何函数组件中添加状态：</p>
+            <p>This is your bread and butter. It lets you add state to any functional component:</p>
             <pre className="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto">
               <code>{`import React, { useState } from 'react';
 
@@ -64,12 +64,12 @@ function Counter() {
 }`}</code>
             </pre>
             <p>
-              这个 API 的美妙之处在于其简洁性。一行代码就给你一个状态变量和一个设置函数。不再有 <code>this.state</code>，不再有 <code>this.setState</code>，不再有绑定。
+              The beauty of this API is its simplicity. One line gives you a state variable and a setter function. No more <code>this.state</code>, no more <code>this.setState</code>, no more binding.
             </p>
 
             <h2>useEffect Hook</h2>
             <p>
-              副作用是从获取数据到更新 DOM 的一切。useEffect 让你以声明式的方式处理它们：
+              Side effects are everything from fetching data to updating the DOM. useEffect lets you handle them declaratively:
             </p>
             <pre className="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto">
               <code>{`import { useState, useEffect } from 'react';
@@ -93,18 +93,18 @@ function UserProfile({ userId }) {
 }`}</code>
             </pre>
 
-            <h2>常见错误</h2>
+            <h2>Common Mistakes</h2>
             <ul>
-              <li><strong>无限循环：</strong>忘记依赖数组会导致 useEffect 在每次渲染时运行，触发状态更新，触发渲染...</li>
-              <li><strong>过期闭包：</strong>当你的 effect 捕获了变量的旧值时。始终包含依赖或使用函数式更新。</li>
+              <li><strong>Infinite loops:</strong> Forgetting the dependency array causes useEffect to run on every render, triggering a state update, triggering a render...</li>
+              <li><strong>Stale closures:</strong> When your effect captures an old value of a variable. Always include dependencies or use functional updates.</li>
             </ul>
 
-            <h2>专业技巧</h2>
+            <h2>Pro Tips</h2>
             <ul>
-              <li>使用 <code>useCallback</code> 记忆传递给子组件的函数</li>
-              <li>使用 <code>useMemo</code> 处理昂贵的计算</li>
-              <li>自定义 Hooks 允许你提取和共享有状态的逻辑</li>
-              <li>Hooks 规则：只在顶层调用它们，绝不在循环或条件中</li>
+              <li>Use <code>useCallback</code> to memoize functions passed to child components</li>
+              <li>Use <code>useMemo</code> for expensive computations</li>
+              <li>Custom Hooks let you extract and share stateful logic</li>
+              <li>Hooks Rules: only call them at the top level, never in loops or conditions</li>
             </ul>
           </div>
         </article>

@@ -1,32 +1,13 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Blog - Latest Technical Articles & Insights',
-  description: 'Stay updated with the latest technical articles, best practices, and deep dives into React, TypeScript, Next.js, AI/ML, and DevOps.',
-  keywords: ['tech blog', 'React articles', 'TypeScript blog', 'Next.js articles', 'AI/ML blog', 'DevOps articles', 'programming blog'],
-  openGraph: {
-    title: 'Blog - Latest Technical Articles & Insights',
-    description: 'Stay updated with the latest technical articles, best practices, and deep dives into React, TypeScript, Next.js, AI/ML, and DevOps.',
-    url: 'https://www.codcompass.com/blog',
-    siteName: 'Codcompass',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Blog - Latest Technical Articles & Insights',
-    description: 'Stay updated with the latest technical articles, best practices, and deep dives into React, TypeScript, Next.js, AI/ML, and DevOps.',
-  },
-};
 
 const blogPosts = [
   {
     id: 1,
     slug: 'getting-started-with-react-hooks',
-    title: 'React Hooks 入门指南',
-    excerpt: '从 useState 到 useEffect，全面掌握 React Hooks 的核心概念和最佳实践。',
+    title: 'Getting Started with React Hooks',
+    excerpt: 'From useState to useEffect, master the core concepts and best practices of React Hooks.',
     category: 'React',
     date: '2026-04-20',
     readTime: '8 min read',
@@ -35,8 +16,8 @@ const blogPosts = [
   {
     id: 2,
     slug: 'typescript-advanced-patterns',
-    title: 'TypeScript 高级模式',
-    excerpt: '探索泛型、条件类型、模板字面量类型等 TypeScript 高级特性。',
+    title: 'TypeScript Advanced Patterns',
+    excerpt: 'Explore generics, conditional types, template literal types, and other advanced TypeScript features.',
     category: 'TypeScript',
     date: '2026-04-18',
     readTime: '10 min read',
@@ -45,8 +26,8 @@ const blogPosts = [
   {
     id: 3,
     slug: 'nextjs-15-new-features',
-    title: 'Next.js 15 新特性解读',
-    excerpt: 'Params 作为 Promise、缓存策略变化、流式渲染等重磅更新详解。',
+    title: 'Next.js 15 New Features Explained',
+    excerpt: 'Params as Promises, caching strategy changes, streaming rendering, and other major updates explained.',
     category: 'Next.js',
     date: '2026-04-15',
     readTime: '12 min read',
@@ -55,8 +36,8 @@ const blogPosts = [
   {
     id: 4,
     slug: 'ai-powered-development',
-    title: 'AI 赋能的软件开发',
-    excerpt: '如何利用 AI 工具提升开发效率，从代码生成到自动化测试。',
+    title: 'AI-Powered Software Development',
+    excerpt: 'How to use AI tools to improve development efficiency, from code generation to automated testing.',
     category: 'AI/ML',
     date: '2026-04-12',
     readTime: '6 min read',
@@ -65,8 +46,8 @@ const blogPosts = [
   {
     id: 5,
     slug: 'docker-kubernetes-guide',
-    title: 'Docker & Kubernetes 实战指南',
-    excerpt: '从容器化应用到微服务架构，完整掌握现代部署方案。',
+    title: 'Docker & Kubernetes Practical Guide',
+    excerpt: 'From containerized applications to microservices architecture, master modern deployment solutions.',
     category: 'DevOps',
     date: '2026-04-10',
     readTime: '15 min read',
@@ -86,10 +67,10 @@ export default function BlogPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-                技术博客
+                Technical Blog
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                最新技术教程、最佳实践和深度解析
+                Latest technical tutorials, best practices, and deep dives
               </p>
             </div>
           </div>
@@ -141,7 +122,7 @@ export default function BlogPage() {
                     href={`/blog/${post.slug}`}
                     className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
                   >
-                    阅读更多 →
+                    Read More →
                   </Link>
                 </div>
               </article>
