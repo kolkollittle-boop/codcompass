@@ -82,7 +82,19 @@ export async function POST(req: NextRequest) {
         .eq('slug', article.slug)
         .single();
 
-      const articleData = {
+      const insertData: any = {
+        id: crypto.randomUUID(),
+        slug: article.slug,
+        titleEn: article.titleEn,
+        contentEn: article.contentEn,
+        excerptEn: article.excerptEn || null,
+        descriptionEn: article.descriptionEn || null,
+        isPremium: article.isPremium ?? true,
+        isPublished: article.isPublished ?? true,
+        publishedAt: article.publishedAt || new Date().toISOString(),
+      };
+
+      const updateData: any = {
         slug: article.slug,
         titleEn: article.titleEn,
         contentEn: article.contentEn,
@@ -99,7 +111,7 @@ export async function POST(req: NextRequest) {
         // Update existing article
         const { data, error } = await supabase
           .from('Article')
-          .update(articleData)
+          .update(updateData)
           .eq('slug', article.slug)
           .select()
           .single();
@@ -114,7 +126,7 @@ export async function POST(req: NextRequest) {
         // Create new article
         const { data, error } = await supabase
           .from('Article')
-          .insert(articleData)
+          .insert(insertData)
           .select()
           .single();
 
@@ -191,8 +203,7 @@ export async function GET(req: NextRequest) {
         isPremium,
         isPublished,
         publishedAt,
-        viewCount,
-        categories:ArticleToCategory(Category(slug, name))
+        viewCount
       `)
       .limit(limit)
       .range(offset, offset + limit - 1)
@@ -212,8 +223,40 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // Fetch categories for each article via the join table
+    const articles = (data || []).map((article: any) => ({
+      id: article.id,
+      slug: article.slug,
+      titleEn: article.titleEn,
+      excerptEn: article.excerptEn,
+      descriptionEn: article.descriptionEn,
+      isPremium: article.isPremium,
+      isPublished: article.isPublished,
+      publishedAt: article.publishedAt,
+      viewCount: article.viewCount,
+      categories: [],
+    }));
+
+    if (articles.length > 0) {
+      const articleIds = articles.map((a: any) => a.id);
+      const { data: joinData } = await supabase
+        .from('_ArticleToCategory')
+        .select('A, B, Category(slug, name)')
+        .in('A', articleIds);
+
+      const categoryMap: Record<string, any[]> = {};
+      joinData?.forEach((row: any) => {
+        if (!categoryMap[row.A]) categoryMap[row.A] = [];
+        categoryMap[row.A].push(row.Category);
+      });
+
+      articles.forEach((article: any) => {
+        article.categories = categoryMap[article.id] || [];
+      });
+    }
+
     return NextResponse.json({ 
-      articles: data || [],
+      articles,
       total: count || 0,
       limit,
       offset
