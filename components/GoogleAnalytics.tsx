@@ -1,23 +1,24 @@
-'use client';
-
-import { useEffect } from 'react';
+import Script from 'next/script';
 
 export default function GoogleAnalytics({ gaId }: { gaId: string }) {
-  useEffect(() => {
-    // Load gtag.js
-    const script = document.createElement('script');
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-    script.async = true;
-    document.head.appendChild(script);
-
-    // Initialize gtag
-    window.dataLayer = window.dataLayer || [];
-    function gtag(...args: any[]) {
-      (window.dataLayer as any[]).push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', gaId);
-  }, [gaId]);
-
-  return null;
+  return (
+    <>
+      <Script
+        strategy="afterInteractive"
+        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+      />
+      <Script
+        id="google-analytics"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${gaId}');
+          `,
+        }}
+      />
+    </>
+  );
 }
