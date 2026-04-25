@@ -15,7 +15,7 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 集成邮件服务
+    // TODO: Integrate email service
     setSubmitted(true);
   };
 
