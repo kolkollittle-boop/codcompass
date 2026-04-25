@@ -93,7 +93,7 @@ export default async function KbIndexPage() {
         isPremium: a.isPremium,
         isTrending: a.viewCount > 100,
       }))
-    : staticArticles;
+    : [];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -114,54 +114,62 @@ export default async function KbIndexPage() {
           </div>
 
           <div className="space-y-6">
-            {articles.map((article: any) => (
-              <article
-                key={article.id}
-                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all group"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                        {article.category}
-                      </span>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${difficultyColor(article.difficulty)}`}>
-                        {article.difficulty}
-                      </span>
-                      {article.isPremium && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                          🔒 Premium
+            {articles.length > 0 ? (
+              articles.map((article: any) => (
+                <article
+                  key={article.id}
+                  className="bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all group"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                          {article.category}
                         </span>
-                      )}
-                      {article.isTrending && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                          🔥 Trending
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${difficultyColor(article.difficulty)}`}>
+                          {article.difficulty}
                         </span>
-                      )}
+                        {article.isPremium && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                            🔒 Premium
+                          </span>
+                        )}
+                        {article.isTrending && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            🔥 Trending
+                          </span>
+                        )}
+                      </div>
+                      <h2 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                        <Link href={`/kb/${article.slug}`}>
+                          {article.titleEn}
+                        </Link>
+                      </h2>
+                      <p className="mt-2 text-gray-600">{article.excerptEn}</p>
+                      <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
+                        <time>{article.date}</time>
+                        <span>·</span>
+                        <span>{article.readTime} read</span>
+                      </div>
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
-                      <Link href={`/kb/${article.slug}`}>
-                        {article.titleEn}
-                      </Link>
-                    </h2>
-                    <p className="mt-2 text-gray-600">{article.excerptEn}</p>
-                    <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
-                      <time>{article.date}</time>
-                      <span>·</span>
-                      <span>{article.readTime} read</span>
-                    </div>
+                    <Link
+                      href={`/kb/${article.slug}`}
+                      className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
                   </div>
-                  <Link
-                    href={`/kb/${article.slug}`}
-                    className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              </article>
-            ))}
+                </article>
+              ))
+            ) : (
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">📚</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">No articles yet</h2>
+                <p className="text-gray-600">Check back soon for new content!</p>
+              </div>
+            )}
           </div>
 
           {articles.length === 0 && (
