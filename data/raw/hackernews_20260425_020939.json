@@ -1,0 +1,406 @@
+{
+  "source": "hackernews",
+  "count": 50,
+  "items": [
+    {
+      "title": "Sabotaging projects by overthinking, scope creep, and structural diffing",
+      "url": "https://kevinlynagh.com/newsletter/2026_04_overthinking/",
+      "score": 210,
+      "by": "alcazar",
+      "time": 1777040932,
+      "type": "hackernews"
+    },
+    {
+      "title": "SDL Now Supports DOS",
+      "url": "https://github.com/libsdl-org/SDL/pull/15377",
+      "score": 75,
+      "by": "Jayschwa",
+      "time": 1777047615,
+      "type": "hackernews"
+    },
+    {
+      "title": "I Cancelled Claude: Token Issues, Declining Quality, and Poor Support",
+      "url": "https://nickyreinert.de/en/2026/2026-04-24-claude-critics/",
+      "score": 337,
+      "by": "y42",
+      "time": 1777046359,
+      "type": "hackernews"
+    },
+    {
+      "title": "DeepSeek v4",
+      "url": "https://api-docs.deepseek.com/",
+      "score": 1599,
+      "by": "impact_sy",
+      "time": 1776999681,
+      "type": "hackernews"
+    },
+    {
+      "title": "I'm done making desktop applications (2009)",
+      "url": "https://www.kalzumeus.com/2009/09/05/desktop-aps-versus-web-apps/",
+      "score": 83,
+      "by": "claxo",
+      "time": 1777045443,
+      "type": "hackernews"
+    },
+    {
+      "title": "Microsoft OpenClaw",
+      "url": "https://github.com/microsoft/openclaw",
+      "score": 6,
+      "by": "qainsights",
+      "time": 1777052908,
+      "type": "hackernews"
+    },
+    {
+      "title": "Norway Set to Become Latest Country to Ban Social Media for Under 16s",
+      "url": "https://www.bloomberg.com/news/articles/2026-04-24/norway-wants-kids-to-be-kids-with-social-media-ban-for-under-16s",
+      "score": 267,
+      "by": "1vuio0pswjnm7",
+      "time": 1777041910,
+      "type": "hackernews"
+    },
+    {
+      "title": "Different Language Models Learn Similar Number Representations",
+      "url": "https://arxiv.org/abs/2604.20817",
+      "score": 57,
+      "by": "Anon84",
+      "time": 1777041263,
+      "type": "hackernews"
+    },
+    {
+      "title": "How to be anti-social \u2013 a guide to incoherent and isolating social experiences",
+      "url": "https://nate.leaflet.pub/3mk4xkaxobc2p",
+      "score": 186,
+      "by": "calcifer",
+      "time": 1777027694,
+      "type": "hackernews"
+    },
+    {
+      "title": "Spinel: Ruby AOT Native Compiler",
+      "url": "https://github.com/matz/spinel",
+      "score": 247,
+      "by": "dluan",
+      "time": 1777019327,
+      "type": "hackernews"
+    },
+    {
+      "title": "Show HN: Browser Harness \u2013 Gives LLM freedom to complete any browser task",
+      "url": "https://github.com/browser-use/browser-harness",
+      "score": 31,
+      "by": "gregpr07",
+      "time": 1777041098,
+      "type": "hackernews"
+    },
+    {
+      "title": "Physicists revive 1990s laser concept to propose a next-generation atomic clock",
+      "url": "https://phys.org/news/2026-04-physicists-revive-1990s-laser-concept.html",
+      "score": 23,
+      "by": "wglb",
+      "time": 1776992225,
+      "type": "hackernews"
+    },
+    {
+      "title": "US special forces soldier arrested after allegedly winning $400k on Maduro raid",
+      "url": "https://www.cnn.com/2026/04/23/politics/us-special-forces-soldier-arrested-maduro-raid-trade",
+      "score": 576,
+      "by": "nkrisc",
+      "time": 1776981375,
+      "type": "hackernews"
+    },
+    {
+      "title": "CSS as a Query Language",
+      "url": "https://evdc.me/blog/css-query",
+      "score": 3,
+      "by": "evnc",
+      "time": 1777052377,
+      "type": "hackernews"
+    },
+    {
+      "title": "Mounting tar archives as a filesystem in WebAssembly",
+      "url": "https://jeroen.github.io/notes/webassembly-tar/",
+      "score": 91,
+      "by": "datajeroen",
+      "time": 1777025606,
+      "type": "hackernews"
+    },
+    {
+      "title": "The operating cost of adult and gambling startups",
+      "url": "https://orchidfiles.com/stigma-is-a-tax-on-every-operational-decision/",
+      "score": 64,
+      "by": "theorchid",
+      "time": 1777033638,
+      "type": "hackernews"
+    },
+    {
+      "title": "Hear your agent suffer through your code",
+      "url": "https://github.com/AndrewVos/endless-toil",
+      "score": 140,
+      "by": "AndrewVos",
+      "time": 1777028325,
+      "type": "hackernews"
+    },
+    {
+      "title": "An update on recent Claude Code quality reports",
+      "url": "https://www.anthropic.com/engineering/april-23-postmortem",
+      "score": 876,
+      "by": "mfiguiere",
+      "time": 1776966518,
+      "type": "hackernews"
+    },
+    {
+      "title": "Machine Learning Reveals Unknown Transient Phenomena in Historic Images",
+      "url": "https://arxiv.org/abs/2604.18799",
+      "score": 27,
+      "by": "solarist",
+      "time": 1777039303,
+      "type": "hackernews"
+    },
+    {
+      "title": "Bitwarden CLI compromised in ongoing Checkmarx supply chain campaign",
+      "url": "https://socket.dev/blog/bitwarden-cli-compromised",
+      "score": 831,
+      "by": "tosh",
+      "time": 1776953828,
+      "type": "hackernews"
+    },
+    {
+      "title": "Redesigning the Recurse Center application to inspire curious programmers",
+      "url": "https://www.recurse.com/blog/192-redesigning-the-recurse-center-application",
+      "score": 5,
+      "by": "nicholasjbs",
+      "time": 1777049110,
+      "type": "hackernews"
+    },
+    {
+      "title": "8087 Emulation on 8086 Systems",
+      "url": "https://www.os2museum.com/wp/learn-something-old-every-day-part-xx-8087-emulation-on-8086-systems/",
+      "score": 49,
+      "by": "ingve",
+      "time": 1777030034,
+      "type": "hackernews"
+    },
+    {
+      "title": "GPT-5.5",
+      "url": "https://openai.com/index/introducing-gpt-5-5/",
+      "score": 1495,
+      "by": "rd",
+      "time": 1776967299,
+      "type": "hackernews"
+    },
+    {
+      "title": "Why I Write (1946)",
+      "url": "https://www.orwellfoundation.com/the-orwell-foundation/orwell/essays-and-other-works/why-i-write/",
+      "score": 244,
+      "by": "RyanShook",
+      "time": 1776997583,
+      "type": "hackernews"
+    },
+    {
+      "title": "Tesla (TSLA) discloses $2B AI hardware company acquisition buried",
+      "url": "https://electrek.co/2026/04/23/tesla-tsla-quietly-discloses-2-billion-ai-hardware-acquisition-10q/",
+      "score": 22,
+      "by": "Bender",
+      "time": 1777049506,
+      "type": "hackernews"
+    },
+    {
+      "title": "Show HN: Gova \u2013 The declarative GUI framework for Go",
+      "url": "https://github.com/NV404/gova",
+      "score": 101,
+      "by": "aliezsid",
+      "time": 1777011407,
+      "type": "hackernews"
+    },
+    {
+      "title": "Show HN: Atomic \u2013 Local-first, AI-augmented personal knowledge base",
+      "url": "https://atomicapp.ai/",
+      "score": 37,
+      "by": "kenforthewin",
+      "time": 1777032450,
+      "type": "hackernews"
+    },
+    {
+      "title": "Composition shouldn't be this hard",
+      "url": "https://www.cambra.dev/blog/announcement/",
+      "score": 98,
+      "by": "larelli",
+      "time": 1777015351,
+      "type": "hackernews"
+    },
+    {
+      "title": "MeshCore development team splits over trademark dispute and AI-generated code",
+      "url": "https://blog.meshcore.io/2026/04/23/the-split",
+      "score": 265,
+      "by": "wielebny",
+      "time": 1776963313,
+      "type": "hackernews"
+    },
+    {
+      "title": "Meta tells staff it will cut 10% of jobs",
+      "url": "https://www.bloomberg.com/news/articles/2026-04-23/meta-tells-staff-it-will-cut-10-of-jobs-in-push-for-efficiency",
+      "score": 765,
+      "by": "Vaslo",
+      "time": 1776970532,
+      "type": "hackernews"
+    },
+    {
+      "title": "Aspartame is not that bad? (2022)",
+      "url": "https://dynomight.net/aspartame/",
+      "score": 100,
+      "by": "pHequals7",
+      "time": 1777031919,
+      "type": "hackernews"
+    },
+    {
+      "title": "Using the internet like it's 1999",
+      "url": "https://joshblais.com/blog/using-the-internet-like-its-1999/",
+      "score": 218,
+      "by": "joshuablais",
+      "time": 1776975269,
+      "type": "hackernews"
+    },
+    {
+      "title": "Why Not Venus?",
+      "url": "https://mceglowski.substack.com/p/why-not-venus",
+      "score": 103,
+      "by": "zdw",
+      "time": 1777006870,
+      "type": "hackernews"
+    },
+    {
+      "title": "South Korea police arrest man for posting AI photo of runaway wolf",
+      "url": "https://www.bbc.com/news/articles/c4gx1n0dl9no",
+      "score": 207,
+      "by": "giuliomagnifico",
+      "time": 1777022277,
+      "type": "hackernews"
+    },
+    {
+      "title": "Refuse to let your doctor record you",
+      "url": "https://buttondown.com/maiht3k/archive/why-you-should-refuse-to-let-your-doctor-record/",
+      "score": 78,
+      "by": "speckx",
+      "time": 1777045696,
+      "type": "hackernews"
+    },
+    {
+      "title": "UK Biobank health data keeps ending up on GitHub",
+      "url": "https://biobank.rocher.lc",
+      "score": 185,
+      "by": "Cynddl",
+      "time": 1776952683,
+      "type": "hackernews"
+    },
+    {
+      "title": "TorchTPU: Running PyTorch Natively on TPUs at Google Scale",
+      "url": "https://developers.googleblog.com/torchtpu-running-pytorch-natively-on-tpus-at-google-scale/",
+      "score": 183,
+      "by": "mji",
+      "time": 1776977607,
+      "type": "hackernews"
+    },
+    {
+      "title": "Familiarity is the enemy: On why Enterprise systems have failed for 60 years",
+      "url": "https://felixbarbalet.com/familiarity-is-the-enemy/",
+      "score": 90,
+      "by": "adityaathalye",
+      "time": 1777006134,
+      "type": "hackernews"
+    },
+    {
+      "title": "Tariffs Raised Consumers' Prices, but the Refunds Go Only to Businesses",
+      "url": "https://www.nytimes.com/2026/04/24/us/politics/companies-consumers-tariff-refunds.html",
+      "score": 8,
+      "by": "duxup",
+      "time": 1777050684,
+      "type": "hackernews"
+    },
+    {
+      "title": "Show HN: Tolaria \u2013 Open-source macOS app to manage Markdown knowledge bases",
+      "url": "https://github.com/refactoringhq/tolaria",
+      "score": 267,
+      "by": "lucaronin",
+      "time": 1776981719,
+      "type": "hackernews"
+    },
+    {
+      "title": "Alberta startup sells no-tech tractors for half price",
+      "url": "https://wheelfront.com/this-alberta-startup-sells-no-tech-tractors-for-half-price/",
+      "score": 2250,
+      "by": "Kaibeezy",
+      "time": 1776875365,
+      "type": "hackernews"
+    },
+    {
+      "title": "Habitual coffee intake shapes the microbiome, modifies physiology and cognition",
+      "url": "https://www.nature.com/articles/s41467-026-71264-8",
+      "score": 237,
+      "by": "scubakid",
+      "time": 1777003482,
+      "type": "hackernews"
+    },
+    {
+      "title": "Show HN: leaf \u2013 a terminal Markdown previewer with a GUI-like experience",
+      "url": "https://github.com/RivoLink/leaf",
+      "score": 25,
+      "by": "RivoLink",
+      "time": 1777028066,
+      "type": "hackernews"
+    },
+    {
+      "title": "Design.md: A format spec for describing a visual identity to coding agents",
+      "url": "https://github.com/google-labs-code/design.md",
+      "score": 26,
+      "by": "rbanffy",
+      "time": 1777017632,
+      "type": "hackernews"
+    },
+    {
+      "title": "My phone replaced a brass plug",
+      "url": "https://drobinin.com/posts/my-phone-replaced-a-brass-plug/",
+      "score": 172,
+      "by": "valzevul",
+      "time": 1776961627,
+      "type": "hackernews"
+    },
+    {
+      "title": "Researchers Simulated a Delusional User to Test Chatbot Safety",
+      "url": "https://www.404media.co/delusion-using-chatgpt-gemini-claude-grok-safety-ai-psychosis-study/",
+      "score": 15,
+      "by": "Brajeshwar",
+      "time": 1777042534,
+      "type": "hackernews"
+    },
+    {
+      "title": "Affirm Retooled for Agentic Software Development in One Week",
+      "url": "https://medium.com/@affirmtechnology/how-affirm-retooled-its-engineering-organization-for-agentic-software-development-in-one-week-1fd35268fde6",
+      "score": 27,
+      "by": "brd529",
+      "time": 1777038615,
+      "type": "hackernews"
+    },
+    {
+      "title": "Show HN: Honker \u2013 Postgres NOTIFY/LISTEN Semantics for SQLite",
+      "url": "https://github.com/russellromney/honker",
+      "score": 287,
+      "by": "russellthehippo",
+      "time": 1776945191,
+      "type": "hackernews"
+    },
+    {
+      "title": "Show HN: Agent Vault \u2013 Open-source credential proxy and vault for agents",
+      "url": "https://github.com/Infisical/agent-vault",
+      "score": 132,
+      "by": "dangtony98",
+      "time": 1776875128,
+      "type": "hackernews"
+    },
+    {
+      "title": "Astronomers find the edge of the Milky Way",
+      "url": "https://skyandtelescope.org/astronomy-news/astronomers-find-the-edge-of-the-milky-way/",
+      "score": 146,
+      "by": "bookofjoe",
+      "time": 1776967889,
+      "type": "hackernews"
+    }
+  ]
+}

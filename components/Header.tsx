@@ -28,6 +28,16 @@ export default function Header() {
                 Knowledge Base
               </Link>
               <Link
+                href="/blog"
+                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                  pathname?.startsWith('/blog')
+                    ? 'border-primary-500 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                Blog
+              </Link>
+              <Link
                 href="/pricing"
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                   pathname === '/pricing'
@@ -36,6 +46,16 @@ export default function Header() {
                 }`}
               >
                 Pricing
+              </Link>
+              <Link
+                href="/about"
+                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                  pathname === '/about'
+                    ? 'border-primary-500 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                About
               </Link>
             </nav>
           </div>

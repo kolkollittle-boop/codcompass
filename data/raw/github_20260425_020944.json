@@ -1,0 +1,166 @@
+{
+  "source": "github",
+  "count": 20,
+  "items": [
+    {
+      "name": "facebook/react",
+      "url": "https://github.com/facebook/react",
+      "description": "The library for web and native user interfaces.",
+      "stars": 244651,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "trekhleb/javascript-algorithms",
+      "url": "https://github.com/trekhleb/javascript-algorithms",
+      "description": "\ud83d\udcdd Algorithms and data structures implemented in JavaScript with explanations and links to further readings",
+      "stars": 195875,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "affaan-m/everything-claude-code",
+      "url": "https://github.com/affaan-m/everything-claude-code",
+      "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "stars": 166102,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "airbnb/javascript",
+      "url": "https://github.com/airbnb/javascript",
+      "description": "JavaScript Style Guide",
+      "stars": 148129,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "vercel/next.js",
+      "url": "https://github.com/vercel/next.js",
+      "description": "The React Framework",
+      "stars": 139140,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "Chalarangelo/30-seconds-of-code",
+      "url": "https://github.com/Chalarangelo/30-seconds-of-code",
+      "description": "Coding articles to level up your development skills",
+      "stars": 127565,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "axios/axios",
+      "url": "https://github.com/axios/axios",
+      "description": "Promise based HTTP client for the browser and node.js",
+      "stars": 109029,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "facebook/create-react-app",
+      "url": "https://github.com/facebook/create-react-app",
+      "description": "Set up a modern web app by running one command.",
+      "stars": 103472,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "mui/material-ui",
+      "url": "https://github.com/mui/material-ui",
+      "description": "Material UI: Comprehensive React component library that implements Google's Material Design. Free forever.",
+      "stars": 98225,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "microsoft/Web-Dev-For-Beginners",
+      "url": "https://github.com/microsoft/Web-Dev-For-Beginners",
+      "description": "24 Lessons, 12 Weeks, Get Started as a Web Developer",
+      "stars": 95662,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "ryanmcdermott/clean-code-javascript",
+      "url": "https://github.com/ryanmcdermott/clean-code-javascript",
+      "description": "Clean Code concepts adapted for JavaScript",
+      "stars": 94303,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "sveltejs/svelte",
+      "url": "https://github.com/sveltejs/svelte",
+      "description": "web development for the rest of us",
+      "stars": 86413,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "anuraghazra/github-readme-stats",
+      "url": "https://github.com/anuraghazra/github-readme-stats",
+      "description": ":zap: Dynamically generated stats for your github readmes",
+      "stars": 79150,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "typicode/json-server",
+      "url": "https://github.com/typicode/json-server",
+      "description": "Get a full fake REST API with zero coding in less than 30 seconds (seriously)",
+      "stars": 75562,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "hakimel/reveal.js",
+      "url": "https://github.com/hakimel/reveal.js",
+      "description": "The HTML Presentation Framework",
+      "stars": 71064,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "juliangarnier/anime",
+      "url": "https://github.com/juliangarnier/anime",
+      "description": "JavaScript animation engine",
+      "stars": 67355,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "leonardomso/33-js-concepts",
+      "url": "https://github.com/leonardomso/33-js-concepts",
+      "description": "\ud83d\udcdc 33 JavaScript concepts every developer should know.",
+      "stars": 66341,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "gorhill/uBlock",
+      "url": "https://github.com/gorhill/uBlock",
+      "description": "uBlock Origin - An efficient blocker for Chromium and Firefox. Fast and lean.",
+      "stars": 62968,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "lodash/lodash",
+      "url": "https://github.com/lodash/lodash",
+      "description": "A modern JavaScript utility library delivering modularity, performance, & extras.",
+      "stars": 61256,
+      "language": "JavaScript",
+      "type": "github"
+    },
+    {
+      "name": "atom/atom",
+      "url": "https://github.com/atom/atom",
+      "description": ":atom: The hackable text editor",
+      "stars": 60829,
+      "language": "JavaScript",
+      "type": "github"
+    }
+  ]
+}

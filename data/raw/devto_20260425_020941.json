@@ -1,0 +1,385 @@
+{
+  "source": "devto",
+  "count": 30,
+  "items": [
+    {
+      "title": "Tune In and Join the Google Cloud NEXT '26 Writing Challenge: $1,000 in Prizes!",
+      "url": "https://dev.to/devteam/tune-in-and-join-the-google-cloud-next-26-writing-challenge-1000-in-prizes-21bd",
+      "author": "Jess Lee",
+      "tags": [
+        "devchallenge",
+        "googlecloud",
+        "cloudnextchallenge"
+      ],
+      "reactions": 129,
+      "type": "devto"
+    },
+    {
+      "title": "Top 7 Featured DEV Posts of the Week",
+      "url": "https://dev.to/devteam/top-7-featured-dev-posts-of-the-week-555a",
+      "author": "Jess Lee",
+      "tags": [
+        "top7",
+        "discuss"
+      ],
+      "reactions": 46,
+      "type": "devto"
+    },
+    {
+      "title": "If AI Existed in 2011, Would We Still Have the Modern Web?",
+      "url": "https://dev.to/sylwia-lask/if-ai-existed-in-2011-would-we-still-have-the-modern-web-408g",
+      "author": "Sylwia Laskowska",
+      "tags": [
+        "ai",
+        "webdev",
+        "discuss",
+        "programming"
+      ],
+      "reactions": 132,
+      "type": "devto"
+    },
+    {
+      "title": "Defluffer - reduce token usage \ud83d\udcc9 by 45% using this one simple trick! [Earthday challenge]",
+      "url": "https://dev.to/grahamthedev/defluffer-reduce-token-usage-by-45-26jj",
+      "author": "GrahamTheDev",
+      "tags": [
+        "devchallenge",
+        "weekendchallenge",
+        "javascript",
+        "ai"
+      ],
+      "reactions": 74,
+      "type": "devto"
+    },
+    {
+      "title": "I Spent $1,500 on an ergonomic chair just to sit in it like a human pretzel",
+      "url": "https://dev.to/the_nortern_dev/i-spent-1500-on-an-ergonomic-chair-just-to-sit-in-it-like-a-human-pretzel-38jf",
+      "author": "NorthernDev",
+      "tags": [
+        "watercooler",
+        "productivity",
+        "wellness",
+        "discuss"
+      ],
+      "reactions": 89,
+      "type": "devto"
+    },
+    {
+      "title": "How We Built Our Own DNS Server",
+      "url": "https://dev.to/code42cate/how-we-built-our-own-dns-server-4d3k",
+      "author": "Jonas Scholz",
+      "tags": [
+        "cloud",
+        "devops",
+        "docker",
+        "webdev"
+      ],
+      "reactions": 68,
+      "type": "devto"
+    },
+    {
+      "title": "It Might Already Be Too Late to Fix This",
+      "url": "https://dev.to/konark_13/it-might-already-be-too-late-to-fix-this-1a4m",
+      "author": "Konark Sharma",
+      "tags": [
+        "devchallenge",
+        "weekendchallenge",
+        "ai",
+        "webdev"
+      ],
+      "reactions": 50,
+      "type": "devto"
+    },
+    {
+      "title": "I created my first game and decided to leave GameDev",
+      "url": "https://dev.to/embernoglow/i-created-my-first-game-and-decided-to-leave-gamedev-o9n",
+      "author": "EmberNoGlow",
+      "tags": [
+        "gamedev",
+        "godot",
+        "discuss",
+        "productivity"
+      ],
+      "reactions": 29,
+      "type": "devto"
+    },
+    {
+      "title": "Embarrassment is cheap. Token spend isn't.",
+      "url": "https://dev.to/jon_at_backboardio/embarrassment-is-cheap-token-spend-isnt-40b3",
+      "author": "Jonathan Murray",
+      "tags": [
+        "ai",
+        "founder",
+        "programming",
+        "discuss"
+      ],
+      "reactions": 26,
+      "type": "devto"
+    },
+    {
+      "title": "So, what am I doing after 22 years in tech?",
+      "url": "https://dev.to/phalkmin/so-what-am-i-doing-after-22-years-in-tech-7ic",
+      "author": "Paulo Henrique",
+      "tags": [
+        "discuss",
+        "career",
+        "watercooler",
+        "help"
+      ],
+      "reactions": 34,
+      "type": "devto"
+    },
+    {
+      "title": "What was your win this week!?",
+      "url": "https://dev.to/devteam/what-was-your-win-this-week-8ep",
+      "author": "Jess Lee",
+      "tags": [
+        "discuss",
+        "weeklyretro"
+      ],
+      "reactions": 17,
+      "type": "devto"
+    },
+    {
+      "title": "\ud83e\uddb8Let Superheroes Cheer You Up (AI Avatar v6: Chrome Extension + VS Code Extension)",
+      "url": "https://dev.to/webdeveloperhyper/let-superheroes-cheer-you-up-ai-avatar-v6-chrome-extension-vs-code-extension-2ak7",
+      "author": "Web Developer Hyper",
+      "tags": [
+        "ai",
+        "webdev",
+        "javascript",
+        "discuss"
+      ],
+      "reactions": 62,
+      "type": "devto"
+    },
+    {
+      "title": "EasyPollVote [Dev Log #2]",
+      "url": "https://dev.to/francistrdev/easypollvote-dev-log-2-4g80",
+      "author": "FrancisTR\u1d05\u1d07\u1d20 (\u3063\u25d4\u25e1\u25d4)\u3063",
+      "tags": [
+        "discuss",
+        "easypvdevlog",
+        "nextjs",
+        "typescript"
+      ],
+      "reactions": 44,
+      "type": "devto"
+    },
+    {
+      "title": "What To Do If Your Project Was Affected By The Vercel Breach",
+      "url": "https://dev.to/dumebii/vercel-got-breached-heres-exactly-what-to-do-if-you-use-it-2026-guide-2k76",
+      "author": "Dumebi Okolo",
+      "tags": [
+        "webdev",
+        "security",
+        "tutorial",
+        "beginners"
+      ],
+      "reactions": 40,
+      "type": "devto"
+    },
+    {
+      "title": "Unpopular Opinion: Do not use OpenClaw...not yet.",
+      "url": "https://dev.to/francistrdev/unpopular-opinion-do-not-use-openclawnot-yet-5foe",
+      "author": "FrancisTR\u1d05\u1d07\u1d20 (\u3063\u25d4\u25e1\u25d4)\u3063",
+      "tags": [
+        "devchallenge",
+        "openclawchallenge",
+        "discuss",
+        "ai"
+      ],
+      "reactions": 62,
+      "type": "devto"
+    },
+    {
+      "title": "Unearthed\u2014The Coal Mine Behind Every Light Switch",
+      "url": "https://dev.to/anchildress1/unearthed-the-coal-mine-behind-every-light-switch-234m",
+      "author": "Ashley Childress",
+      "tags": [
+        "devchallenge",
+        "weekendchallenge"
+      ],
+      "reactions": 32,
+      "type": "devto"
+    },
+    {
+      "title": "Build your own blog post view counter on AWS Free Tier",
+      "url": "https://dev.to/aws/build-your-own-blog-post-view-counter-on-aws-free-tier-306f",
+      "author": "Esin Saribudak",
+      "tags": [
+        "beginners",
+        "lambda",
+        "dynamodb",
+        "tutorial"
+      ],
+      "reactions": 55,
+      "type": "devto"
+    },
+    {
+      "title": "Atomic Scaffolding: How scbake Prevents Configuration Mishaps",
+      "url": "https://dev.to/emin-acikgoz/atomic-scaffolding-how-scbake-prevents-configuration-mishaps-2gmo",
+      "author": "Emin Salih A\u00e7\u0131kg\u00f6z",
+      "tags": [
+        "go",
+        "devops",
+        "opensource",
+        "tools"
+      ],
+      "reactions": 42,
+      "type": "devto"
+    },
+    {
+      "title": "Why Do I Keep Killing My Side Projects?",
+      "url": "https://dev.to/eayurt/why-do-i-keep-killing-my-side-projects-31eh",
+      "author": "Ender Ahmet Yurt",
+      "tags": [
+        "sideprojects",
+        "career",
+        "productivity"
+      ],
+      "reactions": 19,
+      "type": "devto"
+    },
+    {
+      "title": "Anthropic's Most Dangerous Model Just Got Accessed by People Who Weren't Supposed to Have It",
+      "url": "https://dev.to/om_shree_0709/anthropics-most-dangerous-model-just-got-accessed-by-people-who-werent-supposed-to-have-it-14dn",
+      "author": "Om Shree",
+      "tags": [
+        "ai",
+        "security",
+        "discuss",
+        "claude"
+      ],
+      "reactions": 57,
+      "type": "devto"
+    },
+    {
+      "title": "Eco-Web Auditor",
+      "url": "https://dev.to/alvaromontoro/eco-web-auditor-4lb0",
+      "author": "Alvaro Montoro",
+      "tags": [
+        "devchallenge",
+        "weekendchallenge",
+        "webdev",
+        "gemini"
+      ],
+      "reactions": 14,
+      "type": "devto"
+    },
+    {
+      "title": "Congrats to the April Fools Challenge Winners!!",
+      "url": "https://dev.to/devteam/congrats-to-the-april-fools-challenge-winners-l8f",
+      "author": "Jess Lee",
+      "tags": [
+        "devchallenge",
+        "418challenge",
+        "jokes"
+      ],
+      "reactions": 39,
+      "type": "devto"
+    },
+    {
+      "title": "I Had No Weekend Plans\u2026 So I Let Earth Tell Its Story \ud83c\udf0d",
+      "url": "https://dev.to/hadil/i-had-no-weekend-plans-so-i-let-earth-tell-its-story-1no8",
+      "author": "Hadil Ben Abdallah",
+      "tags": [
+        "devchallenge",
+        "weekendchallenge",
+        "webdev",
+        "frontend"
+      ],
+      "reactions": 107,
+      "type": "devto"
+    },
+    {
+      "title": "What are your goals for the week? #175",
+      "url": "https://dev.to/jarvisscript/what-are-your-goals-for-the-week-175-324a",
+      "author": "Chris Jarvis",
+      "tags": [
+        "discuss",
+        "motivation"
+      ],
+      "reactions": 20,
+      "type": "devto"
+    },
+    {
+      "title": "Built a 5k usd MRR app with AI but still needed a developer",
+      "url": "https://dev.to/chocoscoding/built-a-5k-usd-mrr-app-with-ai-but-still-needed-a-developer-2k8p",
+      "author": "Chocoscoding - Oyeti Timileyin",
+      "tags": [
+        "ai",
+        "career",
+        "discuss",
+        "saas"
+      ],
+      "reactions": 34,
+      "type": "devto"
+    },
+    {
+      "title": "AI made devs feel 20% faster but measured 19% slower. Nobody's ready for that conversation.",
+      "url": "https://dev.to/adioof/ai-made-devs-feel-20-faster-but-measured-19-slower-nobodys-ready-for-that-conversation-1ki8",
+      "author": "Aditya Agarwal",
+      "tags": [
+        "discuss",
+        "ai",
+        "productivity",
+        "webdev"
+      ],
+      "reactions": 28,
+      "type": "devto"
+    },
+    {
+      "title": "I built my own event bus for a sustainability app \u2014 here's what I learned about agent automation using OpenClaw",
+      "url": "https://dev.to/ujja/i-built-my-own-event-bus-for-a-sustainability-app-heres-what-i-learned-about-agent-automation-2cfl",
+      "author": "ujja",
+      "tags": [
+        "devchallenge",
+        "openclawchallenge",
+        "ai",
+        "eventdriven"
+      ],
+      "reactions": 35,
+      "type": "devto"
+    },
+    {
+      "title": "Why I spent years trying to make CSS states predictable",
+      "url": "https://dev.to/tenphi/why-i-spent-years-trying-to-make-css-states-predictable-a9c",
+      "author": "Andrey Yamanov",
+      "tags": [
+        "css",
+        "webdev",
+        "frontend",
+        "designsystem"
+      ],
+      "reactions": 20,
+      "type": "devto"
+    },
+    {
+      "title": "I Paid $20 for Kiro Pro+. What Followed Is the Textbook Definition of a Scam.",
+      "url": "https://dev.to/idevusefulstuff/i-paid-20-for-kiro-pro-what-followed-is-the-textbook-definition-of-a-scam-1h2",
+      "author": "idevusefulstuff",
+      "tags": [
+        "aws",
+        "kiro",
+        "discuss",
+        "productivity"
+      ],
+      "reactions": 7,
+      "type": "devto"
+    },
+    {
+      "title": "learn these 12 git commands and forget",
+      "url": "https://dev.to/codewithshahan/mastering-git-github-12-most-useful-git-commands-3l70",
+      "author": "Programming with Shahan",
+      "tags": [
+        "webdev",
+        "beginners",
+        "git",
+        "programming"
+      ],
+      "reactions": 22,
+      "type": "devto"
+    }
+  ]
+}

@@ -20,12 +20,19 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/blog" className="text-base text-gray-500 hover:text-gray-900">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <Link href="/pricing" className="text-base text-gray-500 hover:text-gray-900">
                   Pricing
                 </Link>
               </li>
               <li>
-                <span className="text-base text-gray-400">Features</span>
+                <Link href="/help" className="text-base text-gray-500 hover:text-gray-900">
+                  Help Center
+                </Link>
               </li>
             </ul>
           </div>
@@ -33,13 +40,19 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Company</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <span className="text-base text-gray-400">About</span>
+                <Link href="/about" className="text-base text-gray-500 hover:text-gray-900">
+                  About
+                </Link>
               </li>
               <li>
-                <span className="text-base text-gray-400">Blog</span>
+                <Link href="/contact" className="text-base text-gray-500 hover:text-gray-900">
+                  Contact
+                </Link>
               </li>
               <li>
-                <span className="text-base text-gray-400">Contact</span>
+                <Link href="/status" className="text-base text-gray-500 hover:text-gray-900">
+                  Status
+                </Link>
               </li>
             </ul>
           </div>
@@ -47,13 +60,14 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Legal</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <span className="text-base text-gray-400">Privacy Policy</span>
+                <Link href="/privacy" className="text-base text-gray-500 hover:text-gray-900">
+                  Privacy Policy
+                </Link>
               </li>
               <li>
-                <span className="text-base text-gray-400">Terms of Service</span>
-              </li>
-              <li>
-                <span className="text-base text-gray-400">Cookie Policy</span>
+                <Link href="/terms" className="text-base text-gray-500 hover:text-gray-900">
+                  Terms of Service
+                </Link>
               </li>
             </ul>
           </div>

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Paywall from '@/components/Paywall';
 import { getArticleBySlug, incrementViewCount } from '@/lib/supabase';
+import { sanitizeForRender } from '@/lib/sanitize';
 
 interface Article {
   id: number;
@@ -297,7 +298,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg
               prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:underline
               prose-li:text-gray-700 prose-li:my-1"
-            dangerouslySetInnerHTML={{ __html: article.freeContent }}
+            dangerouslySetInnerHTML={sanitizeForRender(article.freeContent)}
           />
 
           {/* Premium Content with Paywall */}
@@ -313,7 +314,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     className="prose prose-lg max-w-none
                       prose-headings:font-bold prose-p:text-gray-700
                       prose-pre:bg-gray-900 prose-pre:text-gray-100"
-                    dangerouslySetInnerHTML={{ __html: article.premiumContent }}
+                    dangerouslySetInnerHTML={sanitizeForRender(article.premiumContent)}
                   />
                 </div>
 
@@ -355,7 +356,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
                 prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg
                 prose-a:text-indigo-600 prose-a:no-underline"
-              dangerouslySetInnerHTML={{ __html: article.premiumContent }}
+              dangerouslySetInnerHTML={sanitizeForRender(article.premiumContent)}
             />
           )}
 
