@@ -1,0 +1,228 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://ekunyyscyqhasolbbohw.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseServiceKey) {
+  console.error('❌ SUPABASE_SERVICE_ROLE_KEY not configured');
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey || '');
+
+/**
+ * POST /api/articles
+ * Create or update articles
+ * 
+ * Body:
+ * {
+ *   articles: Array<{
+ *     slug: string,
+ *     titleEn: string,
+ *     contentEn: string,
+ *     excerptEn?: string,
+ *     descriptionEn?: string,
+ *     isPremium?: boolean,
+ *     isPublished?: boolean,
+ *     categorySlug?: string
+ *   }>
+ * }
+ */
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { articles } = body;
+
+    if (!articles || !Array.isArray(articles)) {
+      return NextResponse.json(
+        { error: 'articles array is required' },
+        { status: 400 }
+      );
+    }
+
+    // Get categories
+    const { data: categories } = await supabase
+      .from('Category')
+      .select('slug, id');
+
+    const categoryMap: Record<string, string> = {};
+    categories?.forEach(cat => {
+      categoryMap[cat.slug] = cat.id;
+    });
+
+    const results = [];
+
+    for (const article of articles) {
+      // Check if article exists
+      const { data: existing } = await supabase
+        .from('Article')
+        .select('id')
+        .eq('slug', article.slug)
+        .single();
+
+      const articleData = {
+        slug: article.slug,
+        titleEn: article.titleEn,
+        contentEn: article.contentEn,
+        excerptEn: article.excerptEn || null,
+        descriptionEn: article.descriptionEn || null,
+        isPremium: article.isPremium ?? true,
+        isPublished: article.isPublished ?? true,
+        publishedAt: article.publishedAt || new Date().toISOString(),
+      };
+
+      let result;
+
+      if (existing) {
+        // Update existing article
+        const { data, error } = await supabase
+          .from('Article')
+          .update(articleData)
+          .eq('slug', article.slug)
+          .select()
+          .single();
+
+        if (error) {
+          results.push({ slug: article.slug, status: 'error', error: error.message });
+          continue;
+        }
+
+        result = { slug: article.slug, status: 'updated', id: data.id };
+      } else {
+        // Create new article
+        const { data, error } = await supabase
+          .from('Article')
+          .insert(articleData)
+          .select()
+          .single();
+
+        if (error) {
+          results.push({ slug: article.slug, status: 'error', error: error.message });
+          continue;
+        }
+
+        result = { slug: article.slug, status: 'created', id: data.id };
+
+        // Link to category if provided
+        if (article.categorySlug && categoryMap[article.categorySlug]) {
+          await supabase
+            .from('ArticleToCategory')
+            .insert({
+              articleId: data.id,
+              categoryId: categoryMap[article.categorySlug],
+            });
+          result.categoryLinked = article.categorySlug;
+        }
+      }
+
+      results.push(result);
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      processed: results.length,
+      results 
+    });
+  } catch (error: any) {
+    console.error('[Articles API] Error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * GET /api/articles
+ * List all articles
+ */
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const offset = parseInt(searchParams.get('offset') || '0');
+    const published = searchParams.get('published');
+
+    let query = supabase
+      .from('Article')
+      .select(`
+        id,
+        slug,
+        titleEn,
+        excerptEn,
+        descriptionEn,
+        isPremium,
+        isPublished,
+        publishedAt,
+        viewCount,
+        categories:ArticleToCategory(Category(slug, name))
+      `)
+      .limit(limit)
+      .range(offset, offset + limit - 1)
+      .order('publishedAt', { ascending: false });
+
+    if (published === 'true') {
+      query = query.eq('isPublished', true);
+    }
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ 
+      articles: data || [],
+      total: count || 0,
+      limit,
+      offset
+    });
+  } catch (error: any) {
+    console.error('[Articles API] GET Error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/articles?slug=xxx
+ * Delete an article
+ */
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const slug = searchParams.get('slug');
+
+    if (!slug) {
+      return NextResponse.json(
+        { error: 'slug parameter is required' },
+        { status: 400 }
+      );
+    }
+
+    const { error } = await supabase
+      .from('Article')
+      .delete()
+      .eq('slug', slug);
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true, deleted: slug });
+  } catch (error: any) {
+    console.error('[Articles API] DELETE Error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
