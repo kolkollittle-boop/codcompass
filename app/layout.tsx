@@ -5,6 +5,9 @@ import Providers from '@/components/Providers';
 export const metadata: Metadata = {
   title: 'Codcompass - Premium Knowledge Base for Developers',
   description: 'High-quality technical tutorials and resources for developers and professionals.',
+  other: {
+    'google-site-verification': 'MFJ-bpEFixfhNFHsdOO9gDf50oEVY1d129F-9gSse60',
+  },
 };
 
 export default function RootLayout({
