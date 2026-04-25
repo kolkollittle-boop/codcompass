@@ -82,6 +82,7 @@ export async function POST(req: NextRequest) {
         .eq('slug', article.slug)
         .single();
 
+      const now = new Date().toISOString();
       const insertData: any = {
         id: crypto.randomUUID(),
         slug: article.slug,
@@ -91,7 +92,9 @@ export async function POST(req: NextRequest) {
         descriptionEn: article.descriptionEn || null,
         isPremium: article.isPremium ?? true,
         isPublished: article.isPublished ?? true,
-        publishedAt: article.publishedAt || new Date().toISOString(),
+        publishedAt: article.publishedAt || now,
+        createdAt: now,
+        updatedAt: now,
       };
 
       const updateData: any = {
@@ -102,7 +105,8 @@ export async function POST(req: NextRequest) {
         descriptionEn: article.descriptionEn || null,
         isPremium: article.isPremium ?? true,
         isPublished: article.isPublished ?? true,
-        publishedAt: article.publishedAt || new Date().toISOString(),
+        publishedAt: article.publishedAt || now,
+        updatedAt: now,
       };
 
       let result;
