@@ -128,10 +128,10 @@ export async function POST(req: NextRequest) {
         // Link to category if provided
         if (article.categorySlug && categoryMap[article.categorySlug]) {
           await supabase
-            .from('ArticleToCategory')
+            .from('_ArticleToCategory')
             .insert({
-              articleId: data.id,
-              categoryId: categoryMap[article.categorySlug],
+              A: data.id,
+              B: categoryMap[article.categorySlug],
             });
           (result as any).categoryLinked = article.categorySlug;
         }
