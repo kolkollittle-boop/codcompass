@@ -43,8 +43,11 @@ export const { auth, handlers } = NextAuth({
         // Grant admin role to specific email
         if (user?.email === 'kolkollittle@gmail.com') {
           (user as any).role = 'ADMIN';
+          console.log('[Auth] Granting ADMIN role to:', user.email);
+        } else {
+          (user as any).role = 'USER';
         }
-        console.log('[Auth] Google sign in:', user.email);
+        console.log('[Auth] Google sign in:', user.email, 'Role:', (user as any).role);
         return true;
       }
       return true;
@@ -61,6 +64,7 @@ export const { auth, handlers } = NextAuth({
         session.user.id = token.sub as string;
         (session.user as any).role = token.role as string || 'USER';
         session.user.image = token.picture as string;
+        console.log('[Auth] Session created for:', session.user.email, 'Role:', (session.user as any).role);
       }
       return session;
     },
@@ -69,6 +73,7 @@ export const { auth, handlers } = NextAuth({
       if (user) {
         token.role = (user as any).role || 'USER';
         token.picture = (user as any).image || (user as any).picture;
+        console.log('[Auth] JWT created for:', user.email, 'Role:', token.role);
       }
       return token;
     },
