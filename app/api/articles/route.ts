@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { authenticateRequest, checkRateLimit } from '@/lib/auth-middleware';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://ekunyyscyqhasolbbohw.supabase.co';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -13,6 +14,9 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey || '');
 /**
  * POST /api/articles
  * Create or update articles
+ * 
+ * Authentication: Required (API Key or User Session)
+ * Rate Limit: 100 requests per minute
  * 
  * Body:
  * {
@@ -30,6 +34,24 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey || '');
  */
 export async function POST(req: NextRequest) {
   try {
+    // Authentication check
+    const auth = await authenticateRequest(req);
+    if (!auth.authenticated) {
+      return NextResponse.json(
+        { error: auth.error || 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    // Rate limiting
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    if (!checkRateLimit(clientIp, 100, 60000)) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Try again later.' },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const { articles } = body;
 
@@ -135,9 +157,24 @@ export async function POST(req: NextRequest) {
 /**
  * GET /api/articles
  * List all articles
+ * 
+ * Authentication: Optional (API Key or User Session for full access)
+ * Rate Limit: 200 requests per minute
  */
 export async function GET(req: NextRequest) {
   try {
+    // Optional authentication - public can access published articles only
+    const auth = await authenticateRequest(req);
+    
+    // Rate limiting
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    if (!checkRateLimit(clientIp, 200, 60000)) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Try again later.' },
+        { status: 429 }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = parseInt(searchParams.get('offset') || '0');
@@ -161,7 +198,8 @@ export async function GET(req: NextRequest) {
       .range(offset, offset + limit - 1)
       .order('publishedAt', { ascending: false });
 
-    if (published === 'true') {
+    // Public users can only see published articles
+    if (!auth.authenticated || published === 'true') {
       query = query.eq('isPublished', true);
     }
 
@@ -192,9 +230,38 @@ export async function GET(req: NextRequest) {
 /**
  * DELETE /api/articles?slug=xxx
  * Delete an article
+ * 
+ * Authentication: Required (API Key or Admin User Session)
+ * Rate Limit: 50 requests per minute
  */
 export async function DELETE(req: NextRequest) {
   try {
+    // Authentication check
+    const auth = await authenticateRequest(req);
+    if (!auth.authenticated) {
+      return NextResponse.json(
+        { error: auth.error || 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    // Only admins can delete
+    if (auth.user?.type === 'user' && auth.user?.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Admin permissions required to delete articles' },
+        { status: 403 }
+      );
+    }
+
+    // Rate limiting
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    if (!checkRateLimit(clientIp, 50, 60000)) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Try again later.' },
+        { status: 429 }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const slug = searchParams.get('slug');
 
