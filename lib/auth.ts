@@ -37,7 +37,10 @@ export const { auth, handlers } = NextAuth({
     async signIn({ user, account, profile }) {
       // Google OAuth sign in
       if (account?.provider === 'google') {
-        // Optionally: Create or update user in database
+        // Grant admin role to specific email
+        if (user?.email === 'kolkollittle@gmail.com') {
+          (user as any).role = 'ADMIN';
+        }
         console.log('[Auth] Google sign in:', user.email);
         return true;
       }
