@@ -49,8 +49,8 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       likeCount,
       seoTitle,
       seoDescription,
-      categories:ArticleToCategory(Category(slug, name)),
-      tags:ArticleToTag(Tag(slug, name))
+      categories:_ArticleToCategory!_ArticleToCategory_A_fkey(Category(slug, name)),
+      tags:_ArticleToTag!_ArticleToTag_A_fkey(Tag(slug, name))
     `)
     .eq('slug', slug)
     .eq('isPublished', true)
@@ -74,8 +74,8 @@ export async function getPublishedArticles(limit = 20, offset = 0) {
       sourceSite,
       publishedAt,
       viewCount,
-      categories:_ArticleToCategory!inner(Category(slug, name)),
-      tags:_ArticleToTag!inner(Tag(slug, name))
+      categories:_ArticleToCategory!_ArticleToCategory_A_fkey(Category(slug, name)),
+      tags:_ArticleToTag!_ArticleToTag_A_fkey(Tag(slug, name))
     `)
     .eq('isPublished', true)
     .order('publishedAt', { ascending: false })
