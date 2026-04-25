@@ -2,6 +2,27 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Codcompass - Premium Knowledge Base for Developers',
+  description: 'Master modern web development with curated tutorials on React, TypeScript, Next.js, AI/ML, and DevOps. Production-ready code examples updated weekly.',
+  keywords: ['React tutorials', 'TypeScript guides', 'Next.js framework', 'AI development', 'DevOps tutorials', 'code examples'],
+  openGraph: {
+    title: 'Codcompass - Premium Knowledge Base for Developers',
+    description: 'Master modern web development with curated tutorials on React, TypeScript, Next.js, AI/ML, and DevOps.',
+    url: 'https://www.codcompass.com',
+    siteName: 'Codcompass',
+    images: ['/og-image.png'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Codcompass - Premium Knowledge Base for Developers',
+    description: 'Master modern web development with curated tutorials on React, TypeScript, Next.js, AI/ML, and DevOps.',
+    images: ['/og-image.png'],
+  },
+};
 
 const features = [
   {

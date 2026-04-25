@@ -1,6 +1,25 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PricingCard from '@/components/PricingCard';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Pricing - Choose Your Plan',
+  description: 'Flexible pricing plans for developers. Start free, upgrade to Builder ($9.99/mo) or Pro ($29.99/mo) for unlimited access to all tutorials and features.',
+  keywords: ['developer subscription', 'tech tutorials pricing', 'React courses', 'TypeScript courses', 'Next.js courses', 'developer tools pricing'],
+  openGraph: {
+    title: 'Pricing - Choose Your Plan',
+    description: 'Flexible pricing plans for developers. Start free, upgrade to Builder ($9.99/mo) or Pro ($29.99/mo) for unlimited access.',
+    url: 'https://www.codcompass.com/pricing',
+    siteName: 'Codcompass',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pricing - Choose Your Plan',
+    description: 'Flexible pricing plans for developers. Start free, upgrade to Builder ($9.99/mo) or Pro ($29.99/mo) for unlimited access.',
+  },
+};
 
 export default function PricingPage() {
   const pricingPlans = [

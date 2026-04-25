@@ -1,6 +1,25 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Blog - Latest Technical Articles & Insights',
+  description: 'Stay updated with the latest technical articles, best practices, and deep dives into React, TypeScript, Next.js, AI/ML, and DevOps.',
+  keywords: ['tech blog', 'React articles', 'TypeScript blog', 'Next.js articles', 'AI/ML blog', 'DevOps articles', 'programming blog'],
+  openGraph: {
+    title: 'Blog - Latest Technical Articles & Insights',
+    description: 'Stay updated with the latest technical articles, best practices, and deep dives into React, TypeScript, Next.js, AI/ML, and DevOps.',
+    url: 'https://www.codcompass.com/blog',
+    siteName: 'Codcompass',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog - Latest Technical Articles & Insights',
+    description: 'Stay updated with the latest technical articles, best practices, and deep dives into React, TypeScript, Next.js, AI/ML, and DevOps.',
+  },
+};
 
 const blogPosts = [
   {

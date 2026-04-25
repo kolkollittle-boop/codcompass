@@ -1,5 +1,24 @@
 import Link from 'next/link';
 import { getPublishedArticles } from '@/lib/supabase';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Knowledge Base - Technical Tutorials & Guides',
+  description: 'Browse our comprehensive library of technical tutorials covering React, TypeScript, Next.js, AI/ML, and DevOps. Expert insights and production-ready code examples.',
+  keywords: ['React tutorials', 'TypeScript guides', 'Next.js tutorials', 'AI/ML tutorials', 'DevOps guides', 'code examples', 'technical tutorials'],
+  openGraph: {
+    title: 'Knowledge Base - Technical Tutorials & Guides',
+    description: 'Browse our comprehensive library of technical tutorials covering React, TypeScript, Next.js, AI/ML, and DevOps.',
+    url: 'https://www.codcompass.com/kb',
+    siteName: 'Codcompass',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Knowledge Base - Technical Tutorials & Guides',
+    description: 'Browse our comprehensive library of technical tutorials covering React, TypeScript, Next.js, AI/ML, and DevOps.',
+  },
+};
 
 const difficultyMap: Record<string, string> = {
   'React': 'Beginner',
