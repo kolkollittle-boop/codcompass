@@ -1,6 +1,4 @@
 import Link from 'next/link';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { getPublishedArticles } from '@/lib/supabase';
 
 const difficultyMap: Record<string, string> = {
@@ -80,7 +78,6 @@ export default async function KbIndexPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
       <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-12">
@@ -157,7 +154,6 @@ export default async function KbIndexPage() {
           )}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
