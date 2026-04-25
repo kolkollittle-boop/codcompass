@@ -54,7 +54,8 @@ export async function POST(req: NextRequest) {
 
     // Verify signature
     if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
-      console.warn('[Webhook] Invalid signature from', req.ip);
+      const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+      console.warn('[Webhook] Invalid signature from', clientIp);
       return NextResponse.json(
         { error: 'Invalid signature' },
         { status: 403 }

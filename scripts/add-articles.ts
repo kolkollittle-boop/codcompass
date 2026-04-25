@@ -483,7 +483,7 @@ async function main() {
     .from('Category')
     .select('slug, id');
 
-  const categoryMap = {};
+  const categoryMap: Record<string, string> = {};
   categories?.forEach(cat => {
     categoryMap[cat.slug] = cat.id;
   });

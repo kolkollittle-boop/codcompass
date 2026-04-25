@@ -54,12 +54,6 @@ export function sanitize(html: string): string {
     },
     allowProtocolRelative: false,
     selfClosing: ['img', 'br', 'hr'],
-    // Strip comments to prevent IE conditional comment attacks
-    stripCommentTag: true,
-    // Enforce lowercase tag names
-    parseSchema: {
-      lowercase: true,
-    },
   });
 }
 
