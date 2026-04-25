@@ -18,7 +18,8 @@ export default function LoginPage() {
         callbackUrl: '/' // Redirect to homepage after successful sign in
       });
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google');
+      console.error('[Login] Google sign in error:', err);
+      setError(err.message || 'Failed to sign in with Google. Please check your Google OAuth configuration.');
       setIsLoading(false);
     }
   };
@@ -61,6 +62,12 @@ export default function LoginPage() {
               )}
               {isLoading ? 'Signing in...' : 'Sign in with Google'}
             </button>
+
+            <div className="mt-4 text-center">
+              <p className="text-xs text-gray-500">
+                ⚠️ If you see an error, Google OAuth may not be configured yet.
+              </p>
+            </div>
 
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-500">
