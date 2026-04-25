@@ -61,7 +61,8 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 }
 
 export async function getPublishedArticles(limit = 20, offset = 0) {
-  const { data, error } = await supabase
+  // Use supabaseAdmin to bypass RLS for public article listing
+  const { data, error } = await supabaseAdmin
     .from('Article')
     .select(`
       id,
@@ -73,14 +74,17 @@ export async function getPublishedArticles(limit = 20, offset = 0) {
       sourceSite,
       publishedAt,
       viewCount,
-      categories:ArticleToCategory(Category(slug, name)),
-      tags:ArticleToTag(Tag(slug, name))
+      categories:_ArticleToCategory!inner(Category(slug, name)),
+      tags:_ArticleToTag!inner(Tag(slug, name))
     `)
     .eq('isPublished', true)
     .order('publishedAt', { ascending: false })
     .range(offset, offset + limit - 1);
 
-  if (error) return [];
+  if (error) {
+    console.error('[getPublishedArticles] Error:', error);
+    return [];
+  }
   return data;
 }
 
