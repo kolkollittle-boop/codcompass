@@ -7,36 +7,36 @@ import Footer from '@/components/Footer';
 
 const faqs = [
   {
-    question: '如何注册 Codcompass 账户？',
-    answer: '点击右上角 "Sign in" 按钮，然后选择 "Get Started" 创建免费账户。填写邮箱和密码即可完成注册。',
+    question: 'How do I register a Codcompass account?',
+    answer: 'Click the "Sign in" button in the top right corner, then select "Get Started" to create a free account. Fill in your email and password to complete registration.',
   },
   {
-    question: '有哪些订阅计划？',
-    answer: '我们提供 4 个计划：Free（免费）、Builder（$9.99/月）、Pro（$29.99/月）和 Enterprise（定制定价）。详见定价页面。',
+    question: 'What subscription plans are available?',
+    answer: 'We offer 4 plans: Free (free), Builder ($9.99/month), Pro ($29.99/month), and Enterprise (custom pricing). See the pricing page for details.',
   },
   {
-    question: '如何取消订阅？',
-    answer: '登录账户后，进入账户设置 → 订阅管理 → 取消订阅。取消后，您将在当前计费周期结束前继续访问付费内容。',
+    question: 'How do I cancel my subscription?',
+    answer: 'After logging in, go to Account Settings → Subscription Management → Cancel Subscription. After cancellation, you will continue to have access to premium content until the end of your current billing period.',
   },
   {
-    question: '退款政策是什么？',
-    answer: '我们提供 30 天无理由退款保证。如果您在订阅后 30 天内不满意，可以申请全额退款。',
+    question: 'What is the refund policy?',
+    answer: 'We offer a 30-day money-back guarantee. If you are not satisfied within 30 days of subscription, you can request a full refund.',
   },
   {
-    question: '内容更新频率？',
-    answer: '我们每周更新技术文章，涵盖 React、TypeScript、Next.js、AI/ML 和 DevOps 等领域。',
+    question: 'How often is content updated?',
+    answer: 'We update technical articles weekly, covering React, TypeScript, Next.js, AI/ML, and DevOps.',
   },
   {
-    question: '可以在多个设备上使用吗？',
-    answer: '可以！一个账户可以在最多 3 台设备上同时使用。',
+    question: 'Can I use it on multiple devices?',
+    answer: 'Yes! One account can be used on up to 3 devices simultaneously.',
   },
   {
-    question: '如何联系支持团队？',
-    answer: '通过 /contact 页面提交联系表单，或发送邮件至 support@codcompass.com。我们承诺在 24 小时内回复。',
+    question: 'How do I contact support?',
+    answer: 'Submit a contact form through the /contact page, or send an email to support@codcompass.com. We promise to reply within 24 hours.',
   },
   {
-    question: '是否支持 Google 登录？',
-    answer: 'Google OAuth 登录功能即将推出，敬请期待。目前支持邮箱注册。',
+    question: 'Does it support Google login?',
+    answer: 'Google OAuth login is coming soon. Currently, email registration is supported.',
   },
 ];
 
@@ -52,10 +52,10 @@ export default function HelpPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-                帮助中心
+                Help Center
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                常见问题解答和使用指南
+                Frequently asked questions and user guides
               </p>
             </div>
           </div>
@@ -66,24 +66,24 @@ export default function HelpPage() {
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             <Link href="/contact" className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow text-center">
               <div className="text-3xl mb-3">📧</div>
-              <h3 className="font-bold text-gray-900 mb-2">联系我们</h3>
-              <p className="text-sm text-gray-600">有问题？发送邮件或填写联系表单</p>
+              <h3 className="font-bold text-gray-900 mb-2">Contact Us</h3>
+              <p className="text-sm text-gray-600">Have questions? Send an email or fill out the contact form</p>
             </Link>
             <Link href="/pricing" className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow text-center">
               <div className="text-3xl mb-3">💰</div>
-              <h3 className="font-bold text-gray-900 mb-2">定价方案</h3>
-              <p className="text-sm text-gray-600">查看我们的订阅计划和功能</p>
+              <h3 className="font-bold text-gray-900 mb-2">Pricing Plans</h3>
+              <p className="text-sm text-gray-600">View our subscription plans and features</p>
             </Link>
             <Link href="/kb" className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow text-center">
               <div className="text-3xl mb-3">📚</div>
-              <h3 className="font-bold text-gray-900 mb-2">知识库</h3>
-              <p className="text-sm text-gray-600">浏览所有技术教程和文章</p>
+              <h3 className="font-bold text-gray-900 mb-2">Knowledge Base</h3>
+              <p className="text-sm text-gray-600">Browse all technical tutorials and articles</p>
             </Link>
           </div>
 
           {/* FAQ */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">常见问题</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
             <div className="space-y-4">
               {faqs.map((faq, index) => (
                 <div
