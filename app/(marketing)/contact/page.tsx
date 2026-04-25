@@ -28,10 +28,10 @@ export default function ContactPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-                联系我们
+                Contact Us
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                有任何问题或建议？我们随时为你服务
+                Have any questions or suggestions? We're here to help
               </p>
             </div>
           </div>
@@ -41,14 +41,14 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 gap-12">
             {/* Contact Info */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">联系方式</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
               <div className="space-y-6">
                 <div className="flex items-start">
                   <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
                     📧
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">邮箱</h3>
+                    <h3 className="font-medium text-gray-900">Email</h3>
                     <p className="text-gray-600">support@codcompass.com</p>
                   </div>
                 </div>
@@ -57,8 +57,8 @@ export default function ContactPage() {
                     💬
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">在线支持</h3>
-                    <p className="text-gray-600">工作日 9:00 - 18:00 (UTC+8)</p>
+                    <h3 className="font-medium text-gray-900">Online Support</h3>
+                    <p className="text-gray-600">Weekdays 9:00 - 18:00 (UTC+8)</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -66,16 +66,16 @@ export default function ContactPage() {
                     🌐
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">社交媒体</h3>
+                    <h3 className="font-medium text-gray-900">Social Media</h3>
                     <p className="text-gray-600">@codcompass on Twitter/X</p>
                   </div>
                 </div>
               </div>
 
               <div className="mt-8 p-6 bg-gray-50 rounded-xl">
-                <h3 className="font-bold text-gray-900 mb-2">💡 常见问题</h3>
+                <h3 className="font-bold text-gray-900 mb-2">💡 FAQ</h3>
                 <p className="text-gray-600 text-sm">
-                  在联系我们之前，先查看我们的 <a href="/help" className="text-indigo-600 hover:underline">帮助中心</a>，可能已经有你需要的答案。
+                  Before contacting us, check our <a href="/help" className="text-indigo-600 hover:underline">Help Center</a> - you may already find the answer you need.
                 </p>
               </div>
             </div>
@@ -85,28 +85,28 @@ export default function ContactPage() {
               {submitted ? (
                 <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
                   <div className="text-4xl mb-4">✅</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">消息已发送！</h3>
-                  <p className="text-gray-600">我们将在 24 小时内回复你。</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h3>
+                  <p className="text-gray-600">We will reply to you within 24 hours.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      姓名 *
+                      Name *
                     </label>
                     <input
                       type="text"
                       id="name"
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      placeholder="你的名字"
+                      placeholder="Your name"
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                     />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      邮箱 *
+                      Email *
                     </label>
                     <input
                       type="email"
@@ -120,7 +120,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                      主题 *
+                      Subject *
                     </label>
                     <select
                       id="subject"
@@ -129,24 +129,24 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={(e) => setFormData({...formData, subject: e.target.value})}
                     >
-                      <option value="">选择主题</option>
-                      <option value="general">一般咨询</option>
-                      <option value="billing">账单问题</option>
-                      <option value="technical">技术支持</option>
-                      <option value="feedback">反馈建议</option>
-                      <option value="partnership">合作洽谈</option>
+                      <option value="">Select a subject</option>
+                      <option value="general">General Inquiry</option>
+                      <option value="billing">Billing Issue</option>
+                      <option value="technical">Technical Support</option>
+                      <option value="feedback">Feedback & Suggestions</option>
+                      <option value="partnership">Partnership</option>
                     </select>
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      消息 *
+                      Message *
                     </label>
                     <textarea
                       id="message"
                       required
                       rows={5}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      placeholder="请详细描述你的问题或建议..."
+                      placeholder="Please describe your question or suggestion..."
                       value={formData.message}
                       onChange={(e) => setFormData({...formData, message: e.target.value})}
                     />
@@ -155,7 +155,7 @@ export default function ContactPage() {
                     type="submit"
                     className="w-full bg-indigo-600 text-white font-medium px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
                   >
-                    发送消息
+                    Send Message
                   </button>
                 </form>
               )}
