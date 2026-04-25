@@ -40,14 +40,16 @@ export const { auth, handlers } = NextAuth({
     async signIn({ user, account, profile }) {
       // Google OAuth sign in
       if (account?.provider === 'google') {
-        // Grant admin role to specific email
+        // Grant admin role and enterprise plan to specific email
         if (user?.email === 'kolkollittle@gmail.com') {
           (user as any).role = 'ADMIN';
-          console.log('[Auth] Granting ADMIN role to:', user.email);
+          (user as any).plan = 'ENTERPRISE';
+          console.log('[Auth] Granting ADMIN/ENTERPRISE to:', user.email);
         } else {
           (user as any).role = 'USER';
+          (user as any).plan = 'FREE';
         }
-        console.log('[Auth] Google sign in:', user.email, 'Role:', (user as any).role);
+        console.log('[Auth] Google sign in:', user.email, 'Role:', (user as any).role, 'Plan:', (user as any).plan);
         return true;
       }
       return true;
@@ -63,8 +65,9 @@ export const { auth, handlers } = NextAuth({
       if (session.user) {
         session.user.id = token.sub as string;
         (session.user as any).role = token.role as string || 'USER';
+        (session.user as any).plan = token.plan as string || 'FREE';
         session.user.image = token.picture as string;
-        console.log('[Auth] Session created for:', session.user.email, 'Role:', (session.user as any).role);
+        console.log('[Auth] Session created for:', session.user.email, 'Role:', (session.user as any).role, 'Plan:', (session.user as any).plan);
       }
       return session;
     },
@@ -72,8 +75,9 @@ export const { auth, handlers } = NextAuth({
       // Initial sign in
       if (user) {
         token.role = (user as any).role || 'USER';
+        token.plan = (user as any).plan || 'FREE';
         token.picture = (user as any).image || (user as any).picture;
-        console.log('[Auth] JWT created for:', user.email, 'Role:', token.role);
+        console.log('[Auth] JWT created for:', user.email, 'Role:', token.role, 'Plan:', token.plan);
       }
       return token;
     },
