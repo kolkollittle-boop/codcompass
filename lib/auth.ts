@@ -34,13 +34,21 @@ export const { auth, handlers } = NextAuth({
     signIn: '/login',
   },
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       // Google OAuth sign in
       if (account?.provider === 'google') {
         // Optionally: Create or update user in database
+        console.log('[Auth] Google sign in:', user.email);
         return true;
       }
       return true;
+    },
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
     async session({ session, token }) {
       if (session.user) {
