@@ -6,7 +6,16 @@ const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 // Clean env vars (remove quotes/whitespace from Vercel UI)
 const supabaseUrl = rawUrl.trim().replace(/^["']|["']$/g, "");
 const supabaseAnonKey = rawKey.trim().replace(/^["']|["']$/g, "");
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+// Validate critical env vars before initializing
+if (!supabaseUrl) {
+  throw new Error('Missing or empty NEXT_PUBLIC_SUPABASE_URL');
+}
+if (!supabaseAnonKey) {
+  throw new Error('Missing or empty NEXT_PUBLIC_SUPABASE_ANON_KEY');
+}
+
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Client-side (public)
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
