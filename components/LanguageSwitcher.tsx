@@ -4,17 +4,28 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { locales, localeNames, localeFlags, setLocaleCookie } from '@/lib/i18n';
 
+// Pages that don't use locale routing (per middleware.ts)
+const nonLocalePaths = ['/blog', '/pricing', '/about', '/contact', '/help',
+  '/login', '/dashboard', '/admin', '/checkout', '/status', '/privacy', '/terms', '/refund'];
+
 export default function LanguageSwitcher() {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Get current locale from pathname
-  const currentLocale = locales.find(locale => pathname.startsWith(`/${locale}/`)) || 'en';
+  // Check if current page uses locale routing
+  const usesLocaleRouting = !nonLocalePaths.some(p => pathname.startsWith(p));
+
+  // Get current locale from pathname (fallback to cookie for non-locale pages)
+  const currentLocale = usesLocaleRouting
+    ? (locales.find(locale => pathname.startsWith(`/${locale}/`)) || 'en')
+    : 'en';
 
   // Get path without locale prefix
-  const pathWithoutLocale = pathname.replace(/^\/(en|zh)/, '') || '/';
+  const pathWithoutLocale = usesLocaleRouting
+    ? pathname.replace(/^\/(en|zh)/, '') || '/'
+    : pathname;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -30,8 +41,8 @@ export default function LanguageSwitcher() {
   const handleLocaleChange = (locale: string) => {
     setLocaleCookie(locale as any);
     
-    // Navigate to the same path with new locale
-    const newPath = `/${locale}${pathWithoutLocale}`;
+    // Navigate to the same path with new locale (or keep path for non-locale pages)
+    const newPath = usesLocaleRouting ? `/${locale}${pathWithoutLocale}` : pathWithoutLocale;
     router.push(newPath as any);
     setIsOpen(false);
   };

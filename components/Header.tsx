@@ -11,7 +11,15 @@ interface HeaderProps {
   locale?: string;
 }
 
+// These routes are excluded from locale handling (per middleware.ts)
+const excludedPaths = [
+  '/blog', '/pricing', '/about', '/contact', '/help',
+  '/login', '/dashboard', '/admin', '/checkout',
+];
+
 const linkWithLocale = (locale: string, path: string) => {
+  // Don't prefix excluded routes (these live outside locale layout)
+  if (excludedPaths.some(ep => path.startsWith(ep))) return path;
   // Don't prefix auth/callback routes
   if (path.startsWith('/api/') || path.startsWith('/auth/')) return path;
   return `/${locale}${path}`;

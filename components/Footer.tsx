@@ -4,7 +4,14 @@ interface FooterProps {
   locale?: string;
 }
 
+const excludedPaths = [
+  '/blog', '/pricing', '/about', '/contact', '/help',
+  '/login', '/dashboard', '/admin', '/checkout',
+  '/status', '/privacy', '/terms', '/refund',
+];
+
 const linkWithLocale = (locale: string, path: string) => {
+  if (excludedPaths.some(ep => path.startsWith(ep))) return path;
   if (path.startsWith('/api/') || path.startsWith('/auth/')) return path;
   return `/${locale}${path}`;
 };
