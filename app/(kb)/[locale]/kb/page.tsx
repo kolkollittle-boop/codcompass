@@ -14,6 +14,9 @@ interface KbIndexPageProps {
   }>;
 }
 
+// Revalidate every 5 minutes to show newly crawled articles
+export const revalidate = 300;
+
 export async function generateMetadata({ params }: KbIndexPageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const locale = (resolvedParams.locale as Locale) || 'en';
@@ -101,7 +104,9 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
   
   // Fetch articles from Supabase with pagination
   const offset = (currentPage - 1) * itemsPerPage;
-  const dbArticles = await getPublishedArticles(itemsPerPage, offset, locale);
+  const dbArticles = await getPublishedArticles(1000, 0, locale); // fetch all for now to get accurate count
+  const totalArticles = dbArticles.length;
+  const paginatedArticles = dbArticles.slice(offset, offset + itemsPerPage);
 
   // Map articles with locale-aware content
   const articles = dbArticles.length > 0 

@@ -104,22 +104,26 @@ async function main() {
           const articleId = crypto.randomUUID();
           
           // 5. Insert Article (English)
-          await supabase.from('Article').insert({
+          const { error: insertError } = await supabase.from('Article').insert({
             id: articleId,
             slug: slug,
             titleEn: details.title,
             contentEn: markdown,
+            descriptionEn: details.description || markdown.slice(0, 200) + '...',
             excerptEn: details.description || markdown.slice(0, 200) + '...',
             isPremium: false,
             isPublished: true,
             status: 'PUBLISHED',
             sourceSite: 'Dev.to',
             sourceAuthor: details.user?.name,
-            sourceUrl: details.url,
+            originalUrl: details.url,
             publishedAt: now,
+            crawledAt: now,
             createdAt: now,
             updatedAt: now,
           });
+
+          if (insertError) throw insertError;
           
           // 6. Link Category
           const { data: cat } = await supabase.from('Category').select('id').eq('slug', categorySlug).single();
