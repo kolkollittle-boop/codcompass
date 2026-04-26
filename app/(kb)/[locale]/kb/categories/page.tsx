@@ -137,7 +137,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     categories.map(async (category) => {
       const articles = await getPublishedArticles(100, 0, locale);
       const filteredArticles = articles.filter((a: any) => 
-        a.categories?.some((c: any) => c.Category?.[0]?.slug === category.slug)
+        a.categories?.some((c: any) => c.Category?.slug === category.slug)
       );
       
       return {
