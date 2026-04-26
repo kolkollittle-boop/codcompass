@@ -1,9 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
 const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseUrl = rawUrl.replace(/^["']|["']$/g, ""); // Remove potential quotes
 const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabaseAnonKey = rawKey.replace(/^["']|["']$/g, ""); // Remove potential quotes
+
+// Clean env vars (remove quotes/whitespace from Vercel UI)
+const supabaseUrl = rawUrl.trim().replace(/^["']|["']$/g, "");
+const supabaseAnonKey = rawKey.trim().replace(/^["']|["']$/g, "");
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // Client-side (public)
