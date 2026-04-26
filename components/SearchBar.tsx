@@ -103,7 +103,7 @@ export default function SearchBar() {
               {results.map((result) => (
                 <Link
                   key={result.id}
-                  href={`/kb/${result.slug}`}
+                  href={(`/kb/${result.slug}`) as any}
                   className="block px-4 py-3 hover:bg-gray-50 transition-colors"
                   onClick={() => {
                     setIsOpen(false);

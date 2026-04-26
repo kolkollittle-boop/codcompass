@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Simple code review (MVP - will be replaced with AI API)
-const RULES: Record<string, Array<{ pattern: RegExp; message: string; suggestion?: string }>> = {
+const RULES: Record<string, Array<{ pattern: RegExp; message: string; severity?: string; suggestion?: string }>> = {
   typescript: [
     { pattern: /:\s*any\b/g, message: 'Avoid using "any" type', suggestion: 'Use "unknown" or specific types instead' },
     { pattern: /console\.(log|debug|info)/g, message: 'Remove console.log in production', suggestion: 'Use a proper logging library' },
@@ -40,11 +40,11 @@ export async function POST(req: NextRequest) {
     const lang = language || 'typescript';
     const rules = RULES[lang] || [];
     
-    const issues = [];
+    const issues: Array<{ line: number; severity: string; message: string; suggestion?: string }> = [];
     const lines = code.split('\n');
     
     for (const rule of rules) {
-      lines.forEach((line, index) => {
+      lines.forEach((line: string, index: number) => {
         if (rule.pattern.test(line)) {
           issues.push({
             line: index + 1,
