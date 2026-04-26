@@ -109,8 +109,8 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
   const paginatedArticles = dbArticles.slice(offset, offset + itemsPerPage);
 
   // Map articles with locale-aware content
-  const articles = dbArticles.length > 0 
-    ? dbArticles.map((a: any) => {
+  const articles = paginatedArticles.length > 0 
+    ? paginatedArticles.map((a: any) => {
         const content = getArticleContent(a, locale);
         const categoryName = a.categories?.[0]?.Category?.[0]?.name || 'General';
         return {
@@ -226,10 +226,10 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 )}
 
                 {/* Page numbers */}
-                {Array.from({ length: Math.ceil(117 / itemsPerPage) }, (_, i) => i + 1)
+                {Array.from({ length: Math.ceil(totalArticles / itemsPerPage) }, (_, i) => i + 1)
                   .filter(page => {
                     // Show current page, first page, last page, and pages around current
-                    return page === 1 || page === Math.ceil(117 / itemsPerPage) || Math.abs(page - currentPage) <= 2;
+                    return page === 1 || page === Math.ceil(totalArticles / itemsPerPage) || Math.abs(page - currentPage) <= 2;
                   })
                   .map((page, index, array) => {
                     // Add ellipsis if there's a gap
