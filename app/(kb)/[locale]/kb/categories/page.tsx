@@ -166,7 +166,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           {categoryData.map((category) => (
             <Link
               key={category.slug}
-              href={`/${locale}/kb/categories/${category.slug}`}
+              href={`/${locale}/kb/categories/${category.slug}` as any}
               className="group bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1"
             >
               <div className="flex items-start justify-between mb-4">
