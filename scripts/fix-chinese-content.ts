@@ -28,10 +28,10 @@ const REPLACEMENTS = [
 async function fixContent(field: string, table: string) {
   console.log(`\n📝 Checking ${table}.${field}...`);
 
+  // Fetch all articles with this field
   const { data: articles, error } = await supabase
     .from(table)
-    .select('id', field)
-    .ilike(field, '%<h3>%中文%');
+    .select(`id, ${field}`);
 
   if (error) {
     console.error(`   ❌ Query failed: ${error.message}`);
@@ -39,14 +39,26 @@ async function fixContent(field: string, table: string) {
   }
 
   if (!articles || articles.length === 0) {
-    console.log(`   ✅ No articles with Chinese headers found`);
+    console.log(`   ✅ No articles found`);
     return 0;
   }
 
-  console.log(`   Found ${articles.length} articles to fix`);
+  // Filter client-side for Chinese headers
+  const chinesePatterns = ['为什么值得关注', '技术要点', '关键思考', '下一步', '核心要点', '技术内容', '值得关注的点', '延伸阅读'];
+  const toFix = articles.filter(a => {
+    const content = a[field] || '';
+    return chinesePatterns.some(p => content.includes(p));
+  });
+
+  if (toFix.length === 0) {
+    console.log(`   ✅ No articles with Chinese headers found (${articles.length} checked)`);
+    return 0;
+  }
+
+  console.log(`   Found ${toFix.length} articles to fix (out of ${articles.length})`);
 
   let fixed = 0;
-  for (const article of articles) {
+  for (const article of toFix) {
     let content = article[field];
     let changed = false;
 
