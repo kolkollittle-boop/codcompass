@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -58,6 +61,12 @@ const blogPosts = [
 const categories = ['All', 'React', 'TypeScript', 'Next.js', 'AI/ML', 'DevOps'];
 
 export default function BlogPage() {
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  const filteredPosts = selectedCategory === 'All'
+    ? blogPosts
+    : blogPosts.filter(post => post.category === selectedCategory);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -82,8 +91,9 @@ export default function BlogPage() {
             {categories.map((cat) => (
               <button
                 key={cat}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  cat === 'All'
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
+                  selectedCategory === cat
                     ? 'bg-indigo-600 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
@@ -97,7 +107,7 @@ export default function BlogPage() {
         {/* Blog Posts */}
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="space-y-8">
-            {blogPosts.map((post) => (
+            {filteredPosts.length > 0 ? filteredPosts.map((post) => (
               <article
                 key={post.id}
                 className="bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all"
@@ -126,7 +136,9 @@ export default function BlogPage() {
                   </Link>
                 </div>
               </article>
-            ))}
+            )) : (
+              <p className="text-center text-gray-500 py-8">No posts in this category yet.</p>
+            )}
           </div>
         </div>
       </main>
