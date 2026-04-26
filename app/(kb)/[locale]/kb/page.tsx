@@ -7,6 +7,10 @@ interface KbIndexPageProps {
   params: Promise<{
     locale: string;
   }>;
+  searchParams: Promise<{
+    page?: string;
+    category?: string;
+  }>;
 }
 
 export async function generateMetadata({ params }: KbIndexPageProps): Promise<Metadata> {
@@ -83,13 +87,20 @@ const translations = {
   },
 };
 
-export default async function KbIndexPage({ params }: KbIndexPageProps) {
+export default async function KbIndexPage({ params, searchParams }: KbIndexPageProps) {
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
   const locale = (resolvedParams.locale as Locale) || 'en';
   const t = translations[locale];
   
-  // Fetch articles from Supabase
-  const dbArticles = await getPublishedArticles(20, 0, locale);
+  // Get current page from URL
+  const currentPage = parseInt(resolvedSearchParams.page || '1') || 1;
+  const categoryFilter = resolvedSearchParams.category;
+  const itemsPerPage = 12;
+  
+  // Fetch articles from Supabase with pagination
+  const offset = (currentPage - 1) * itemsPerPage;
+  const dbArticles = await getPublishedArticles(itemsPerPage, offset, locale);
 
   // Map articles with locale-aware content
   const articles = dbArticles.length > 0 
@@ -111,6 +122,11 @@ export default async function KbIndexPage({ params }: KbIndexPageProps) {
       })
     : [];
 
+  // Filter by category if specified
+  const filteredArticles = categoryFilter
+    ? articles.filter((a: any) => a.category.toLowerCase().replace(/\s+/g, '-') === categoryFilter.toLowerCase())
+    : articles;
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
@@ -130,8 +146,8 @@ export default async function KbIndexPage({ params }: KbIndexPageProps) {
           </div>
 
           <div className="space-y-6">
-            {articles.length > 0 ? (
-              articles.map((article: any) => (
+            {filteredArticles.length > 0 ? (
+              filteredArticles.map((article: any) => (
                 <article
                   key={article.id}
                   className="bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all group"
@@ -187,6 +203,62 @@ export default async function KbIndexPage({ params }: KbIndexPageProps) {
               </div>
             )}
           </div>
+
+          {/* Pagination */}
+          {filteredArticles.length > 0 && (
+            <div className="mt-12 flex justify-center">
+              <nav className="flex items-center gap-2">
+                {/* Previous button */}
+                {currentPage > 1 && (
+                  <Link
+                    href={(`/kb?page=${currentPage - 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`) as any}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    ← {locale === 'zh' ? '上一页' : 'Previous'}
+                  </Link>
+                )}
+
+                {/* Page numbers */}
+                {Array.from({ length: Math.ceil(117 / itemsPerPage) }, (_, i) => i + 1)
+                  .filter(page => {
+                    // Show current page, first page, last page, and pages around current
+                    return page === 1 || page === Math.ceil(117 / itemsPerPage) || Math.abs(page - currentPage) <= 2;
+                  })
+                  .map((page, index, array) => {
+                    // Add ellipsis if there's a gap
+                    const showEllipsis = index > 0 && page - array[index - 1] > 1;
+                    
+                    return (
+                      <div key={page} className="flex items-center">
+                        {showEllipsis && (
+                          <span className="px-2 text-gray-500">...</span>
+                        )}
+                        <Link
+                          href={(`/kb?page=${page}${categoryFilter ? `&category=${categoryFilter}` : ''}`) as any}
+                          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                            page === currentPage
+                              ? 'bg-indigo-600 text-white'
+                              : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          {page}
+                        </Link>
+                      </div>
+                    );
+                  })}
+
+                {/* Next button */}
+                {currentPage < Math.ceil(117 / itemsPerPage) && (
+                  <Link
+                    href={(`/kb?page=${currentPage + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`) as any}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    {locale === 'zh' ? '下一页' : 'Next'} →
+                  </Link>
+                )}
+              </nav>
+            </div>
+          )}
         </div>
       </main>
     </div>
