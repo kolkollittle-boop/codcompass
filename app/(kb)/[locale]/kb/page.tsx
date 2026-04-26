@@ -128,9 +128,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
     : articles;
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-grow">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-12">
             <h1 className="text-3xl font-bold text-gray-900">{t.title}</h1>
             <p className="mt-4 text-lg text-gray-600">
@@ -173,7 +171,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                         )}
                       </div>
                       <h2 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
-                        <Link href={(`/kb/${article.slug}`) as any}>
+                        <Link href={`/${locale}/kb/${article.slug}`}>
                           {article.title}
                         </Link>
                       </h2>
@@ -185,7 +183,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                       </div>
                     </div>
                     <Link
-                      href={(`/kb/${article.slug}`) as any}
+                      href={`/${locale}/kb/${article.slug}`}
                       className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,7 +209,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 {/* Previous button */}
                 {currentPage > 1 && (
                   <Link
-                    href={(`/kb?page=${currentPage - 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`) as any}
+                    href={`/${locale}/kb?page=${currentPage - 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     ← {locale === 'zh' ? '上一页' : 'Previous'}
@@ -234,7 +232,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                           <span className="px-2 text-gray-500">...</span>
                         )}
                         <Link
-                          href={(`/kb?page=${page}${categoryFilter ? `&category=${categoryFilter}` : ''}`) as any}
+                          href={`/${locale}/kb?page=${page}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
                           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                             page === currentPage
                               ? 'bg-indigo-600 text-white'
@@ -250,7 +248,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 {/* Next button */}
                 {currentPage < Math.ceil(117 / itemsPerPage) && (
                   <Link
-                    href={(`/kb?page=${currentPage + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`) as any}
+                    href={`/${locale}/kb?page=${currentPage + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     {locale === 'zh' ? '下一页' : 'Next'} →
@@ -259,8 +257,6 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
               </nav>
             </div>
           )}
-        </div>
-      </main>
     </div>
   );
 }

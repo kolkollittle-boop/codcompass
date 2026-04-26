@@ -53,7 +53,7 @@ ${englishContent}
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'qwen3.6',
         messages: [
           { role: 'system', content: '你是一个专业的技术内容翻译专家，擅长将英文技术文章翻译成中文技术宅风格。' },
           { role: 'user', content: prompt },

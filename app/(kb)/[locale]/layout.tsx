@@ -15,17 +15,16 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   
   // Validate locale
   if (!locales.includes(locale)) {
-    // This shouldn't happen due to middleware, but just in case
     return <div>Invalid locale</div>;
   }
   
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header locale={locale} />
       <main className="flex-grow" lang={locale === 'zh' ? 'zh-CN' : 'en'}>
         {children}
       </main>
-      <Footer />
+      <Footer locale={locale} />
     </div>
   );
 }

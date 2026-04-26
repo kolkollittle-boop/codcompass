@@ -104,26 +104,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const premiumContent = content.content.slice(freeContentLength);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link href="/" className="text-2xl font-bold text-indigo-600 tracking-tight">Codcompass</Link>
-            <Link href={"/kb" as any} className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7 7 7-7" />
-              </svg>
-              {t.backToKB}
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-grow">
-        <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Article Header */}
-          <header className="mb-10 pb-8 border-b border-gray-200">
-            <div className="flex items-center gap-2 mb-4 flex-wrap">
+    <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <Link href={`/${locale}/kb` as any} className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1 mb-6">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7 7 7-7" />
+        </svg>
+        {t.backToKB}
+      </Link>
+      {/* Article Header */}
+      <header className="mb-10 pb-8 border-b border-gray-200">
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
                 {categoryName}
               </span>
@@ -188,7 +178,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                         {t.subscribeText}
                       </p>
                       <Link
-                        href="/pricing"
+                        href={`/${locale}/pricing` as any}
                         className="block w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
                       >
                         {t.subscribeBtn}
@@ -224,13 +214,5 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </div>
           )}
         </article>
-      </main>
-
-      <footer className="border-t border-gray-200 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} Codcompass. All rights reserved.
-        </div>
-      </footer>
-    </div>
   );
 }

@@ -7,12 +7,50 @@ import { useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchBar from './SearchBar';
 
-export default function Header() {
+interface HeaderProps {
+  locale?: string;
+}
+
+const linkWithLocale = (locale: string, path: string) => {
+  // Don't prefix auth/callback routes
+  if (path.startsWith('/api/') || path.startsWith('/auth/')) return path;
+  return `/${locale}${path}`;
+};
+
+export default function Header({ locale = 'en' }: HeaderProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const isAdmin = (session?.user as any)?.role === 'ADMIN';
+
+  const t = locale === 'zh' ? {
+    kb: '知识库',
+    categories: '分类',
+    blog: '博客',
+    pricing: '定价',
+    about: '关于',
+    dashboard: '📊 仪表盘',
+    bookmarks: '🔖 书签',
+    settings: '⚙️ 设置',
+    admin: '🛡️ 管理面板',
+    signOut: '🚪 退出登录',
+    signIn: '登录',
+    getStarted: '开始使用',
+  } : {
+    kb: 'Knowledge Base',
+    categories: 'Categories',
+    blog: 'Blog',
+    pricing: 'Pricing',
+    about: 'About',
+    dashboard: '📊 Dashboard',
+    bookmarks: '🔖 Bookmarks',
+    settings: '⚙️ Settings',
+    admin: '🛡️ Admin Panel',
+    signOut: '🚪 Sign Out',
+    signIn: 'Sign in',
+    getStarted: 'Get Started',
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -20,60 +58,60 @@ export default function Header() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-2xl font-bold text-primary-600 tracking-tight">
+              <Link href={`/${locale}` as any} className="text-2xl font-bold text-primary-600 tracking-tight">
                 Codcompass
               </Link>
             </div>
             <nav className="ml-8 flex space-x-6">
               <Link
-                href={"/kb" as any}
+                href={linkWithLocale(locale, '/kb') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname?.startsWith('/kb')
+                  pathname?.startsWith(`/${locale}/kb`) && !pathname?.startsWith(`/${locale}/kb/categories`)
                     ? 'border-primary-500 text-gray-900'
                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
-                Knowledge Base
+                {t.kb}
               </Link>
               <Link
-                href={"/kb/categories" as any}
+                href={linkWithLocale(locale, '/kb/categories') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname?.startsWith('/kb/categories')
+                  pathname?.startsWith(`/${locale}/kb/categories`)
                     ? 'border-primary-500 text-gray-900'
                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
-                Categories
+                {t.categories}
               </Link>
               <Link
-                href="/blog"
+                href={linkWithLocale(locale, '/blog') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname?.startsWith('/blog')
+                  pathname?.startsWith(`/${locale}/blog`)
                     ? 'border-primary-500 text-gray-900'
                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
-                Blog
+                {t.blog}
               </Link>
               <Link
-                href="/pricing"
+                href={linkWithLocale(locale, '/pricing') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname === '/pricing'
+                  pathname === `/${locale}/pricing`
                     ? 'border-primary-500 text-gray-900'
                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
-                Pricing
+                {t.pricing}
               </Link>
               <Link
-                href="/about"
+                href={linkWithLocale(locale, '/about') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname === '/about'
+                  pathname === `/${locale}/about`
                     ? 'border-primary-500 text-gray-900'
                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
-                About
+                {t.about}
               </Link>
             </nav>
           </div>
@@ -112,47 +150,47 @@ export default function Header() {
                       </span>
                     </div>
                     <Link
-                      href="/dashboard"
+                      href={linkWithLocale(locale, '/dashboard') as any}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      📊 Dashboard
+                      {t.dashboard}
                     </Link>
                     <Link
-                      href="/dashboard/bookmarks"
+                      href={linkWithLocale(locale, '/dashboard/bookmarks') as any}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      🔖 Bookmarks
+                      {t.bookmarks}
                     </Link>
                     <Link
-                      href="/dashboard/settings"
+                      href={linkWithLocale(locale, '/dashboard/settings') as any}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      ⚙️ Settings
+                      {t.settings}
                     </Link>
                     {isAdmin && (
                       <>
                         <div className="border-t border-gray-100 my-1"></div>
                         <Link
-                          href="/admin"
+                          href={linkWithLocale(locale, '/admin') as any}
                           className="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100"
                           onClick={() => setShowUserMenu(false)}
                         >
-                          🛡️ Admin Panel
+                          {t.admin}
                         </Link>
                       </>
                     )}
                     <div className="border-t border-gray-100 my-1"></div>
                     <button
                       onClick={() => {
-                        signOut({ callbackUrl: '/' });
+                        signOut({ callbackUrl: `/${locale}` });
                         setShowUserMenu(false);
                       }}
                       className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                     >
-                      🚪 Sign Out
+                      {t.signOut}
                     </button>
                   </div>
                 )}
@@ -160,16 +198,16 @@ export default function Header() {
             ) : (
               <>
                 <Link
-                  href="/login"
+                  href={linkWithLocale(locale, '/login') as any}
                   className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
                 >
-                  Sign in
+                  {t.signIn}
                 </Link>
                 <Link
-                  href="/pricing"
+                  href={linkWithLocale(locale, '/pricing') as any}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors"
                 >
-                  Get Started
+                  {t.getStarted}
                 </Link>
               </>
             )}
