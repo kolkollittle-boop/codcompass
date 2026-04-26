@@ -29,6 +29,20 @@ const excludedPaths = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Redirect root to default locale KB
+  if (pathname === '/') {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${defaultLocale}/kb`;
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect bare locale to KB
+  if (locales.includes(pathname.slice(1))) {
+    const url = request.nextUrl.clone();
+    url.pathname = `${pathname}/kb`;
+    return NextResponse.redirect(url);
+  }
+
   // Skip excluded paths
   if (excludedPaths.some(path => pathname.startsWith(path))) {
     return NextResponse.next();
