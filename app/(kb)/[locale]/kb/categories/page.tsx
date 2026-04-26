@@ -135,7 +135,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   // Fetch articles for each category
   const categoryData = await Promise.all(
     categories.map(async (category) => {
-      const articles = await getPublishedArticles(5, 0, locale);
+      const articles = await getPublishedArticles(100, 0, locale);
       const filteredArticles = articles.filter((a: any) => 
         a.categories?.some((c: any) => c.Category?.[0]?.slug === category.slug)
       );
