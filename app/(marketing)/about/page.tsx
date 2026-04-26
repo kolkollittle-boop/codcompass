@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Icon } from '@/components/ui';
 
 export default function AboutPage() {
   return (
@@ -34,31 +35,33 @@ export default function AboutPage() {
                   <svg className="w-6 h-6 text-indigo-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>📚 Curating high-quality technical content, rejecting information noise</span>
+                  <span><Icon name="book-marked" size={16} className="inline text-indigo-600 mr-1" /> Curating high-quality technical content, rejecting information noise</span>
                 </li>
                 <li className="flex items-start">
                   <svg className="w-6 h-6 text-indigo-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>💻 Providing production-ready code examples from real projects</span>
+                  <span><Icon name="code" size={16} className="inline text-indigo-600 mr-1" /> Providing production-ready code examples from real projects</span>
                 </li>
                 <li className="flex items-start">
                   <svg className="w-6 h-6 text-indigo-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>🔄 Weekly updates on the latest frameworks, tools, and best practices</span>
+                  <span><Icon name="refresh" size={16} className="inline text-indigo-600 mr-1" /> Weekly updates on the latest frameworks, tools, and best practices</span>
                 </li>
                 <li className="flex items-start">
                   <svg className="w-6 h-6 text-indigo-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>🎯 Focusing on modern tech stacks like React, TypeScript, Next.js</span>
+                  <span><Icon name="target" size={16} className="inline text-indigo-600 mr-1" /> Focusing on modern tech stacks like React, TypeScript, Next.js</span>
                 </li>
               </ul>
             </div>
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <div className="text-center">
-                <div className="text-6xl mb-4">🧭</div>
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <Icon name="compass" size={32} className="text-indigo-600" />
+                </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Codcompass</h3>
                 <p className="text-gray-600">Code + Compass = Developer's Compass</p>
                 <p className="text-gray-500 mt-2">Navigating your technical growth</p>
@@ -99,22 +102,22 @@ export default function AboutPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-md p-6 text-center">
-              <div className="w-20 h-20 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl">
-                👨‍💻
+              <div className="w-20 h-20 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <Icon name="code" size={32} className="text-indigo-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Technical Editor</h3>
               <p className="text-gray-600">10 years of frontend development experience, focused on React/TypeScript ecosystem</p>
             </div>
             <div className="bg-white rounded-xl shadow-md p-6 text-center">
-              <div className="w-20 h-20 bg-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl">
-                📝
+              <div className="w-20 h-20 bg-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <Icon name="file-text" size={32} className="text-purple-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Content Strategist</h3>
               <p className="text-gray-600">Technical writing expert, specializing in simplifying complex concepts into easy-to-understand tutorials</p>
             </div>
             <div className="bg-white rounded-xl shadow-md p-6 text-center">
-              <div className="w-20 h-20 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl">
-                🤖
+              <div className="w-20 h-20 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <Icon name="cpu" size={32} className="text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">AI Assistant</h3>
               <p className="text-gray-600">Jarvis - Automated content collection and quality review</p>

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import { Icon } from '@/components/ui';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -26,17 +27,17 @@ export const metadata: Metadata = {
 
 const features = [
   {
-    icon: '📚',
+    icon: 'book-marked' as const,
     title: 'Curated Technical Content',
     desc: 'No fluff. Every article is reviewed for accuracy and practical value.',
   },
   {
-    icon: '💻',
+    icon: 'code' as const,
     title: 'Production-Ready Code',
     desc: 'All code examples come from real projects, not toy examples.',
   },
   {
-    icon: '🔄',
+    icon: 'refresh' as const,
     title: 'Updated Weekly',
     desc: 'Fresh content on the latest frameworks, tools, and best practices.',
   },
@@ -68,15 +69,17 @@ export default function HomePage() {
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
               <Link
                 href={"/kb" as any}
-                className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
               >
+                <Icon name="book" size={20} />
                 Browse Articles
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center px-8 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 View Pricing
+                <Icon name="arrow-right" size={18} />
               </Link>
             </div>
           </div>
@@ -105,8 +108,10 @@ export default function HomePage() {
             </div>
             <div className="grid md:grid-cols-3 gap-8">
               {features.map((f) => (
-                <div key={f.title} className="bg-gray-50 rounded-xl p-8 hover:bg-gray-100 transition-colors">
-                  <div className="text-4xl mb-4">{f.icon}</div>
+                <div key={f.title} className="bg-gray-50 rounded-xl p-8 hover:bg-gray-100 transition-colors group">
+                  <div className="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center mb-4 group-hover:bg-indigo-200 transition-colors">
+                    <Icon name={f.icon} size={24} className="text-indigo-600" />
+                  </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{f.title}</h3>
                   <p className="text-gray-600">{f.desc}</p>
                 </div>
@@ -131,9 +136,10 @@ export default function HomePage() {
             </p>
             <Link
               href="/pricing"
-              className="mt-8 inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-indigo-700 bg-white hover:bg-indigo-50 transition-colors"
+              className="mt-8 inline-flex items-center gap-2 px-8 py-3 border border-transparent text-base font-medium rounded-lg text-indigo-700 bg-white hover:bg-indigo-50 transition-colors"
             >
               Get Started
+              <Icon name="arrow-right" size={18} />
             </Link>
           </div>
         </section>

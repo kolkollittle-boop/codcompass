@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Icon } from '@/components/ui';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ export default function ContactPage() {
               <div className="space-y-6">
                 <div className="flex items-start">
                   <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
-                    📧
+                    <Icon name="mail" size={20} className="text-indigo-600" />
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900">Email</h3>
@@ -54,7 +55,7 @@ export default function ContactPage() {
                 </div>
                 <div className="flex items-start">
                   <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
-                    💬
+                    <Icon name="message" size={20} className="text-indigo-600" />
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900">Online Support</h3>
@@ -63,7 +64,7 @@ export default function ContactPage() {
                 </div>
                 <div className="flex items-start">
                   <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
-                    🌐
+                    <Icon name="globe" size={20} className="text-indigo-600" />
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900">Social Media</h3>
@@ -73,7 +74,7 @@ export default function ContactPage() {
               </div>
 
               <div className="mt-8 p-6 bg-gray-50 rounded-xl">
-                <h3 className="font-bold text-gray-900 mb-2">💡 FAQ</h3>
+                <h3 className="font-bold text-gray-900 mb-2"><Icon name="lightbulb" size={16} className="inline text-amber-500 mr-1" /> FAQ</h3>
                 <p className="text-gray-600 text-sm">
                   Before contacting us, check our <a href="/help" className="text-indigo-600 hover:underline">Help Center</a> - you may already find the answer you need.
                 </p>
@@ -84,7 +85,9 @@ export default function ContactPage() {
             <div>
               {submitted ? (
                 <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-                  <div className="text-4xl mb-4">✅</div>
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
+                    <Icon name="check" size={24} className="text-green-600" />
+                  </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h3>
                   <p className="text-gray-600">We will reply to you within 24 hours.</p>
                 </div>

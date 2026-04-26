@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Icon } from './ui';
 
 interface ReviewResult {
   score: number;
@@ -125,7 +126,8 @@ export default function CodeReview() {
                   <p className="text-sm text-gray-900 mt-1">{issue.message}</p>
                   {issue.suggestion && (
                     <p className="text-sm text-gray-600 mt-1">
-                      💡 {issue.suggestion}
+                    <Icon name="lightbulb" size={14} className="inline text-amber-500 mr-1" />
+                    {issue.suggestion}
                     </p>
                   )}
                 </div>
@@ -133,7 +135,9 @@ export default function CodeReview() {
             </div>
           ) : (
             <div className="px-4 py-8 text-center">
-              <div className="text-4xl mb-2">✅</div>
+              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-100 flex items-center justify-center">
+                <Icon name="check" size={24} className="text-green-600" />
+              </div>
               <p className="text-sm text-gray-500">No issues found!</p>
             </div>
           )}

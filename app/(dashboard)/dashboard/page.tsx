@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Icon } from '@/components/ui';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -86,18 +87,24 @@ export default function DashboardPage() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <a href="/kb" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <div className="text-2xl mb-3">📚</div>
+            <a href="/kb" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow group">
+              <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center mb-3 group-hover:bg-indigo-200 transition-colors">
+                <Icon name="book" size={20} className="text-indigo-600" />
+              </div>
               <h3 className="font-bold text-gray-900 mb-1">Browse Articles</h3>
               <p className="text-sm text-gray-600">Explore our knowledge base</p>
             </a>
-            <a href="/dashboard/bookmarks" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <div className="text-2xl mb-3">🔖</div>
+            <a href="/dashboard/bookmarks" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow group">
+              <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center mb-3 group-hover:bg-amber-200 transition-colors">
+                <Icon name="bookmark" size={20} className="text-amber-600" />
+              </div>
               <h3 className="font-bold text-gray-900 mb-1">My Bookmarks</h3>
               <p className="text-sm text-gray-600">View saved articles</p>
             </a>
-            <a href="/dashboard/settings" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <div className="text-2xl mb-3">⚙️</div>
+            <a href="/dashboard/settings" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow group">
+              <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
+                <Icon name="settings" size={20} className="text-gray-600" />
+              </div>
               <h3 className="font-bold text-gray-900 mb-1">Settings</h3>
               <p className="text-sm text-gray-600">Manage your account</p>
             </a>
@@ -106,7 +113,10 @@ export default function DashboardPage() {
           {/* Admin Section */}
           {isAdmin && (
             <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-6">
-              <h2 className="text-xl font-bold text-indigo-900 mb-4">🛡️ Admin Panel</h2>
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="shield" size={24} className="text-indigo-600" />
+                <h2 className="text-xl font-bold text-indigo-900">Admin Panel</h2>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <a href="/admin" className="bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
                   <h3 className="font-bold text-gray-900 mb-1">Admin Dashboard</h3>

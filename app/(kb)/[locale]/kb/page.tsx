@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getPublishedArticles } from '@/lib/supabase';
 import { getArticleContent, type Locale } from '@/lib/i18n';
+import { Icon } from '@/components/ui';
 import type { Metadata } from 'next';
 
 interface KbIndexPageProps {
@@ -69,8 +70,8 @@ const translations = {
     title: 'Knowledge Base',
     subtitle: 'Curated technical tutorials and expert insights for developers',
     allTopics: 'All Topics',
-    premium: '🔒 Premium',
-    trending: '🔥 Trending',
+    premium: 'Premium',
+    trending: 'Trending',
     read: 'read',
     noArticles: 'No articles yet',
     checkBack: "We're working on adding content. Check back soon!",
@@ -79,8 +80,8 @@ const translations = {
     title: '知识库',
     subtitle: '为开发者精选的技术教程和专家见解',
     allTopics: '所有主题',
-    premium: '🔒 付费',
-    trending: '🔥 热门',
+    premium: '付费',
+    trending: '热门',
     read: '阅读',
     noArticles: '暂无文章',
     checkBack: '我们正在添加内容，请稍后再来！',
@@ -160,12 +161,14 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                           {article.difficulty}
                         </span>
                         {article.isPremium && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                            <Icon name="lock" size={12} />
                             {t.premium}
                           </span>
                         )}
                         {article.isTrending && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <Icon name="flame" size={12} />
                             {t.trending}
                           </span>
                         )}
@@ -186,16 +189,16 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                       href={`/${locale}/kb/${article.slug}`}
                       className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                      <Icon name="arrow-right" size={18} />
                     </Link>
                   </div>
                 </article>
               ))
             ) : (
               <div className="text-center py-16">
-                <div className="text-6xl mb-4">📚</div>
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <Icon name="book" size={32} className="text-indigo-600" />
+                </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.noArticles}</h2>
                 <p className="text-gray-600">{t.checkBack}</p>
               </div>
@@ -210,9 +213,10 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 {currentPage > 1 && (
                   <Link
                     href={`/${locale}/kb?page=${currentPage - 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    ← {locale === 'zh' ? '上一页' : 'Previous'}
+                    <Icon name="chevron-left" size={16} />
+                    {locale === 'zh' ? '上一页' : 'Previous'}
                   </Link>
                 )}
 
@@ -249,9 +253,10 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 {currentPage < Math.ceil(117 / itemsPerPage) && (
                   <Link
                     href={`/${locale}/kb?page=${currentPage + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    {locale === 'zh' ? '下一页' : 'Next'} →
+                    {locale === 'zh' ? '下一页' : 'Next'}
+                    <Icon name="chevron-right" size={16} />
                   </Link>
                 )}
               </nav>

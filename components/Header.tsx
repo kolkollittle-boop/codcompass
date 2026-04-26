@@ -6,6 +6,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchBar from './SearchBar';
+import { Icon } from './ui';
 
 interface HeaderProps {
   locale?: string;
@@ -38,11 +39,11 @@ export default function Header({ locale = 'en' }: HeaderProps) {
     blog: '博客',
     pricing: '定价',
     about: '关于',
-    dashboard: '📊 仪表盘',
-    bookmarks: '🔖 书签',
-    settings: '⚙️ 设置',
-    admin: '🛡️ 管理面板',
-    signOut: '🚪 退出登录',
+    dashboard: '仪表盘',
+    bookmarks: '书签',
+    settings: '设置',
+    admin: '管理面板',
+    signOut: '退出登录',
     signIn: '登录',
     getStarted: '开始使用',
   } : {
@@ -51,11 +52,11 @@ export default function Header({ locale = 'en' }: HeaderProps) {
     blog: 'Blog',
     pricing: 'Pricing',
     about: 'About',
-    dashboard: '📊 Dashboard',
-    bookmarks: '🔖 Bookmarks',
-    settings: '⚙️ Settings',
-    admin: '🛡️ Admin Panel',
-    signOut: '🚪 Sign Out',
+    dashboard: 'Dashboard',
+    bookmarks: 'Bookmarks',
+    settings: 'Settings',
+    admin: 'Admin Panel',
+    signOut: 'Sign Out',
     signIn: 'Sign in',
     getStarted: 'Get Started',
   };
@@ -142,9 +143,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                   <span className="text-sm font-medium text-gray-700">
                     {session.user?.name || 'User'}
                   </span>
-                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <Icon name="chevron-down" size={16} className="text-gray-500" />
                 </button>
 
                 {/* User Dropdown Menu */}
@@ -159,23 +158,26 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                     </div>
                     <Link
                       href={linkWithLocale(locale, '/dashboard') as any}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setShowUserMenu(false)}
                     >
+                      <Icon name="dashboard" size={16} className="text-gray-500" />
                       {t.dashboard}
                     </Link>
                     <Link
                       href={linkWithLocale(locale, '/dashboard/bookmarks') as any}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setShowUserMenu(false)}
                     >
+                      <Icon name="bookmark" size={16} className="text-gray-500" />
                       {t.bookmarks}
                     </Link>
                     <Link
                       href={linkWithLocale(locale, '/dashboard/settings') as any}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setShowUserMenu(false)}
                     >
+                      <Icon name="settings" size={16} className="text-gray-500" />
                       {t.settings}
                     </Link>
                     {isAdmin && (
@@ -183,9 +185,10 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                         <div className="border-t border-gray-100 my-1"></div>
                         <Link
                           href={linkWithLocale(locale, '/admin') as any}
-                          className="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100"
                           onClick={() => setShowUserMenu(false)}
                         >
+                          <Icon name="shield" size={16} className="text-indigo-500" />
                           {t.admin}
                         </Link>
                       </>
@@ -196,8 +199,9 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                         signOut({ callbackUrl: `/${locale}` });
                         setShowUserMenu(false);
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                     >
+                      <Icon name="log-out" size={16} className="text-red-500" />
                       {t.signOut}
                     </button>
                   </div>
