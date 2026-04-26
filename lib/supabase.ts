@@ -21,7 +21,10 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Server-side (admin) - only use in server components/API routes
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+// Guarded to prevent crashing in client components where SUPABASE_SERVICE_ROLE_KEY is undefined
+export const supabaseAdmin = supabaseServiceKey 
+  ? createClient(supabaseUrl, supabaseServiceKey) 
+  : undefined as any;
 
 export type Article = {
   id: string;
