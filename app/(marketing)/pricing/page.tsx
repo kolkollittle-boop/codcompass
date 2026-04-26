@@ -34,6 +34,7 @@ export default function PricingPage() {
       ],
       cta: 'Get Started',
       mostPopular: false,
+      planId: 'free',
     },
     {
       name: 'Builder',
@@ -48,6 +49,7 @@ export default function PricingPage() {
       ],
       cta: 'Start Free Trial',
       mostPopular: true,
+      planId: 'builder',
     },
     {
       name: 'Pro',
@@ -62,6 +64,7 @@ export default function PricingPage() {
       ],
       cta: 'Start Free Trial',
       mostPopular: false,
+      planId: 'pro',
     },
     {
       name: 'Enterprise',
@@ -76,6 +79,7 @@ export default function PricingPage() {
       ],
       cta: 'Contact Sales',
       mostPopular: false,
+      planId: 'enterprise',
     },
   ];
 

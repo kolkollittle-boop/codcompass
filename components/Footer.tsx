@@ -15,7 +15,7 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Product</h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <Link href="/kb" className="text-base text-gray-500 hover:text-gray-900">
+                <Link href={"/kb" as any} className="text-base text-gray-500 hover:text-gray-900">
                   Knowledge Base
                 </Link>
               </li>
@@ -27,6 +27,11 @@ export default function Footer() {
               <li>
                 <Link href="/pricing" className="text-base text-gray-500 hover:text-gray-900">
                   Pricing
+                </Link>
+              </li>
+              <li>
+                <Link href="/checkout" className="text-base text-gray-500 hover:text-gray-900">
+                  Checkout
                 </Link>
               </li>
               <li>

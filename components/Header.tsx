@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
+import LanguageSwitcher from './LanguageSwitcher';
+import SearchBar from './SearchBar';
 
 export default function Header() {
   const pathname = usePathname();
@@ -24,7 +26,7 @@ export default function Header() {
             </div>
             <nav className="ml-8 flex space-x-6">
               <Link
-                href="/kb"
+                href={"/kb" as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                   pathname?.startsWith('/kb')
                     ? 'border-primary-500 text-gray-900'
@@ -65,7 +67,9 @@ export default function Header() {
               </Link>
             </nav>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 flex-1 max-w-lg">
+            <SearchBar />
+            <LanguageSwitcher />
             {session ? (
               <div className="relative">
                 <button

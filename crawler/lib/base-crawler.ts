@@ -5,8 +5,8 @@
  */
 
 import { Agent } from 'http';
-import HttpProxyAgent from 'http-proxy-agent';
-import HttpsProxyAgent from 'https-proxy-agent';
+import { HttpProxyAgent } from 'http-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { getProxyPool } from './proxy-pool';
 import { SITE_CONFIGS, RATE_LIMITS } from '../config/proxy-config';
 

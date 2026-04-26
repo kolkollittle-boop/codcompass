@@ -1,5 +1,11 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service - Codcompass',
+  description: 'Read the terms of service for Codcompass knowledge base platform.',
+};
 
 export default function TermsPage() {
   return (

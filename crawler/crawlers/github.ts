@@ -4,7 +4,7 @@
  * 使用多节点代理爬取 GitHub Trending
  */
 
-import { BaseCrawler, CrawlResult } from './lib/base-crawler';
+import { BaseCrawler, CrawlResult } from '../lib/base-crawler';
 import * as cheerio from 'cheerio';
 
 interface RepoInfo {

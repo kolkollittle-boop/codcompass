@@ -67,7 +67,7 @@ export default function HomePage() {
             </p>
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
               <Link
-                href="/kb"
+                href={"/kb" as any}
                 className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
               >
                 Browse Articles

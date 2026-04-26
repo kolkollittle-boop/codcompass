@@ -1,5 +1,11 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy - Codcompass',
+  description: 'Read the privacy policy for Codcompass knowledge base platform.',
+};
 
 export default function PrivacyPage() {
   return (

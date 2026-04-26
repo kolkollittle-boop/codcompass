@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 interface PricingPlan {
   name: string;
   price: string;
@@ -5,9 +7,12 @@ interface PricingPlan {
   features: string[];
   cta: string;
   mostPopular: boolean;
+  planId: string;
 }
 
 export default function PricingCard({ plan }: { plan: PricingPlan }) {
+  const checkoutUrl = `/checkout?plan=${plan.planId}&billing=monthly`;
+  
   return (
     <div className={`flex flex-col rounded-2xl border-2 p-6 ${
       plan.mostPopular
@@ -37,13 +42,16 @@ export default function PricingCard({ plan }: { plan: PricingPlan }) {
           </li>
         ))}
       </ul>
-      <button className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
-        plan.mostPopular
-          ? 'bg-primary-600 text-white hover:bg-primary-700'
-          : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-      }`}>
+      <Link
+        href={checkoutUrl as any}
+        className={`block w-full text-center py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
+          plan.mostPopular
+            ? 'bg-primary-600 text-white hover:bg-primary-700'
+            : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+        }`}
+      >
         {plan.cta}
-      </button>
+      </Link>
     </div>
   );
 }

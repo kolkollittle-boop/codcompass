@@ -74,7 +74,7 @@ export default function HelpPage() {
               <h3 className="font-bold text-gray-900 mb-2">Pricing Plans</h3>
               <p className="text-sm text-gray-600">View our subscription plans and features</p>
             </Link>
-            <Link href="/kb" className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow text-center">
+            <Link href={"/kb" as any} className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow text-center">
               <div className="text-3xl mb-3">📚</div>
               <h3 className="font-bold text-gray-900 mb-2">Knowledge Base</h3>
               <p className="text-sm text-gray-600">Browse all technical tutorials and articles</p>

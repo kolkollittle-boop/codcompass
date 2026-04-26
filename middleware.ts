@@ -1,16 +1,70 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+
+const locales = ['en', 'zh'];
+const defaultLocale = 'en';
+
+// Files that should not be processed by the middleware
+const excludedPaths = [
+  '/favicon.ico',
+  '/robots.txt',
+  '/sitemap.xml',
+  '/api/',
+  '/_next/',
+  '/static/',
+  '/terms',
+  '/privacy',
+  '/refund',
+  '/checkout',
+  '/pricing',
+  '/blog',
+  '/about',
+  '/contact',
+  '/help',
+  '/login',
+  '/dashboard',
+  '/admin',
+  '/status',
+];
 
 export function middleware(request: NextRequest) {
-  // 暂时不做认证拦截，所有页面开放
-  // 未来接入认证后在这里加判断
-  
-  return NextResponse.next();
+  const { pathname } = request.nextUrl;
+
+  // Skip excluded paths
+  if (excludedPaths.some(path => pathname.startsWith(path))) {
+    return NextResponse.next();
+  }
+
+  // Check if pathname already has a locale
+  const pathnameHasLocale = locales.some(
+    locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  );
+
+  if (pathnameHasLocale) {
+    return NextResponse.next();
+  }
+
+  // Get locale from cookie
+  const locale = request.cookies.get('NEXT_LOCALE')?.value || defaultLocale;
+
+  // Rewrite to localized path (internal redirect)
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}${pathname}`;
+
+  const response = NextResponse.rewrite(url);
+  // Set locale header for page components to read
+  response.headers.set('x-locale', locale);
+  return response;
 }
 
 export const config = {
   matcher: [
-    '/kb/:path*',
-    '/dashboard/:path*',
+    /*
+     * Match all request paths except:
+     * - api routes
+     * - _next/static
+     * - _next/image
+     * - favicon.ico
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
   ],
 };
