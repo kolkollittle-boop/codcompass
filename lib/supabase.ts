@@ -2,13 +2,19 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // Client-side (public)
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Server-side (admin) - only use in server components/API routes
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+// Server-side (admin) - lazy loaded to avoid client-side errors
+let _supabaseAdmin: ReturnType<typeof createClient> | null = null;
+export function getSupabaseAdmin() {
+  if (!_supabaseAdmin) {
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    _supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  }
+  return _supabaseAdmin;
+}
 
 export type Article = {
   id: string;
@@ -40,7 +46,8 @@ export type Article = {
 };
 
 export async function getArticleBySlug(slug: string, locale?: string): Promise<Article | null> {
-  let query = supabaseAdmin
+  const admin = getSupabaseAdmin();
+  let query = admin
     .from('Article')
     .select(`
       id,
@@ -95,8 +102,9 @@ export async function getArticleBySlug(slug: string, locale?: string): Promise<A
 }
 
 export async function getPublishedArticles(limit = 20, offset = 0, locale?: string) {
-  // Use supabaseAdmin to bypass RLS for public article listing
-  let query = supabaseAdmin
+  // Use getSupabaseAdmin() to bypass RLS for public article listing
+  const admin = getSupabaseAdmin();
+  let query = admin
     .from('Article')
     .select(`
       id,
