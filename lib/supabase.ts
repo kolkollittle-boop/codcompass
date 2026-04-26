@@ -153,8 +153,32 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
     return [];
   }
 
-  // Use supabaseAdmin to bypass RLS
-  let query = supabaseAdmin
+  // Step 1: Get the category ID by slug
+  const { data: category } = await supabaseAdmin
+    .from('Category')
+    .select('id')
+    .eq('slug', slug)
+    .single();
+
+  if (!category) {
+    return [];
+  }
+
+  // Step 2: Get articles in this category via the join table
+  const { data: joinRows, error: joinError } = await supabaseAdmin
+    .from('_ArticleToCategory')
+    .select('A') // A = Article.id
+    .eq('B', category.id); // B = Category.id
+
+  if (joinError || !joinRows || joinRows.length === 0) {
+    if (joinError) console.error('[getArticlesByCategorySlug] Join query error:', joinError);
+    return [];
+  }
+
+  const articleIds = joinRows.map((row: any) => row.A);
+
+  // Step 3: Fetch article details
+  const { data, error } = await supabaseAdmin
     .from('Article')
     .select(`
       id,
@@ -171,11 +195,9 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
       translations:ArticleTranslation(locale, title, excerpt)
     `)
     .eq('isPublished', true)
-    .eq('Category.slug', slug) // Filter by category
+    .in('id', articleIds)
     .order('publishedAt', { ascending: false })
     .range(offset, offset + limit - 1);
-
-  const { data, error } = await query;
 
   if (error) {
     console.error('[getArticlesByCategorySlug] Error:', error);
