@@ -10,7 +10,8 @@ interface CategoryPageProps {
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const locale = params.locale;
+  const resolvedParams = await params;
+  const locale = resolvedParams.locale;
   
   if (locale === 'zh') {
     return {
@@ -127,7 +128,8 @@ const translations = {
 };
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const locale = params.locale;
+  const resolvedParams = await params;
+  const locale = resolvedParams.locale;
   const t = translations[locale];
   
   // Fetch articles for each category
