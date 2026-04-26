@@ -2,7 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 
 const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseUrl = rawUrl.replace(/^["']|["']$/g, ""); // Remove potential quotes
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabaseAnonKey = rawKey.replace(/^["']|["']$/g, ""); // Remove potential quotes
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // Client-side (public)
