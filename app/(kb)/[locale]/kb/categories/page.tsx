@@ -166,7 +166,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           {categoryData.map((category) => (
             <Link
               key={category.slug}
-              href={`/${locale}/kb?category=${category.slug}`}
+              href={`/${locale}/kb/categories/${category.slug}`}
               className="group bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1"
             >
               <div className="flex items-start justify-between mb-4">
@@ -189,17 +189,18 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               {category.articles.length > 0 && (
                 <div className="space-y-2">
                   {category.articles.map((article: any) => (
-                    <div
+                    <Link
                       key={article.id}
-                      className="flex items-center gap-2 text-sm"
+                      href={`/${locale}/kb/${article.slug}`}
+                      className="flex items-center gap-2 text-sm hover:text-indigo-600 group/article"
                     >
-                      <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-gray-400 flex-shrink-0 group-hover/article:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       <span className="text-gray-700 truncate">
                         {getArticleContent(article, locale).title}
                       </span>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}

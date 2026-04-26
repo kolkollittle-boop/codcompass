@@ -147,6 +147,43 @@ export async function getPublishedArticles(limit = 20, offset = 0, locale?: stri
   return data;
 }
 
+export async function getArticlesByCategorySlug(slug: string, limit = 20, offset = 0) {
+  if (!supabaseAdmin) {
+    console.error('[getArticlesByCategorySlug] supabaseAdmin is undefined');
+    return [];
+  }
+
+  // Use supabaseAdmin to bypass RLS
+  let query = supabaseAdmin
+    .from('Article')
+    .select(`
+      id,
+      slug,
+      titleEn,
+      excerptEn,
+      isPremium,
+      isPublished,
+      sourceSite,
+      publishedAt,
+      viewCount,
+      categories:_ArticleToCategory!_ArticleToCategory_A_fkey(Category(slug, name)),
+      tags:_ArticleToTag!_ArticleToTag_A_fkey(Tag(slug, name)),
+      translations:ArticleTranslation(locale, title, excerpt)
+    `)
+    .eq('isPublished', true)
+    .eq('Category.slug', slug) // Filter by category
+    .order('publishedAt', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('[getArticlesByCategorySlug] Error:', error);
+    return [];
+  }
+  return data;
+}
+
 export async function incrementViewCount(articleId: string) {
   await supabase.rpc('increment_view_count', { article_id: articleId });
 }
