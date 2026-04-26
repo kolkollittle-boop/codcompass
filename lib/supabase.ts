@@ -111,6 +111,12 @@ export async function getArticleBySlug(slug: string, locale?: string): Promise<A
 }
 
 export async function getPublishedArticles(limit = 20, offset = 0, locale?: string) {
+  // Guard against undefined supabaseAdmin (e.g., in client-side contexts)
+  if (!supabaseAdmin) {
+    console.error('[getPublishedArticles] supabaseAdmin is undefined');
+    return [];
+  }
+
   // Use supabaseAdmin to bypass RLS for public article listing
   let query = supabaseAdmin
     .from('Article')
