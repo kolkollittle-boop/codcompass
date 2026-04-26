@@ -69,17 +69,17 @@ function generateContent(source: string, item: any): {
     contentEn = `<h2>🎯 ${item.title}</h2>
 <p>This story is trending on Hacker News with <strong>${item.score || 0} points</strong> and <strong>${item.descendants || 0} comments</strong>. Let's break down what makes it interesting.</p>
 
-<h3>💡 为什么值得关注</h3>
+<h3>💡 Why It Matters</h3>
 <p>The original article can be found at <a href="${item.url}">${item.url}</a>. The community discussion reveals several key insights that every developer should know about.</p>
 
-<h3>🔧 技术要点</h3>
+<h3>🔧 Tech Details</h3>
 <ul>
 <li><strong>Original discussion:</strong> ${item.by || 'Anonymous'} started the conversation</li>
 <li><strong>Community engagement:</strong> ${item.descendants || 0} comments show strong interest</li>
 <li><strong>Score:</strong> ${item.score || 0} points indicates quality content</li>
 </ul>
 
-<h3>⚠️ 关键思考</h3>
+<h3>⚠️ Key Considerations</h3>
 <p>What makes this story stand out is the community's reaction. The high engagement suggests this topic resonates with developers. Here are some angles to consider:</p>
 <ul>
 <li>How does this affect your daily work?</li>
@@ -87,7 +87,7 @@ function generateContent(source: string, item: any): {
 <li>Are there practical applications you can use today?</li>
 </ul>
 
-<h3>🚀 下一步</h3>
+<h3>🚀 Next Steps</h3>
 <p>Read the <a href="${item.url}">original article</a> and join the <a href="https://news.ycombinator.com/item?id=${item.id}">Hacker News discussion</a> to share your thoughts.</p>`;
     
     slug = item.url
@@ -118,14 +118,14 @@ function generateContent(source: string, item: any): {
     contentEn = `<h2>🎯 ${item.title}</h2>
 <p>${item.description || 'An interesting article from the developer community.'}</p>
 
-<h3>💡 核心要点</h3>
+<h3>💡 Key Takeaways</h3>
 <p>Written by <strong>${item.user?.name || 'Anonymous'}</strong> on Dev.to, this article has received <strong>${item.positive_reactions_count || 0} reactions</strong> and covers important topics for developers.</p>
 
-<h3>🔧 技术内容</h3>
+<h3>🔧 Tech Content</h3>
 <p>Tags: ${(item.tag_list || []).join(', ') || 'General'}</p>
 <p>Reading time: ~${item.reading_time_minutes || 5} minutes</p>
 
-<h3>⚠️ 值得关注的点</h3>
+<h3>⚠️ Why It Matters</h3>
 <p>This article has gained traction in the developer community. Here's why it matters:</p>
 <ul>
 <li>Practical insights from real-world experience</li>
@@ -133,7 +133,7 @@ function generateContent(source: string, item: any): {
 <li>Community-validated approach</li>
 </ul>
 
-<h3>🚀 延伸阅读</h3>
+<h3>🚀 Further Reading</h3>
 <p>Read the <a href="${item.url}">full article on Dev.to</a> for complete details and code examples.</p>`;
     
     slug = item.slug || `devto-${item.id}`;
