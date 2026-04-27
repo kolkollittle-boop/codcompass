@@ -1,6 +1,10 @@
 import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Prevent Next.js from bundling heavy Node.js libraries
+  // These are only used by CLI scripts, not the web app
+  serverExternalPackages: ['turndown', 'cheerio'],
+
   experimental: {
     typedRoutes: true,
   },
