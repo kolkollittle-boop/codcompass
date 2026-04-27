@@ -28,6 +28,7 @@ const MARKDOWN_PATTERNS = [
 
 // ── Content quality red flags ──────────────────────────────────────────────
 const PROMOTIONAL_PATTERNS = [
+  // GitHub / Open Source promotion
   /star\s+the\s+repo/i,
   /pick\s+an?\s+issue/i,
   /we['']re\s+on\s+\[?GitHub/i,
@@ -37,6 +38,37 @@ const PROMOTIONAL_PATTERNS = [
   /building\s+in\s+public/i,
   /good\s+first\s+issue/i,
   /contribute.*roadmap/i,
+
+  // Course / Product sales
+  /\bcheck\s+out\s+(my|our)\s+(course|book|ebook|guide|tutorial|product)/i,
+  /\b(enroll|buy|purchase|get)\s+(now|today|your|access)/i,
+  /limited\s+(time|offer|discount|spots?)/i,
+  /special\s+offer|exclusive\s+deal/i,
+  /save\s+\d+%\s+(today|now)/i,
+  /\buse\s+code\s+\w+\s+(for|to|get|at)/i,
+  /\baffiliate\s+(link|commission|partner|program)/i,
+  /sponsored\s+(by|post|content|article)/i,
+  /paid\s+(promotion|partnership|collaboration)/i,
+  /this\s+post\s+contains\s+(affiliate|sponsored|paid)/i,
+  /as\s+an?\s+(amazon|affiliate)\s+(partner|associate)/i,
+  /i\s+earn\s+(a\s+)?commission/i,
+  /buy\s+me\s+(a\s+)?coffee/i,
+  /support\s+me\s+(on\s+)?(patreon|ko-fi|buy\s*me\s*a\s*coffee)/i,
+
+  // Newsletter / Community growth
+  /join\s+(my|our)\s+(newsletter|discord|telegram|whatsapp|slack|community)/i,
+  /subscribe\s+(to\s+)?(my|our)\s+(newsletter|channel|blog|feed)/i,
+  /follow\s+(me|us)\s+(on\s+)?(twitter|x|linkedin|youtube|instagram)/i,
+  /don['']t\s+miss\s+(out\s+)?(on|a)/i,
+  /sign\s+up\s+(today|now|for)/i,
+  /free\s+(guide|cheat\s*sheet|resource|template|ebook|course)/i,
+
+  // Self-promotion / Personal branding
+  /\bi['']m?\s+(the\s+)?(founder|creator|author|owner|developer)\s+(of|at|behind)/i,
+  /my\s+(startup|company|product|app|tool|platform)/i,
+  /we['']re\s+(building|launching|releasing|shipping)\s+(a\s+)?(new\s+)?(app|tool|platform|product)/i,
+  /download\s+(our|my|the)\s+(app|tool|extension|plugin)/i,
+  /try\s+(it|our|my)\s+(tool|app|product|platform)\s+(today|now|for\s+free)/i,
 ];
 
 const FIRST_PERSON_PROJECT_PITCH = [
@@ -45,6 +77,9 @@ const FIRST_PERSON_PROJECT_PITCH = [
   /hope\s+to\s+see\s+you\s+in\s+the\s+issues/i,
   /if\s+that\s+resonates/i,
   /thanks\s+for\s+reading/i,
+  /let\s+me\s+know\s+what\s+you\s+think/i,
+  /drop\s+a\s+(comment|like|star)/i,
+  /share\s+(this\s+)?(post|article|guide)/i,
 ];
 
 // ── Allowed source types for KB articles ───────────────────────────────────
