@@ -93,6 +93,29 @@ export const ALLOWED_SOURCE_SITES = [
   'rss-feed',
 ];
 
+// Map display names to internal IDs for source validation
+const SOURCE_DISPLAY_NAME_MAP: Record<string, string> = {
+  'Dev.to': 'devto',
+  'dev.to': 'devto',
+  'DEV': 'devto',
+  'Hacker News': 'hackernews',
+  'HN': 'hackernews',
+  'Reddit': 'reddit',
+  'reddit': 'reddit',
+  'CodCompass': 'codcompass',
+  'CPKB': 'codcompass',
+  'Hand Written': 'hand-written',
+  'AI Generated': 'ai-generated',
+  'RSS Feed': 'rss-feed',
+};
+
+/**
+ * Normalize a source site name to its internal ID for validation.
+ */
+export function normalizeSourceSite(sourceSite: string): string {
+  return SOURCE_DISPLAY_NAME_MAP[sourceSite] || sourceSite.toLowerCase();
+}
+
 // ── Minimum content requirements ───────────────────────────────────────────
 const MIN_CONTENT_LENGTH = 200; // characters
 const MAX_EMOJI_RATIO = 0.05; // max 5% emoji characters
@@ -338,8 +361,11 @@ export function validateArticleContent(
   }
 
   // ── 6. Source validation ───────────────────────────────────────────────
-  if (checkSource && sourceSite && !ALLOWED_SOURCE_SITES.includes(sourceSite)) {
-    warnings.push(`Unusual source site: "${sourceSite}". Expected one of: ${ALLOWED_SOURCE_SITES.join(', ')}`);
+  if (checkSource && sourceSite) {
+    const normalizedSource = normalizeSourceSite(sourceSite);
+    if (!ALLOWED_SOURCE_SITES.includes(normalizedSource)) {
+      warnings.push(`Unusual source site: "${sourceSite}". Expected one of: ${ALLOWED_SOURCE_SITES.join(', ')}`);
+    }
   }
 
   // ── 7. Auto-clean if requested ─────────────────────────────────────────
