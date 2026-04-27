@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { getPublishedArticles } from '@/lib/supabase';
+import { getPublishedArticles, getArticleCount, getPremiumCount } from '@/lib/supabase';
 import { getArticleContent, type Locale } from '@/lib/i18n';
+import { CATEGORIES } from '@/lib/categories';
 import type { Metadata } from 'next';
 
 interface CategoryPageProps {
@@ -26,90 +27,6 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   };
 }
 
-const categories = [
-  {
-    slug: 'ai-llm',
-    name: 'AI & LLM',
-    nameZh: 'AI & LLM',
-    description: 'AI 工具、LLM 技术、Prompt Engineering、RAG、Agent',
-    descriptionEn: 'AI tools, LLM technology, prompt engineering, RAG, agents',
-    icon: '🤖',
-    color: 'from-purple-500 to-indigo-500',
-  },
-  {
-    slug: 'database',
-    name: 'Database',
-    nameZh: '数据库',
-    description: 'PostgreSQL、Redis、MongoDB、Supabase、数据管理',
-    descriptionEn: 'PostgreSQL, Redis, MongoDB, Supabase, and data management',
-    icon: '🗄️',
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    slug: 'api',
-    name: 'API Development',
-    nameZh: 'API 开发',
-    description: 'REST、GraphQL、tRPC、认证、速率限制',
-    descriptionEn: 'REST, GraphQL, tRPC, authentication, rate limiting',
-    icon: '🔌',
-    color: 'from-green-500 to-emerald-500',
-  },
-  {
-    slug: 'frontend',
-    name: 'Frontend',
-    nameZh: '前端框架',
-    description: 'React、Next.js、Vue、Svelte、现代 Web 开发',
-    descriptionEn: 'React, Next.js, Vue, Svelte, and modern web development',
-    icon: '🎨',
-    color: 'from-pink-500 to-rose-500',
-  },
-  {
-    slug: 'backend',
-    name: 'Backend',
-    nameZh: '后端技术',
-    description: 'Node.js、Go、Rust、微服务、服务器架构',
-    descriptionEn: 'Node.js, Go, Rust, microservices, and server architecture',
-    icon: '⚙️',
-    color: 'from-orange-500 to-amber-500',
-  },
-  {
-    slug: 'devops',
-    name: 'DevOps',
-    nameZh: 'DevOps',
-    description: 'Docker、Kubernetes、CI/CD、部署、基础设施',
-    descriptionEn: 'Docker, Kubernetes, CI/CD, deployment, and infrastructure',
-    icon: '🚀',
-    color: 'from-red-500 to-orange-500',
-  },
-  {
-    slug: 'mobile',
-    name: 'Mobile Development',
-    nameZh: '移动开发',
-    description: 'React Native、Flutter、Swift、跨平台应用',
-    descriptionEn: 'React Native, Flutter, Swift, and cross-platform apps',
-    icon: '📱',
-    color: 'from-teal-500 to-cyan-500',
-  },
-  {
-    slug: 'security',
-    name: 'Security',
-    nameZh: '安全',
-    description: '认证、加密、渗透测试、安全编码',
-    descriptionEn: 'Authentication, encryption, penetration testing, and secure coding',
-    icon: '🔒',
-    color: 'from-gray-600 to-gray-800',
-  },
-  {
-    slug: 'product',
-    name: 'Product & Startup',
-    nameZh: '产品/创业',
-    description: 'SaaS、增长、变现、独立开发、创业',
-    descriptionEn: 'SaaS, growth, monetization, indie hacking, and entrepreneurship',
-    icon: '💡',
-    color: 'from-yellow-500 to-orange-500',
-  },
-];
-
 const translations = {
   en: {
     title: 'Browse by Category',
@@ -132,10 +49,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const locale = resolvedParams.locale;
   const t = translations[locale];
   
+  // Fetch dynamic counts
+  const totalCount = await getArticleCount();
+  const premiumCount = await getPremiumCount();
+  
   // Fetch articles for each category
   const categoryData = await Promise.all(
-    categories.map(async (category) => {
-      const articles = await getPublishedArticles(100, 0, locale);
+    CATEGORIES.map(async (category) => {
+      const count = await getArticleCount(category.slug);
+      const articles = await getPublishedArticles(3, 0, locale);
       const filteredArticles = articles.filter((a: any) => 
         a.categories?.some((c: any) => c.Category?.slug === category.slug)
       );
@@ -143,7 +65,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       return {
         ...category,
         articles: filteredArticles.slice(0, 3),
-        totalArticles: filteredArticles.length,
+        totalArticles: count,
       };
     })
   );
@@ -220,19 +142,19 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div className="text-3xl font-bold text-gray-900">117</div>
+              <div className="text-3xl font-bold text-gray-900">{totalCount}</div>
               <div className="text-sm text-gray-600 mt-1">
                 {locale === 'zh' ? '篇文章' : 'Articles'}
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-gray-900">9</div>
+              <div className="text-3xl font-bold text-gray-900">{CATEGORIES.length}</div>
               <div className="text-sm text-gray-600 mt-1">
                 {locale === 'zh' ? '个分类' : 'Categories'}
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-gray-900">37</div>
+              <div className="text-3xl font-bold text-gray-900">{premiumCount}</div>
               <div className="text-sm text-gray-600 mt-1">
                 {locale === 'zh' ? '篇付费' : 'Premium'}
               </div>

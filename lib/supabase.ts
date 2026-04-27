@@ -209,3 +209,84 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
 export async function incrementViewCount(articleId: string) {
   await supabase.rpc('increment_view_count', { article_id: articleId });
 }
+
+export async function getCategories() {
+  if (!supabaseAdmin) {
+    console.error('[getCategories] supabaseAdmin is undefined');
+    return [];
+  }
+
+  const { data, error } = await supabaseAdmin
+    .from('Category')
+    .select('id, slug, name')
+    .order('name');
+
+  if (error) {
+    console.error('[getCategories] Error:', error);
+    return [];
+  }
+  return data;
+}
+
+/** Get published article count, optionally filtered by category slug. */
+export async function getArticleCount(categorySlug?: string): Promise<number> {
+  if (!supabaseAdmin) return 0;
+
+  if (!categorySlug) {
+    const { count, error } = await supabaseAdmin
+      .from('Article')
+      .select('*', { count: 'exact', head: true })
+      .eq('isPublished', true);
+    if (error) { console.error('[getArticleCount] Error:', error); return 0; }
+    return count ?? 0;
+  }
+
+  // Count via join table
+  const { data: category } = await supabaseAdmin
+    .from('Category')
+    .select('id')
+    .eq('slug', categorySlug)
+    .single();
+  if (!category) return 0;
+
+  const { count, error } = await supabaseAdmin
+    .from('_ArticleToCategory')
+    .select('A', { count: 'exact', head: true })
+    .eq('B', category.id);
+  if (error) { console.error('[getArticleCount] Join error:', error); return 0; }
+  return count ?? 0;
+}
+
+/** Get counts per category slug. */
+export async function getCategoryCounts(): Promise<Record<string, number>> {
+  if (!supabaseAdmin) return {};
+
+  const { data: categories } = await supabaseAdmin
+    .from('Category')
+    .select('id, slug');
+  if (!categories) return {};
+
+  const counts: Record<string, number> = {};
+  await Promise.all(
+    categories.map(async (cat: any) => {
+      const { count } = await supabaseAdmin
+        .from('_ArticleToCategory')
+        .select('A', { count: 'exact', head: true })
+        .eq('B', cat.id);
+      counts[cat.slug] = count ?? 0;
+    })
+  );
+  return counts;
+}
+
+/** Get premium article count. */
+export async function getPremiumCount(): Promise<number> {
+  if (!supabaseAdmin) return 0;
+  const { count, error } = await supabaseAdmin
+    .from('Article')
+    .select('*', { count: 'exact', head: true })
+    .eq('isPublished', true)
+    .eq('isPremium', true);
+  if (error) { console.error('[getPremiumCount] Error:', error); return 0; }
+  return count ?? 0;
+}

@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { getPublishedArticles } from '@/lib/supabase';
+import { getPublishedArticles, getArticleCount } from '@/lib/supabase';
 import { getArticleContent, type Locale } from '@/lib/i18n';
 import { Icon } from '@/components/ui';
+import { CATEGORIES, categoryBySlug } from '@/lib/categories';
 import type { Metadata } from 'next';
 
 interface KbIndexPageProps {
@@ -50,24 +51,6 @@ export async function generateMetadata({ params }: KbIndexPageProps): Promise<Me
   };
 }
 
-const difficultyMap: Record<string, string> = {
-  'React': 'Beginner',
-  'TypeScript': 'Intermediate',
-  'Next.js': 'Intermediate',
-  'AI/ML': 'Advanced',
-  'DevOps': 'Advanced',
-};
-
-const difficultyColor = (d: string) => {
-  switch (d) {
-    case 'Beginner': return 'bg-green-100 text-green-800';
-    case 'Intermediate': return 'bg-yellow-100 text-yellow-800';
-    case 'Advanced': return 'bg-orange-100 text-orange-800';
-    case 'Expert': return 'bg-red-100 text-red-800';
-    default: return 'bg-gray-100 text-gray-800';
-  }
-};
-
 const translations = {
   en: {
     title: 'Knowledge Base',
@@ -102,24 +85,34 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
   const categoryFilter = resolvedSearchParams.category;
   const itemsPerPage = 12;
   
+  // Fetch total count (optionally filtered by category)
+  const totalArticles = await getArticleCount(categoryFilter);
+  
   // Fetch articles from Supabase with pagination
   const offset = (currentPage - 1) * itemsPerPage;
   const dbArticles = await getPublishedArticles(1000, 0, locale); // fetch all for now to get accurate count
-  const totalArticles = dbArticles.length;
-  const paginatedArticles = dbArticles.slice(offset, offset + itemsPerPage);
+  const filteredDbArticles = categoryFilter
+    ? dbArticles.filter((a: any) => a.categories?.some((c: any) => c.Category?.slug === categoryFilter))
+    : dbArticles;
+  const paginatedArticles = filteredDbArticles.slice(offset, offset + itemsPerPage);
 
   // Map articles with locale-aware content
   const articles = paginatedArticles.length > 0 
     ? paginatedArticles.map((a: any) => {
         const content = getArticleContent(a, locale);
-        const categoryName = a.categories?.[0]?.Category?.[0]?.name || 'General';
+        const firstCat = a.categories?.[0]?.Category?.[0];
+        const catSlug = firstCat?.slug || '';
+        const catInfo = categoryBySlug(catSlug);
+        const categoryName = catInfo 
+          ? (locale === 'zh' ? catInfo.nameZh : catInfo.name) 
+          : 'General';
         return {
           id: a.id,
           slug: a.slug,
           title: content.title,
           excerpt: content.excerpt,
           category: categoryName,
-          difficulty: difficultyMap[categoryName] || 'Intermediate',
+          categorySlug: catSlug,
           date: a.publishedAt ? new Date(a.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
           readTime: `${Math.max(3, Math.ceil((a.contentEn?.length || 1000) / 2000))} ${t.read}`,
           isPremium: a.isPremium,
@@ -127,11 +120,6 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
         };
       })
     : [];
-
-  // Filter by category if specified
-  const filteredArticles = categoryFilter
-    ? articles.filter((a: any) => a.category.toLowerCase().replace(/\s+/g, '-') === categoryFilter.toLowerCase())
-    : articles;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -141,17 +129,40 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
               {t.subtitle}
             </p>
             <div className="mt-6 flex justify-center gap-2 flex-wrap">
-              <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">{t.allTopics}</span>
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">React</span>
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">TypeScript</span>
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">AI/ML</span>
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">DevOps</span>
+              <Link
+                href={`/${locale}/kb`}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                  !categoryFilter
+                    ? 'bg-indigo-100 text-indigo-700'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {t.allTopics}
+              </Link>
+              {CATEGORIES.map((cat) => {
+                const slug = cat.slug;
+                const isActive = categoryFilter === slug;
+                const label = locale === 'zh' ? cat.nameZh : cat.name;
+                return (
+                  <Link
+                    key={slug}
+                    href={`/${locale}/kb?category=${slug}`}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-indigo-100 text-indigo-700'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
           <div className="space-y-6">
-            {filteredArticles.length > 0 ? (
-              filteredArticles.map((article: any) => (
+            {articles.length > 0 ? (
+              articles.map((article: any) => (
                 <article
                   key={article.id}
                   className="bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all group"
@@ -161,9 +172,6 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                           {article.category}
-                        </span>
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${difficultyColor(article.difficulty)}`}>
-                          {article.difficulty}
                         </span>
                         {article.isPremium && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
@@ -211,7 +219,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
           </div>
 
           {/* Pagination */}
-          {filteredArticles.length > 0 && (
+          {articles.length > 0 && (
             <div className="mt-12 flex justify-center">
               <nav className="flex items-center gap-2">
                 {/* Previous button */}
@@ -255,7 +263,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                   })}
 
                 {/* Next button */}
-                {currentPage < Math.ceil(117 / itemsPerPage) && (
+                {currentPage < Math.ceil(totalArticles / itemsPerPage) && (
                   <Link
                     href={`/${locale}/kb?page=${currentPage + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
                     className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"

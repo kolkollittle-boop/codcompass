@@ -1,165 +1,139 @@
 #!/usr/bin/env node
 /**
- * Crawl and process content pipeline
- * Fetches content from various sources and processes it
- * Usage: npx tsx scripts/crawl-and-process.ts
+ * Unified Crawler Orchestrator
+ *
+ * Runs one or more content crawlers to populate the Knowledge Base.
+ * Each crawler extracts content, validates it, and writes clean HTML to the database.
+ *
+ * Usage:
+ *   npx tsx scripts/crawl-and-process.ts                  # Run all crawlers
+ *   npx tsx scripts/crawl-and-process.ts --source devto   # Run specific crawler
+ *   npx tsx scripts/crawl-and-process.ts --source hn      # Run HackerNews crawler
+ *   npx tsx scripts/crawl-and-process.ts --source rss     # Run RSS crawler
+ *   npx tsx scripts/crawl-and-process.ts --dry-run        # Dry run mode
+ *   npx tsx scripts/crawl-and-process.ts --limit 5        # Limit total articles
+ *
+ * Available sources: devto, hn, rss
  */
-import { createClient } from '@supabase/supabase-js';
-import crypto from 'crypto';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { exec } from 'child_process';
+import { promisify } from 'util';
 
-// Simple content processor (without AI)
-function processContent(source: string, data: any): {
-  title: string;
-  content: string;
-  excerpt: string;
-  category: string;
-} {
-  // This is a simple processor - in production, you'd use AI
-  let title = '';
-  let content = '';
-  let excerpt = '';
-  let category = '';
-  
-  switch (source) {
-    case 'hackernews':
-      title = data.title || '';
-      excerpt = `A popular discussion on Hacker News with ${data.score} points and ${data.descendants} comments.`;
-      content = `<h2>${title}</h2><p>${excerpt}</p><p>Source: <a href="${data.url}">${data.url}</a></p>`;
-      category = 'ai-llm'; // Default category
-      break;
-      
-    case 'reddit':
-      title = data.title || '';
-      excerpt = `A popular post on r/${data.subreddit} with ${data.score} upvotes.`;
-      content = `<h2>${title}</h2><p>${excerpt}</p><p>Source: <a href="${data.url}">${data.url}</a></p>`;
-      category = 'frontend'; // Default category
-      break;
-      
-    case 'devto':
-      title = data.title || '';
-      excerpt = data.description || '';
-      content = `<h2>${title}</h2><p>${excerpt}</p><p>Source: <a href="${data.url}">${data.url}</a></p>`;
-      category = 'frontend'; // Default category
-      break;
-      
-    default:
-      title = 'Unknown';
-      excerpt = '';
-      content = '';
-      category = 'frontend';
+const execAsync = promisify(exec);
+
+interface CrawlerDef {
+  name: string;
+  script: string;
+  description: string;
+}
+
+const CRAWLERS: CrawlerDef[] = [
+  {
+    name: 'devto',
+    script: 'scripts/crawl-devto.ts',
+    description: 'Dev.to articles (API-based, clean HTML)',
+  },
+  {
+    name: 'hn',
+    script: 'scripts/crawl-hackernews.ts',
+    description: 'HackerNews top stories (content extraction)',
+  },
+  {
+    name: 'rss',
+    script: 'scripts/crawl-rss.ts',
+    description: 'RSS/Atom feeds (configurable sources)',
+  },
+];
+
+async function runCrawler(crawler: CrawlerDef, extraArgs: string[]): Promise<{ success: boolean; output: string }> {
+  const cmd = `npx tsx ${crawler.script} ${extraArgs.join(' ')}`;
+  console.log(`\n${'='.repeat(60)}`);
+  console.log(`🚀 Running: ${crawler.name} — ${crawler.description}`);
+  console.log(`${'='.repeat(60)}\n`);
+
+  try {
+    const { stdout, stderr } = await execAsync(cmd, {
+      env: { ...process.env, FORCE_COLOR: '1' },
+    });
+    console.log(stdout);
+    if (stderr) console.error(stderr);
+    return { success: true, output: stdout };
+  } catch (error: any) {
+    console.error(`❌ ${crawler.name} failed: ${error.message}`);
+    if (error.stdout) console.log(error.stdout);
+    if (error.stderr) console.error(error.stderr);
+    return { success: false, output: error.message };
   }
-  
-  return { title, content, excerpt, category };
 }
 
 async function main() {
-  console.log('🚀 Starting crawl and process pipeline...');
-  
-  // For now, just create some sample content
-  const sampleArticles = [
-    {
-      slug: 'react-19-new-features',
-      titleEn: 'React 19: New Features Every Developer Should Know',
-      contentEn: '<h2>React 19: The Next Generation</h2><p>React 19 brings significant improvements to developer experience and runtime performance.</p><h3>Server Components by Default</h3><p>Components run on the server unless marked with <code>use client</code>.</p><h3>use() Hook</h3><p>Read promises or context directly:</p><pre><code>import { use } from \'react\';\nfunction UserProfile({ userId }) {\n  const user = use(fetchUser(userId));\n  return <div>{user.name}</div>;\n}</code></pre>',
-      excerptEn: 'React 19 features: Server Components, Actions, use() hook, and performance improvements.',
-      isPremium: false,
-      categorySlug: 'frontend',
-    },
-    {
-      slug: 'typescript-5-new-features',
-      titleEn: 'TypeScript 5: New Features and Improvements',
-      contentEn: '<h2>TypeScript 5: What\'s New</h2><p>TypeScript 5 brings decorators, const type parameters, and performance improvements.</p><h3>Decorators</h3><p>Stage 3 TC39 decorators are now supported for classes and methods.</p><h3>Const Type Parameters</h3><p>Infer more specific types in generics with const type parameters.</p>',
-      excerptEn: 'TypeScript 5: decorators, const type parameters, and performance improvements.',
-      isPremium: false,
-      categorySlug: 'frontend',
-    },
-  ];
-  
-  let created = 0;
-  
-  for (const article of sampleArticles) {
-    try {
-      // Check if article already exists
-      const { data: existing } = await supabase
-        .from('Article')
-        .select('id')
-        .eq('slug', article.slug)
-        .single();
-      
-      if (existing) {
-        console.log(`⏭️  Skipped: ${article.slug} (already exists)`);
-        continue;
-      }
-      
-      // Create article
-      const now = new Date().toISOString();
-      const { data: newArticle, error: createError } = await supabase
-        .from('Article')
-        .insert({
-          id: crypto.randomUUID(),
-          slug: article.slug,
-          titleEn: article.titleEn,
-          contentEn: article.contentEn,
-          excerptEn: article.excerptEn,
-          isPremium: article.isPremium,
-          isPublished: true,
-          status: 'PUBLISHED',
-          publishedAt: now,
-          createdAt: now,
-          updatedAt: now,
-        })
-        .select('id')
-        .single();
-      
-      if (createError) {
-        console.error(`❌ Failed to create ${article.slug}:`, createError.message);
-        continue;
-      }
-      
-      // Link to category
-      const { data: category } = await supabase
-        .from('Category')
-        .select('id')
-        .eq('slug', article.categorySlug)
-        .single();
-      
-      if (category) {
-        await supabase
-          .from('_ArticleToCategory')
-          .insert({ A: newArticle.id, B: category.id });
-      }
-      
-      // Create Chinese translation placeholder
-      const translationNow = new Date().toISOString();
-      await supabase
-        .from('ArticleTranslation')
-        .insert({
-          id: crypto.randomUUID(),
-          articleId: newArticle.id,
-          locale: 'zh',
-          title: article.titleEn, // Keep English for now
-          content: article.contentEn, // Keep English for now
-          excerpt: article.excerptEn,
-          isAutoTranslated: true,
-          isReviewed: false,
-          translatedAt: translationNow,
-          updatedAt: translationNow,
-        });
-      
-      created++;
-      console.log(`✅ Created: ${article.slug}`);
-      
-    } catch (error: any) {
-      console.error(`❌ Error creating ${article.slug}:`, error.message);
+  const args = process.argv.slice(2);
+
+  // Parse arguments
+  let sources: string[] = [];
+  let extraArgs: string[] = [];
+  let dryRun = false;
+  let limit: number | null = null;
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--source' && args[i + 1]) {
+      sources.push(args[++i]);
+    } else if (args[i] === '--limit' && args[i + 1]) {
+      limit = parseInt(args[++i], 10);
+      extraArgs.push('--limit', limit.toString());
+    } else if (args[i] === '--dry-run') {
+      dryRun = true;
+      extraArgs.push('--dry-run');
+    } else {
+      extraArgs.push(args[i]);
     }
   }
-  
-  console.log(`\n✅ Done! Created ${created} articles`);
+
+  // If no sources specified, run all
+  if (sources.length === 0) {
+    sources = CRAWLERS.map((c) => c.name);
+  }
+
+  // Validate sources
+  const validSources = CRAWLERS.map((c) => c.name);
+  const invalidSources = sources.filter((s) => !validSources.includes(s));
+  if (invalidSources.length > 0) {
+    console.error(`❌ Unknown sources: ${invalidSources.join(', ')}`);
+    console.error(`   Valid sources: ${validSources.join(', ')}`);
+    process.exit(1);
+  }
+
+  console.log(`📋 Crawler Orchestrator`);
+  console.log(`   Sources: ${sources.join(', ')}`);
+  console.log(`   Dry run: ${dryRun}`);
+  console.log(`   Limit: ${limit || 'unlimited'}`);
+
+  // Run crawlers sequentially (to avoid overwhelming the database)
+  const results: { name: string; success: boolean }[] = [];
+
+  for (const sourceName of sources) {
+    const crawler = CRAWLERS.find((c) => c.name === sourceName)!;
+    const result = await runCrawler(crawler, extraArgs);
+    results.push({ name: sourceName, success: result.success });
+  }
+
+  // Summary
+  console.log(`\n${'='.repeat(60)}`);
+  console.log(`📊 Crawl Summary`);
+  console.log(`${'='.repeat(60)}`);
+
+  const successCount = results.filter((r) => r.success).length;
+  const failCount = results.filter((r) => !r.success).length;
+
+  for (const result of results) {
+    console.log(`   ${result.success ? '✅' : '❌'} ${result.name}`);
+  }
+
+  console.log(`\n   Total: ${results.length} | Success: ${successCount} | Failed: ${failCount}`);
+
+  if (failCount > 0) {
+    process.exit(1);
+  }
 }
 
 main().catch(console.error);

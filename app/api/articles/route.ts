@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { authenticateRequest, checkRateLimit } from '@/lib/auth-middleware';
+import { validateArticleContent, cleanMarkdownArtifacts } from '@/lib/content-validator';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://ekunyyscyqhasolbbohw.supabase.co';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -82,12 +83,35 @@ export async function POST(req: NextRequest) {
         .eq('slug', article.slug)
         .single();
 
+      // ── Content validation ───────────────────────────────────────────
+      const validation = validateArticleContent(article.contentEn, {
+        strict: true,
+        autoClean: true,
+        checkSource: true,
+        sourceSite: article.sourceSite,
+      });
+
+      if (!validation.valid) {
+        results.push({
+          slug: article.slug,
+          status: 'rejected',
+          error: `Content validation failed: ${validation.errors.join('; ')}`,
+        });
+        continue;
+      }
+
+      // Use cleaned content if auto-cleaning was applied
+      const finalContent = validation.cleanedContent || article.contentEn;
+      if (validation.warnings.length > 0) {
+        console.warn(`[Articles API] Warnings for ${article.slug}:`, validation.warnings);
+      }
+
       const now = new Date().toISOString();
       const insertData: any = {
         id: crypto.randomUUID(),
         slug: article.slug,
         titleEn: article.titleEn,
-        contentEn: article.contentEn,
+        contentEn: finalContent,
         excerptEn: article.excerptEn || null,
         descriptionEn: article.descriptionEn || null,
         isPremium: article.isPremium ?? true,
@@ -100,7 +124,7 @@ export async function POST(req: NextRequest) {
       const updateData: any = {
         slug: article.slug,
         titleEn: article.titleEn,
-        contentEn: article.contentEn,
+        contentEn: finalContent,
         excerptEn: article.excerptEn || null,
         descriptionEn: article.descriptionEn || null,
         isPremium: article.isPremium ?? true,

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getArticlesByCategorySlug } from '@/lib/supabase';
 import { getArticleContent, type Locale } from '@/lib/i18n';
+import { categoryBySlug } from '@/lib/categories';
 import type { Metadata } from 'next';
 
 interface CategorySlugPageProps {
@@ -22,18 +23,6 @@ export async function generateMetadata({ params }: CategorySlugPageProps): Promi
   };
 }
 
-const categoryMap: Record<string, { name: string; nameZh: string; icon: string; color: string }> = {
-  'ai-llm': { name: 'AI & LLM', nameZh: 'AI & LLM', icon: '🤖', color: 'from-purple-500 to-indigo-500' },
-  'database': { name: 'Database', nameZh: '数据库', icon: '🗄️', color: 'from-blue-500 to-cyan-500' },
-  'api': { name: 'API Development', nameZh: 'API 开发', icon: '🔌', color: 'from-green-500 to-emerald-500' },
-  'frontend': { name: 'Frontend', nameZh: '前端框架', icon: '🎨', color: 'from-pink-500 to-rose-500' },
-  'backend': { name: 'Backend', nameZh: '后端技术', icon: '⚙️', color: 'from-orange-500 to-amber-500' },
-  'devops': { name: 'DevOps', nameZh: 'DevOps', icon: '🚀', color: 'from-red-500 to-orange-500' },
-  'mobile': { name: 'Mobile Development', nameZh: '移动开发', icon: '📱', color: 'from-teal-500 to-cyan-500' },
-  'security': { name: 'Security', nameZh: '安全', icon: '🔒', color: 'from-gray-600 to-gray-800' },
-  'product': { name: 'Product & Startup', nameZh: '产品/创业', icon: '💡', color: 'from-yellow-500 to-orange-500' },
-};
-
 const translations = {
   en: {
     allCategories: 'All Categories',
@@ -51,7 +40,7 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
   const slug = resolvedParams.categorySlug;
   const t = translations[locale];
   
-  const catInfo = categoryMap[slug];
+  const catInfo = categoryBySlug(slug);
   if (!catInfo) notFound();
 
   const articles = await getArticlesByCategorySlug(slug, 100, 0);
