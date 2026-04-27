@@ -37,6 +37,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.16.1",
+    "@types/turndown": "^5.0.6",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
     "prisma": "^6.3.0",
