@@ -15,15 +15,15 @@ export interface ValidationResult {
   cleanedContent?: string;
 }
 
-// ── Markdown leakage patterns ──────────────────────────────────────────────
+// ── Markdown leakage patterns (flags Markdown inside HTML) ───────────────
 const MARKDOWN_PATTERNS = [
   { pattern: /\[.*?\]\(#.*?\)/g, name: 'Markdown anchor links' },
   { pattern: /\*\s*\*\s*\*/g, name: 'Unrendered horizontal rules (* * *)' },
   { pattern: /^---$/gm, name: 'Unrendered horizontal rules (---)' },
   { pattern: /!\[.*?\]\(.*?\)/g, name: 'Unrendered image syntax' },
-  { pattern: /`{3,}[\s\S]*?`{3,}/g, name: 'Markdown code blocks (should be <pre><code>)' },
-  { pattern: /^\s*[-*]\s+/gm, name: 'Markdown list items (should be <li>)' },
-  { pattern: /^\s*#{1,6}\s+.+$/gm, name: 'Markdown headings (should be <h1>-<h6>)' },
+  { pattern: /`{3,}[\s\S]*?`{3,}/g, name: 'Markdown code blocks' },
+  { pattern: /^\s*[-*]\s+/gm, name: 'Markdown list items' },
+  { pattern: /^\s*#{1,6}\s+.+$/gm, name: 'Markdown headings' },
 ];
 
 // ── Content quality red flags ──────────────────────────────────────────────
@@ -136,15 +136,31 @@ const URL_PATTERN = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/gi;
 const MAX_URL_COUNT = 50; // Max URLs allowed in content
 
 /**
+ * Detect if content is primarily Markdown (valid) vs HTML with Markdown leakage (invalid).
+ */
+function detectContentFormat(content: string): 'markdown' | 'html' {
+  const htmlTags = content.match(/<[a-z][a-z0-9]*[^>]*>/gi) || [];
+  const mdCode = content.match(/```/g) || [];
+  const mdHeadings = content.match(/^#{1,6}\s/gm) || [];
+  
+  // If it has more MD features than HTML tags, treat as MD
+  return (mdCode.length + mdHeadings.length) > htmlTags.length ? 'markdown' : 'html';
+}
+
+/**
  * Detect if content looks like raw Markdown instead of HTML.
  */
 function detectMarkdownLeakage(content: string): string[] {
   const issues: string[] = [];
 
+  // Skip check if content is primarily Markdown (valid for our KB)
+  if (detectContentFormat(content) === 'markdown') {
+    return [];
+  }
+
   for (const { pattern, name } of MARKDOWN_PATTERNS) {
     const matches = content.match(pattern);
     if (matches && matches.length > 0) {
-      // Code blocks and lists are common — only flag if >3 occurrences
       if (name.includes('code block') || name.includes('list')) {
         if (matches.length > 3) {
           issues.push(`Found ${matches.length} instances of: ${name}`);

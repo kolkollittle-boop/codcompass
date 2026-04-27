@@ -12,6 +12,7 @@ import * as http from 'http';
 import { load } from 'cheerio';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
+import { ContentFormatter } from './content-formatter';
 
 export interface ExtractedArticle {
   title: string;
@@ -115,9 +116,12 @@ export async function extractArticle(html: string, baseUrl: string): Promise<Ext
   const image = extractFeaturedImage($, baseUrl);
   const excerpt = generateExcerpt($content.text(), 200);
 
-  // Clean and normalize content
-  const content = cleanContent($, contentSelector, baseUrl);
-  const wordCount = countWords($content.text());
+  // Clean and normalize content -> Convert to Markdown using SOP guide
+  const rawHtml = cleanContentHtml($, contentSelector, baseUrl);
+  const formatter = new ContentFormatter();
+  const content = formatter.postProcess(formatter.convert(rawHtml), baseUrl);
+  
+  const wordCount = countWords(content);
   const readTime = Math.max(1, Math.ceil(wordCount / 200)); // ~200 words/min
 
   return {
@@ -258,7 +262,7 @@ function generateExcerpt(text: string, maxLength: number): string {
 
 // ── Content Cleaning ────────────────────────────────────────────────────────
 
-function cleanContent($: ReturnType<typeof load>, selector: string, baseUrl: string): string {
+function cleanContentHtml($: ReturnType<typeof load>, selector: string, baseUrl: string): string {
   const $content = $(selector);
 
   // Remove empty elements
