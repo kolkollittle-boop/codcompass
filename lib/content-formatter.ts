@@ -70,23 +70,21 @@ export class ContentFormatter {
    * 如果 turndown 处理不好表格，用正则补强
    */
   private tableToMarkdown(node: any): string {
+    // node is an HTMLElement. Re-parse it locally to avoid scope issues.
+    const $table = cheerio.load(node.outerHTML || '');
     let md = '';
-    $(node)
-      .find('tr')
-      .each((i, row) => {
-        const cells: string[] = [];
-        $(row)
-          .find('td, th')
-          .each((_, cell) => {
-            cells.push($(cell).text().trim());
-          });
-        if (cells.length > 0) {
-          md += '| ' + cells.join(' | ') + ' |\n';
-          if (i === 0) {
-            md += '| ' + cells.map(() => '---').join(' | ') + ' |\n';
-          }
-        }
+    $table('tr').each((i, row) => {
+      const cells: string[] = [];
+      $table(row).find('td, th').each((_, cell) => {
+        cells.push($table(cell).text().trim());
       });
+      if (cells.length > 0) {
+        md += '| ' + cells.join(' | ') + ' |\n';
+        if (i === 0) {
+          md += '| ' + cells.map(() => '---').join(' | ') + ' |\n';
+        }
+      }
+    });
     return md.trim();
   }
 
