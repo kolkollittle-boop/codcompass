@@ -7,40 +7,39 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// 1. 显式定义 Next.js 15 的 Context 类型
-// 注意：params 必须是 Promise
-type RouteContext = {
+// Next.js 15 推荐的类型定义（更简洁清晰）
+type Context = {
   params: Promise<{ id: string }>;
 };
 
 /**
- * PATCH 方法：用于更新文章状态或内容
+ * PATCH 方法：用于更新文章
  */
 export async function PATCH(
   request: NextRequest,
-  context: RouteContext
+  context: Context
 ) {
   try {
-    // ✅ 关键修复：必须 await 整个 params 对象
-    const { id } = await context.params;
+    const { id } = await context.params;     // 必须 await
 
     const body = await request.json();
     const { status, contentEn, titleEn, category, monetization, difficultyLevel, editor_notes } = body;
 
     const updates: any = {};
-    if (contentEn) updates.contentEn = contentEn;
-    if (titleEn) updates.titleEn = titleEn;
-    if (category) updates.category = category;
-    if (monetization) updates.monetization = monetization;
-    if (difficultyLevel) updates.difficulty_level = difficultyLevel;
-    if (editor_notes) updates.editor_notes = editor_notes;
+
+    if (contentEn !== undefined) updates.contentEn = contentEn;
+    if (titleEn !== undefined) updates.titleEn = titleEn;
+    if (category !== undefined) updates.category = category;
+    if (monetization !== undefined) updates.monetization = monetization;
+    if (difficultyLevel !== undefined) updates.difficulty_level = difficultyLevel;
+    if (editor_notes !== undefined) updates.editor_notes = editor_notes;
 
     // 状态流转逻辑
     if (status === 'approved') {
       updates.status = 'published';
       updates.published_at = new Date().toISOString();
-      updates.reviewed_by = 'admin_user'; 
-    } else if (status) {
+      updates.reviewed_by = 'admin_user';
+    } else if (status !== undefined) {
       updates.status = status;
     }
 
@@ -48,14 +47,16 @@ export async function PATCH(
     const { error } = await supabase
       .from('Article')
       .update(updates)
-      .eq('id', id);
+      .eq('id', id)
+      .select()
+      .single();
 
     if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error(`❌ [PATCH] Error at /api/articles/${(await context.params).id}:`, error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error(`❌ [PATCH] Error updating article:`, error.message);
+    return NextResponse.json({ error: error.message || '更新失败' }, { status: 500 });
   }
 }
 
@@ -64,11 +65,10 @@ export async function PATCH(
  */
 export async function GET(
   request: NextRequest,
-  context: RouteContext
+  context: Context
 ) {
   try {
-    // ✅ 同样的修复：必须 await params
-    const { id } = await context.params;
+    const { id } = await context.params;     // 必须 await
 
     const { data, error } = await supabase
       .from('Article')
@@ -77,10 +77,13 @@ export async function GET(
       .single();
 
     if (error) throw error;
-    if (!data) return NextResponse.json({ error: 'Article not found' }, { status: 404 });
+    if (!data) {
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 });
+    }
 
     return NextResponse.json(data);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error(`❌ [GET] Error fetching article:`, error.message);
+    return NextResponse.json({ error: error.message || '获取失败' }, { status: 500 });
   }
 }
