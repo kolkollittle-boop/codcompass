@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   // Prevent Next.js from bundling heavy Node.js libraries
   // These are only used by CLI scripts, not the web app
   serverExternalPackages: ['turndown', 'cheerio'],
+  
+  // Ensure react-resizable-panels is bundled correctly
+  transpilePackages: ['react-resizable-panels'],
 
   experimental: {
     typedRoutes: true,
