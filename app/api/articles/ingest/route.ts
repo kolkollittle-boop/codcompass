@@ -1,33 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// 初始化 Supabase
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-/**
- * ✅ Next.js 15 核心修复：
- * 显式定义 context 类型，params 必须是 Promise
- */
-interface RouteContext {
+// ✅ 1. 定义严格的 Context 类型
+type Context = {
   params: Promise<{ id: string }>;
-}
+};
 
+// ✅ 2. 确保 PATCH 函数签名完全符合 Next.js 15 约束
 export async function PATCH(
-  req: NextRequest, 
-  context: RouteContext // 使用 context 包装 params
+  request: NextRequest, 
+  context: Context
 ) {
   try {
-    // 1. 先异步解构出 id
+    // 关键点：必须先 await params
     const { id } = await context.params;
     
-    // 2. 解析请求体
-    const body = await req.json();
+    const body = await request.json();
     const { status, contentEn, titleEn, category, monetization, difficultyLevel, editor_notes } = body;
 
-    // 3. 准备更新字段
     const updates: any = {};
     if (contentEn) updates.contentEn = contentEn;
     if (titleEn) updates.titleEn = titleEn;
@@ -36,7 +31,6 @@ export async function PATCH(
     if (difficultyLevel) updates.difficulty_level = difficultyLevel;
     if (editor_notes) updates.editor_notes = editor_notes;
 
-    // 4. 业务逻辑处理
     if (status === 'approved') {
       updates.status = 'published';
       updates.published_at = new Date().toISOString();
@@ -45,7 +39,6 @@ export async function PATCH(
       updates.status = status;
     }
 
-    // 5. 更新数据库
     const { error } = await supabase
       .from('Article')
       .update(updates)
@@ -60,10 +53,10 @@ export async function PATCH(
   }
 }
 
-// 💡 记得把 GET 也一并改了，防止 Build 报同样的错误
+// ✅ 3. 同样的，GET 也必须这样写，否则 Build 还是会挂
 export async function GET(
-  req: NextRequest,
-  context: RouteContext
+  request: NextRequest,
+  context: Context
 ) {
   try {
     const { id } = await context.params;
