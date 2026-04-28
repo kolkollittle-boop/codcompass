@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Link from 'next/link';
+import { ArrowRight, FileText, Users, BarChart3, Settings, ShieldCheck } from 'lucide-react';
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
@@ -21,10 +23,10 @@ export default function AdminPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto"></div>
+          <p className="mt-4 text-zinc-400">Loading...</p>
         </div>
       </div>
     );
@@ -33,98 +35,78 @@ export default function AdminPage() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
-      <main className="flex-grow bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Admin Header */}
-          <div className="bg-indigo-600 rounded-xl shadow-sm p-6 mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-white">🛡️ Admin Dashboard</h1>
-                <p className="text-indigo-100 mt-1">Manage your Codcompass platform</p>
+      <main className="flex-grow p-8">
+        {/* 顶部标题 */}
+        <header className="mb-10 border-b border-zinc-800 pb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <ShieldCheck className="w-8 h-8 text-cyan-400" />
+            <h1 className="text-2xl font-bold tracking-tight text-white">COMMAND CENTER</h1>
+          </div>
+          <p className="text-zinc-400 text-sm">CodeCompass AI Knowledge Base Management</p>
+        </header>
+
+        {/* 功能网格 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          
+          {/* 🟢 核心入口：内容审核 */}
+          <Link href="/admin/review" className="group relative block p-6 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-cyan-700 transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-2 bg-cyan-950/50 rounded-lg">
+                <FileText className="w-6 h-6 text-cyan-400" />
               </div>
-              <div className="text-right">
-                <p className="text-white font-medium">{session.user?.name}</p>
-                <p className="text-indigo-100 text-sm">{session.user?.email}</p>
+              <ArrowRight className="w-5 h-5 text-zinc-600 group-hover:text-cyan-400 transition-colors" />
+            </div>
+            <h2 className="text-lg font-semibold mb-1 group-hover:text-cyan-400 transition-colors">Content Review</h2>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              审核 AI 评分后的文章，进行人工干预、难度定级与发布。
+            </p>
+            <div className="mt-4 flex gap-2">
+              <span className="text-[10px] px-2 py-0.5 bg-zinc-800 rounded text-zinc-400">AI Scored</span>
+              <span className="text-[10px] px-2 py-0.5 bg-zinc-800 rounded text-zinc-400">Editorial</span>
+            </div>
+          </Link>
+
+          {/* 🔒 预留入口：用户管理 */}
+          <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-xl opacity-60 cursor-not-allowed">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-2 bg-zinc-800 rounded-lg">
+                <Users className="w-6 h-6 text-zinc-400" />
               </div>
             </div>
+            <h2 className="text-lg font-semibold mb-1 text-zinc-400">User Management</h2>
+            <p className="text-sm text-zinc-600">
+              管理会员订阅、用户权限与积分系统。(Coming Soon)
+            </p>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="text-sm font-medium text-gray-500 mb-1">Total Articles</div>
-              <div className="text-3xl font-bold text-gray-900">8</div>
-              <div className="text-sm text-green-600 mt-2">+5 this week</div>
+          {/* 🔒 预留入口：数据看板 */}
+          <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-xl opacity-60 cursor-not-allowed">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-2 bg-zinc-800 rounded-lg">
+                <BarChart3 className="w-6 h-6 text-zinc-400" />
+              </div>
             </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="text-sm font-medium text-gray-500 mb-1">Total Users</div>
-              <div className="text-3xl font-bold text-gray-900">24</div>
-              <div className="text-sm text-blue-600 mt-2">+8 this week</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="text-sm font-medium text-gray-500 mb-1">Subscribers</div>
-              <div className="text-3xl font-bold text-gray-900">3</div>
-              <div className="text-sm text-yellow-600 mt-2">1 Pro, 2 Builder</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="text-sm font-medium text-gray-500 mb-1">Revenue</div>
-              <div className="text-3xl font-bold text-gray-900">$0</div>
-              <div className="text-sm text-gray-500 mt-2">Lemon Squeezy pending</div>
-            </div>
+            <h2 className="text-lg font-semibold mb-1 text-zinc-400">Analytics</h2>
+            <p className="text-sm text-zinc-600">
+              查看流量来源、文章阅读量与转化率统计。(Coming Soon)
+            </p>
           </div>
 
-          {/* Admin Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <a href="/admin/articles" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <div className="text-2xl mb-3">📝</div>
-              <h3 className="font-bold text-gray-900 mb-1">Manage Articles</h3>
-              <p className="text-sm text-gray-600">Create, edit, and delete articles</p>
-              <div className="mt-4 flex items-center text-indigo-600 text-sm font-medium">
-                Manage →
+          {/* 🔒 预留入口：系统设置 */}
+          <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-xl opacity-60 cursor-not-allowed">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-2 bg-zinc-800 rounded-lg">
+                <Settings className="w-6 h-6 text-zinc-400" />
               </div>
-            </a>
-            <a href="/admin/users" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <div className="text-2xl mb-3">👥</div>
-              <h3 className="font-bold text-gray-900 mb-1">Manage Users</h3>
-              <p className="text-sm text-gray-600">View and manage user accounts</p>
-              <div className="mt-4 flex items-center text-indigo-600 text-sm font-medium">
-                Manage →
-              </div>
-            </a>
-            <a href="/admin/analytics" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <div className="text-2xl mb-3">📊</div>
-              <h3 className="font-bold text-gray-900 mb-1">Analytics</h3>
-              <p className="text-sm text-gray-600">View traffic and engagement stats</p>
-              <div className="mt-4 flex items-center text-indigo-600 text-sm font-medium">
-                View →
-              </div>
-            </a>
+            </div>
+            <h2 className="text-lg font-semibold mb-1 text-zinc-400">System Config</h2>
+            <p className="text-sm text-zinc-600">
+              爬虫调度频率、API 密钥与 Webhook 配置。(Coming Soon)
+            </p>
           </div>
 
-          {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <button className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:shadow-sm transition-all text-center">
-                <div className="text-lg mb-2">➕</div>
-                <div className="text-sm font-medium text-gray-900">New Article</div>
-              </button>
-              <button className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:shadow-sm transition-all text-center">
-                <div className="text-lg mb-2">📤</div>
-                <div className="text-sm font-medium text-gray-900">Import Content</div>
-              </button>
-              <button className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:shadow-sm transition-all text-center">
-                <div className="text-lg mb-2">📧</div>
-                <div className="text-sm font-medium text-gray-900">Send Newsletter</div>
-              </button>
-              <button className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:shadow-sm transition-all text-center">
-                <div className="text-lg mb-2">⚙️</div>
-                <div className="text-sm font-medium text-gray-900">Settings</div>
-              </button>
-            </div>
-          </div>
         </div>
       </main>
       <Footer />

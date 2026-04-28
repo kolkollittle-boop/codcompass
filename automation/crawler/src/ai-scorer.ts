@@ -1,13 +1,28 @@
+// automation/crawler/src/ai-scorer.ts
 import OpenAI from "openai";
+import dotenv from 'dotenv';
+import path from 'path';
 
-const client = new OpenAI({
-  // Alibaba Cloud DashScope
-  baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-  apiKey: process.env.OPENROUTER_API_KEY, 
-});
+// 1. 🚀 必须在最前面加载环境变量
+dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+
+// 2. 延迟创建客户端，避免启动时因找不到 Key 报错
+let client: OpenAI | null = null;
+
+function getClient() {
+  if (!client) {
+    client = new OpenAI({
+      baseURL: "https://coding.dashscope.aliyuncs.com/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
+    });
+  }
+  return client;
+}
 
 export async function scoreArticle(title: string, content: string) {
   const systemPrompt = `
+Please return the result in a strict JSON format.
+
 你是一位资深技术编辑（极客导师风格：专业、干练、结果导向，不说废话）。
 请对以下技术文章进行评分和评估。
 
@@ -27,10 +42,10 @@ JSON 结构:
 {
   "score": 85,
   "dimensions": { "practicality": 40, "timeliness": 25, "uniqueness": 15, "business": 5 },
-  "difficulty_level": "L1", // L1 (入门), L2 (进阶), L3 (专家)
+  "difficulty_level": "L1",
   "is_promotional": false,
-  "mentor_summary": "极简两句话总结核心价值，直击痛点，例如：本文深入解析了 Rust 异步状态机。适合有一定基础但卡在执行流控制的开发者。",
-  "webhook_action": "push_discord" // >80 分返回此值，否则 "save_draft"
+  "mentor_summary": "极简两句话总结核心价值，直击痛点",
+  "webhook_action": "push_discord"
 }
 
 Title: ${title}
@@ -38,7 +53,9 @@ Content Preview: ${content.substring(0, 1200)}...
 `;
 
   try {
-    const completion = await client.chat.completions.create({
+    const c = getClient();
+    
+    const completion = await c.chat.completions.create({
       model: "qwen3.5-plus", 
       messages: [
         { role: "system", content: systemPrompt },
@@ -47,10 +64,9 @@ Content Preview: ${content.substring(0, 1200)}...
       response_format: { type: "json_object" },
     });
 
-    const result = JSON.parse(completion.choices[0].message.content || "{}");
-    return result;
+    return JSON.parse(completion.choices[0].message.content || "{}");
   } catch (e) {
-    console.error("Alibaba Cloud AI Scoring Failed:", e);
+    console.error("AI Scoring Failed:", e);
     return { score: 0, is_promotional: true, error: "API Error" };
   }
 }

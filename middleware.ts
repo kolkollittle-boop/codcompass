@@ -21,6 +21,7 @@ const excludedPaths = [
   '/contact',
   '/help',
   '/login',
+  '/signup',       // ✅ 已加入 signup，放行注册页
   '/dashboard',
   '/admin',
   '/status',
@@ -78,6 +79,8 @@ export const config = {
      * - _next/static
      * - _next/image
      * - favicon.ico
+     * - robots.txt
+     * - sitemap.xml
      */
     '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
   ],
