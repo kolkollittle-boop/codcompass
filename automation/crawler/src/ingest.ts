@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
 
-// 加载环境变量
+// Load env
 dotenv.config({ path: '../../.env.local' });
 
 export async function ingestArticle(data: any) {
   const secret = process.env.INGEST_SECRET;
+  // Default to local if not set
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
   if (!secret) {
@@ -17,7 +18,7 @@ export async function ingestArticle(data: any) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Ingest-Secret": secret,
+      "X-Ingest-Secret": secret, // 🔐 Validation Secret
     },
     body: JSON.stringify(data),
   });

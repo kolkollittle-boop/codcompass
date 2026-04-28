@@ -10,7 +10,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   try {
     const body = await req.json();
     const { id } = params;
-    const { status, contentEn, titleEn, category, monetization, difficultyLevel, related_ids, editor_notes } = body;
+    const { status, contentEn, titleEn, category, monetization, difficultyLevel } = body;
 
     const updates: any = {};
     if (contentEn) updates.contentEn = contentEn;
@@ -18,14 +18,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (category) updates.category = category;
     if (monetization) updates.monetization = monetization;
     if (difficultyLevel) updates.difficulty_level = difficultyLevel;
-    if (editor_notes) updates.editor_notes = editor_notes;
-    if (related_ids) updates.related_ids = related_ids;
 
-    // 🚀 发布逻辑
+    // 🚀 Publish Logic
     if (status === 'approved') {
       updates.status = 'published';
       updates.published_at = new Date().toISOString();
-      updates.reviewed_by = 'admin_current_session'; // TODO: 从 Session 获取真实 ID
+      updates.reviewed_by = 'admin_current_session'; // TODO: Get real user ID from Session
     } else {
       updates.status = status; // scored, rejected, needs_rewrite
     }

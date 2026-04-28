@@ -1,13 +1,15 @@
+// automation/crawler/src/run.ts
 import { scoreArticle } from './ai-scorer';
 import { ingestArticle } from './ingest';
 
 async function main() {
   console.log("🚀 Starting Codcompass Crawler...");
 
+  // 模拟数据
   const mockArticle = {
-    title: "Cursor vs Claude Code: 2026 Developer Review",
-    content: "Comparing the latest AI coding tools for professional workflows...",
-    url: "https://example.com/test-article"
+    title: "Cursor vs Claude Code: Which is better for AI coding?",
+    content: "This is a detailed comparison of AI coding tools...",
+    sourceUrl: "https://example.com/test-article"
   };
 
   try {
