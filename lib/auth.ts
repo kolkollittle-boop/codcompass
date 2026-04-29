@@ -1,9 +1,12 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
-import Credentials from 'next-auth/providers/credentials';
 
 // Check if Google OAuth is configured
 const isGoogleConfigured = process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET;
+
+if (!isGoogleConfigured) {
+  console.warn('[NextAuth] Google OAuth not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.');
+}
 
 export const { auth, handlers } = NextAuth({
   providers: [
@@ -12,26 +15,6 @@ export const { auth, handlers } = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     })] : []),
-    // Credentials Provider (for development/testing)
-    Credentials({
-      name: 'credentials',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
-      },
-      async authorize(credentials) {
-        // Development only - always return a test user
-        if (process.env.NODE_ENV === 'development') {
-          return {
-            id: 'dev-user',
-            email: 'dev@codcompass.com',
-            name: 'Dev User',
-            role: 'ADMIN'
-          };
-        }
-        return null;
-      }
-    }),
   ],
   pages: {
     signIn: '/login',
