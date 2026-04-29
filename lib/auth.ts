@@ -1,6 +1,15 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 
+// 验证必要的环境变量
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  console.error('[Auth] Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET environment variables');
+}
+
+if (!process.env.NEXTAUTH_SECRET) {
+  console.error('[Auth] Missing NEXTAUTH_SECRET environment variable');
+}
+
 export const { auth, handlers } = NextAuth({
   providers: [
     Google({
@@ -11,6 +20,7 @@ export const { auth, handlers } = NextAuth({
   pages: {
     signIn: '/login',
   },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user, account, profile }) {
       // Google OAuth sign in
