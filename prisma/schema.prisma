@@ -213,6 +213,19 @@ model TranslationFeedback {
   @@index([articleId, locale])
 }
 
+model CrawlerConfig {
+  id                     String   @id @default(cuid())
+  schedule               String   @default("0 * * * *")
+  enabled                Boolean  @default(true)
+  sources                Json     @default("[]")
+  translateContent       Boolean  @default(true)
+  translateTargetLanguages Json   @default("[\"zh\"]")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([enabled])
+}
+
 enum UserRole {
   USER
   ADMIN
