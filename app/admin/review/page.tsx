@@ -36,14 +36,20 @@ export default function AdminReviewDashboard() {
   const fetchArticles = async () => {
     try {
       setLoading(true);
+      console.log('[Review] Fetching articles from /api/admin/articles...');
       const res = await fetch('/api/admin/articles');
+      console.log('[Review] Response status:', res.status);
       const json = await res.json();
+      console.log('[Review] Response data:', json);
       if (json.success && json.data) {
+        console.log('[Review] Setting articles:', json.data.length);
         setArticles(json.data);
+      } else {
+        console.log('[Review] No data or not successful');
       }
       setLoading(false);
     } catch (e) {
-      console.error(e);
+      console.error('[Review] Error:', e);
       setLoading(false);
     }
   };
