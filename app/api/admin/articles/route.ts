@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     
     let query = supabase
       .from('Article')
-      .select('*')
+      .select('*, qualityDetails')
       .order('createdAt', { ascending: false })
       .limit(50);
     

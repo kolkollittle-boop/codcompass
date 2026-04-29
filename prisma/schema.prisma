@@ -95,6 +95,7 @@ model Article {
   likeCount      Int                  @default(0)
   qualityScore   Int?
   qualityDetails Json?
+  metadata       Json?
   seoTitle       String?
   seoDescription String?
   canonicalUrl   String?

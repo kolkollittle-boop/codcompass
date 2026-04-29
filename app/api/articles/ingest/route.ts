@@ -16,7 +16,7 @@ function generateSlug(text: string) {
 }
 
 export async function POST(req: NextRequest) {
-  // 🔐 1. 安全校验
+  // 1. 安全校验
   const secret = req.headers.get('x-ingest-secret');
   if (secret !== process.env.INGEST_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, content, sourceUrl, mentorSummary, difficultyLevel, isPromotional } = body;
+    const { title, content, sourceUrl, mentorSummary, difficultyLevel, isPromotional, chinesePreview, images } = body;
     // 兼容两种字段名：aiScore (API期望) 和 score (AI返回)
     const aiScore = body.aiScore ?? body.score;
     const aiFeedback = body.aiFeedback ?? body.dimensions;
@@ -34,8 +34,10 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('[Ingest] Received aiScore:', aiScore, 'isPromotional:', isPromotional);
+    console.log('[Ingest] Chinese preview length:', chinesePreview?.length || 0);
+    console.log('[Ingest] Images count:', images?.length || 0);
 
-    // ️ 2. 自动分流逻辑
+    // 2. 自动分流逻辑
     // 使用数据库枚举值：REVIEW (待审核), ARCHIVED (已归档/拒绝)
     let status = 'REVIEW';
     if (!aiScore || aiScore < 60 || isPromotional) {
@@ -43,26 +45,33 @@ export async function POST(req: NextRequest) {
     }
     console.log('[Ingest] Setting status:', status);
 
-    // 🔗 3. 生成唯一 Slug
+    // 3. 生成唯一 Slug
     const uniqueSlug = `${generateSlug(title)}-${Date.now().toString().slice(-6)}`;
 
-    // 💾 4. 数据持久化
+    // 4. 数据持久化
+    // 将所有额外数据合并到 qualityDetails JSON 字段
+    const qualityDetailsData = {
+      ...(aiFeedback || {}),
+      mentor_summary: mentorSummary,
+      difficulty_level: difficultyLevel || 'L2',
+      chinese_preview: chinesePreview || '',
+      images: images || [],
+    };
+
     const { data, error } = await supabase
       .from('Article')
       .insert({
         titleEn: title,
         contentEn: content,
-        source_url: sourceUrl,
+        originalUrl: sourceUrl,
         status: status,
-        ai_score: aiScore,
-        ai_feedback: aiFeedback,
-        mentor_summary: mentorSummary,
-        difficulty_level: difficultyLevel || 'L2',
+        qualityScore: aiScore,
+        qualityDetails: qualityDetailsData,
         slug: uniqueSlug,
-        processed_at: new Date().toISOString(),
+        crawledAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         createdAt: new Date().toISOString(),
-        monetization: difficultyLevel === 'L1' ? 'free' : 'premium'
+        isPremium: difficultyLevel !== 'L1',
       })
       .select();
 

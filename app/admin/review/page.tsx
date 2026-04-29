@@ -16,14 +16,12 @@ type Article = {
   id: string;
   titleEn: string;
   contentEn: string;
-  ai_score: number;
-  difficulty_level: string;
+  qualityScore: number;
   status: string;
-  mentor_summary?: string;
-  category?: string;
-  monetization?: string;
+  isPremium: boolean;
   createdAt?: string;
-  processed_at?: string;
+  crawledAt?: string;
+  qualityDetails?: any;
 };
 
 export default function AdminReviewDashboard() {
@@ -57,7 +55,36 @@ export default function AdminReviewDashboard() {
 
   const handleAction = async (action: 'approve' | 'reject' | 'save') => {
     if (!selected) return;
-    console.log(`Action: ${action}`, selected.id);
+    
+    const qd = selected.qualityDetails || {};
+    const difficultyLevel = qd.difficulty_level || 'L2';
+    const monetization = selected.isPremium ? 'premium' : 'free';
+    
+    try {
+      const res = await fetch(`/api/admin/articles/${selected.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action,
+          difficultyLevel,
+          monetization,
+          contentEn: mode === 'edit' ? editorContent : undefined,
+        }),
+      });
+      
+      const json = await res.json();
+      
+      if (json.success) {
+        alert(`操作成功: ${action}`);
+        // 从列表中移除已处理的文章
+        setArticles(prev => prev.filter(a => a.id !== selected.id));
+        setSelected(null);
+      } else {
+        alert(`操作失败: ${json.error}`);
+      }
+    } catch (e: any) {
+      alert(`请求失败: ${e.message}`);
+    }
   };
 
   return (
@@ -72,16 +99,19 @@ export default function AdminReviewDashboard() {
             <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Pending Queue ({articles.length})</h2>
             {loading ? <Loader2 className="animate-spin mx-auto mt-10 text-zinc-600" /> :
               articles.map(art => {
-                const date = art.createdAt || art.processed_at;
+                const qd = art.qualityDetails || {};
+                const score = art.qualityScore || 0;
+                const difficulty = qd.difficulty_level || 'L2';
+                const date = art.createdAt || art.crawledAt;
                 const timeStr = date ? new Date(date).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
                 return (
                   <button key={art.id} onClick={() => handleSelect(art)} className={`w-full text-left p-3 rounded-md border transition-all ${selected?.id === art.id ? 'bg-cyan-950/40 border-cyan-700' : 'bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800'}`}>
                     <div className="flex justify-between items-start mb-1">
                       <span className="font-medium text-sm truncate max-w-[110px]">{art.titleEn}</span>
-                      <Badge variant={art.ai_score > 80 ? 'default' : 'secondary'} className="text-[10px]">{art.ai_score}</Badge>
+                      <Badge variant={score > 80 ? 'default' : 'secondary'} className="text-[10px]">{score}</Badge>
                     </div>
                     <div className="flex gap-2 text-[10px] text-zinc-500">
-                      <span>{art.difficulty_level}</span> • <span>{art.monetization === 'premium' ? '💎 Pro' : 'Free'}</span>
+                      <span>{difficulty}</span> • <span>{art.isPremium ? '💎 Pro' : 'Free'}</span>
                     </div>
                     {timeStr && <div className="text-[10px] text-zinc-600 mt-1">{timeStr}</div>}
                   </button>
@@ -101,7 +131,7 @@ export default function AdminReviewDashboard() {
                   <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-1">
                     <Sparkles className="w-3 h-3" /> AI Mentor Insight
                   </div>
-                  <p className="text-sm text-zinc-200 leading-snug font-medium">{selected.mentor_summary || "No summary available."}</p>
+                  <p className="text-sm text-zinc-200 leading-snug font-medium">{selected.qualityDetails?.mentor_summary || "No summary available."}</p>
                 </div>
                 <div className="flex justify-between items-center px-4 py-2 border-b border-zinc-800 bg-zinc-900/30">
                   <h3 className="font-semibold text-zinc-100">{selected.titleEn}</h3>
@@ -134,7 +164,7 @@ export default function AdminReviewDashboard() {
                   <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">⚙️ Publishing Config</h4>
                   <div className="space-y-2">
                     <Label className="text-xs text-zinc-400">Difficulty Level</Label>
-                    <Select defaultValue={selected.difficulty_level}>
+                    <Select defaultValue={selected.qualityDetails?.difficulty_level || 'L2'}>
                       <SelectTrigger className="bg-zinc-900 border-zinc-700 text-zinc-200 h-8"><SelectValue /></SelectTrigger>
                       <SelectContent className="bg-white text-zinc-900 border-zinc-200">
                         <SelectItem value="L1" className="text-zinc-900 focus:bg-zinc-100 focus:text-zinc-900">L1 - Beginner</SelectItem>
@@ -145,7 +175,7 @@ export default function AdminReviewDashboard() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-xs text-zinc-400">Monetization</Label>
-                    <Select defaultValue={selected.monetization}>
+                    <Select defaultValue={selected.isPremium ? 'premium' : 'free'}>
                       <SelectTrigger className="bg-zinc-900 border-zinc-700 text-zinc-200 h-8"><SelectValue /></SelectTrigger>
                       <SelectContent className="bg-white text-zinc-900 border-zinc-200">
                         <SelectItem value="free" className="text-zinc-900 focus:bg-zinc-100 focus:text-zinc-900">Free Access</SelectItem>
@@ -153,6 +183,14 @@ export default function AdminReviewDashboard() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {selected.qualityDetails?.chinese_preview && (
+                    <div className="space-y-2">
+                      <Label className="text-xs text-zinc-400">中文预览</Label>
+                      <div className="text-xs text-zinc-300 bg-zinc-900 p-2 rounded max-h-32 overflow-y-auto whitespace-pre-wrap">
+                        {selected.qualityDetails.chinese_preview}
+                      </div>
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label className="text-xs text-zinc-400">Knowledge Graph (Related IDs)</Label>
                     <Input className="bg-zinc-900 border-zinc-700 text-zinc-200 h-8 text-xs font-mono" placeholder="e.g. 102, 45, 89" />
