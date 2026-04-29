@@ -2,9 +2,10 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Paywall from '@/components/Paywall';
 import { getArticleBySlug, incrementViewCount } from '@/lib/supabase';
-import { sanitizeForRender } from '@/lib/sanitize';
 import { getArticleContent, type Locale } from '@/lib/i18n';
 import type { Metadata } from 'next';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface ArticlePageProps {
   params: Promise<{
@@ -137,15 +138,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </header>
 
           {/* Free Content */}
-          <div 
+          <div
             className="prose prose-lg max-w-none
               prose-headings:font-bold prose-headings:text-gray-900
               prose-p:text-gray-700 prose-p:leading-relaxed
               prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
               prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg
               prose-a:text-indigo-600 prose-a:no-underline"
-            dangerouslySetInnerHTML={sanitizeForRender(freeContent)}
-          />
+          >
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{freeContent}</ReactMarkdown>
+          </div>
 
           {/* Premium Content */}
           {dbArticle.isPremium ? (
@@ -156,12 +158,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {/* Blurred preview */}
               <div className="relative mt-10">
                 <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
-                  <div 
+                  <div
                     className="prose prose-lg max-w-none
                       prose-headings:font-bold prose-p:text-gray-700
                       prose-pre:bg-gray-900 prose-pre:text-gray-100"
-                    dangerouslySetInnerHTML={sanitizeForRender(premiumContent)}
-                  />
+                  >
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
+                  </div>
                 </div>
 
                 {/* Paywall overlay */}
@@ -193,15 +196,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </>
           ) : (
             /* Free article - show premium content directly */
-            <div 
+            <div
               className="prose prose-lg max-w-none mt-8
                 prose-headings:font-bold prose-headings:text-gray-900
                 prose-p:text-gray-700 prose-p:leading-relaxed
                 prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
                 prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg
                 prose-a:text-indigo-600 prose-a:no-underline"
-              dangerouslySetInnerHTML={sanitizeForRender(premiumContent)}
-            />
+            >
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
+            </div>
           )}
 
           {/* Sources */}
