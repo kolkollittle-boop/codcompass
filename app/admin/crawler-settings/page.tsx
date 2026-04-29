@@ -66,6 +66,7 @@ export default function CrawlerSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [triggering, setTriggering] = useState(false);
+  const [crawlerRunning, setCrawlerRunning] = useState(false);
   const [customSchedule, setCustomSchedule] = useState('');
   const [newTag, setNewTag] = useState('');
   const [newKeyword, setNewKeyword] = useState('');
@@ -120,7 +121,9 @@ export default function CrawlerSettingsPage() {
       const res = await fetch('/api/admin/crawler', { method: 'POST' });
       const json = await res.json();
       if (json.success) {
-        alert('爬虫已触发！请在 GitHub Actions 中查看进度。');
+        alert('爬虫已在本地启动！请查看终端输出获取进度。');
+        // 开始轮询状态
+        pollCrawlerStatus();
       } else {
         alert(`触发失败: ${json.error}`);
       }
@@ -129,6 +132,30 @@ export default function CrawlerSettingsPage() {
     } finally {
       setTriggering(false);
     }
+  };
+
+  // 轮询爬虫状态
+  const pollCrawlerStatus = async () => {
+    const checkStatus = async () => {
+      try {
+        const res = await fetch('/api/admin/crawler');
+        const json = await res.json();
+        setCrawlerRunning(json.isRunning);
+        
+        if (json.isRunning) {
+          // 继续轮询
+          setTimeout(checkStatus, 3000);
+        } else if (json.lastRunStatus === 'success') {
+          alert('爬虫运行完成！');
+        } else if (json.lastRunStatus === 'error') {
+          alert(`爬虫运行出错: ${json.lastRunOutput?.slice(-200) || '未知错误'}`);
+        }
+      } catch (e) {
+        setCrawlerRunning(false);
+      }
+    };
+    
+    setTimeout(checkStatus, 2000);
   };
 
   const addSource = () => {
@@ -228,14 +255,20 @@ export default function CrawlerSettingsPage() {
           <span className="font-mono font-bold text-cyan-400 tracking-wider">⚙️ CRAWLER SETTINGS</span>
         </div>
         <div className="ml-auto flex items-center gap-3">
-          <Button 
-            size="sm" 
-            onClick={triggerCrawler} 
-            disabled={triggering}
+          {crawlerRunning && (
+            <span className="text-xs text-emerald-400 flex items-center gap-1">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+              运行中
+            </span>
+          )}
+          <Button
+            size="sm"
+            onClick={triggerCrawler}
+            disabled={triggering || crawlerRunning}
             className="bg-violet-600 hover:bg-violet-700 text-white"
           >
-            {triggering ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
-            {triggering ? '运行中...' : '立即运行'}
+            {triggering || crawlerRunning ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
+            {triggering ? '启动中...' : crawlerRunning ? '运行中...' : '立即运行'}
           </Button>
           <Button onClick={saveConfig} disabled={saving}>
             <Save className="w-4 h-4 mr-2" />
