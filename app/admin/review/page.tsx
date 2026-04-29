@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Check, X, Save, Eye, Edit3, Sparkles, Image, CheckSquare, Square, Layers } from 'lucide-react';
+import { Loader2, Check, X, Save, Eye, Edit3, Sparkles, Image, CheckSquare, Square, Layers, ArrowLeft, Play, RefreshCw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -34,6 +35,9 @@ export default function AdminReviewDashboard() {
   // 多选状态
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [batchProcessing, setBatchProcessing] = useState(false);
+  
+  // 爬虫状态
+  const [crawlerRunning, setCrawlerRunning] = useState(false);
 
   const fetchArticles = async () => {
     try {
@@ -76,6 +80,24 @@ export default function AdminReviewDashboard() {
       setSelectedIds(new Set());
     } else {
       setSelectedIds(new Set(articles.map(a => a.id)));
+    }
+  };
+
+  // 触发爬虫
+  const triggerCrawler = async () => {
+    setCrawlerRunning(true);
+    try {
+      const res = await fetch('/api/admin/crawler', { method: 'POST' });
+      const json = await res.json();
+      if (json.success) {
+        alert('爬虫已触发！请在 GitHub Actions 中查看进度。');
+      } else {
+        alert(`触发失败: ${json.error}`);
+      }
+    } catch (e: any) {
+      alert(`触发失败: ${e.message}`);
+    } finally {
+      setCrawlerRunning(false);
     }
   };
 
@@ -163,7 +185,25 @@ export default function AdminReviewDashboard() {
   return (
     <div className="h-screen bg-zinc-950 text-zinc-100 flex flex-col">
       <header className="h-12 border-b border-zinc-800 flex items-center px-6 bg-zinc-900/50 justify-between">
-        <span className="font-mono font-bold text-cyan-400 tracking-wider">⚡ ADMIN REVIEW TERMINAL</span>
+        <div className="flex items-center gap-4">
+          <Link href="/en/kb" className="text-zinc-400 hover:text-cyan-400 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <span className="font-mono font-bold text-cyan-400 tracking-wider">⚡ ADMIN REVIEW TERMINAL</span>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <Button 
+            size="sm" 
+            onClick={triggerCrawler} 
+            disabled={crawlerRunning}
+            className="bg-violet-600 hover:bg-violet-700 text-white h-7 text-xs"
+          >
+            {crawlerRunning ? <RefreshCw className="w-3 h-3 mr-1 animate-spin" /> : <Play className="w-3 h-3 mr-1" />}
+            {crawlerRunning ? '运行中...' : '触发爬虫'}
+          </Button>
+        </div>
+        
         {selectedIds.size > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-zinc-400">已选 {selectedIds.size} 篇</span>
