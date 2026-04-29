@@ -8,13 +8,24 @@ const supabase = createClient(
 
 export async function GET(req: NextRequest) {
   try {
-    // 获取待审核的文章 (status = 'scored')
-    const { data, error } = await supabase
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get('status');
+    
+    let query = supabase
       .from('Article')
       .select('*')
-      .eq('status', 'scored')
       .order('createdAt', { ascending: false })
       .limit(50);
+    
+    // 如果指定了 status 参数，则过滤
+    if (status) {
+      query = query.eq('status', status);
+    } else {
+      // 默认只显示待审核和被拒绝的文章
+      query = query.in('status', ['scored', 'rejected']);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
 
