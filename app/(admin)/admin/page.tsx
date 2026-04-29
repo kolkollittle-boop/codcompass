@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { ArrowRight, FileText, Users, BarChart3, Settings, ShieldCheck } from 'lucide-react';
+import { ArrowRight, FileText, Users, BarChart3, Settings, ShieldCheck, Globe } from 'lucide-react';
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
@@ -94,6 +94,24 @@ export default function AdminPage() {
             </p>
           </div>
 
+          {/* 🟢 核心入口：爬虫设置 */}
+          <Link href="/admin/crawler-settings" className="group relative block p-6 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-violet-700 transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-2 bg-violet-950/50 rounded-lg">
+                <Globe className="w-6 h-6 text-violet-400" />
+              </div>
+              <ArrowRight className="w-5 h-5 text-zinc-600 group-hover:text-violet-400 transition-colors" />
+            </div>
+            <h2 className="text-lg font-semibold mb-1 group-hover:text-violet-400 transition-colors">Crawler Settings</h2>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              配置爬虫调度频率、数据源、关键字与翻译设置。
+            </p>
+            <div className="mt-4 flex gap-2">
+              <span className="text-[10px] px-2 py-0.5 bg-zinc-800 rounded text-zinc-400">Scheduler</span>
+              <span className="text-[10px] px-2 py-0.5 bg-zinc-800 rounded text-zinc-400">Sources</span>
+            </div>
+          </Link>
+
           {/* 🔒 预留入口：系统设置 */}
           <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-xl opacity-60 cursor-not-allowed">
             <div className="flex justify-between items-start mb-4">
@@ -103,7 +121,7 @@ export default function AdminPage() {
             </div>
             <h2 className="text-lg font-semibold mb-1 text-zinc-400">System Config</h2>
             <p className="text-sm text-zinc-600">
-              爬虫调度频率、API 密钥与 Webhook 配置。(Coming Soon)
+              API 密钥与 Webhook 配置。(Coming Soon)
             </p>
           </div>
 
