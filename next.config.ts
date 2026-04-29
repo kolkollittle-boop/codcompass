@@ -43,8 +43,9 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               `default-src 'self'`,
-              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.lemonsqueezy.com https://www.googletagmanager.com https://*.google-analytics.com`,
+              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.lemonsqueezy.com https://www.googletagmanager.com https://*.google-analytics.com https://challenges.cloudflare.com`,
               `style-src 'self' 'unsafe-inline'`,
+              `frame-src 'self' https://challenges.cloudflare.com`,
               `img-src 'self' data: https:`,
               `font-src 'self'`,
               `connect-src 'self' https://*.supabase.co https://*.lemonsqueezy.com https://*.google-analytics.com`,

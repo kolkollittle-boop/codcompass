@@ -2,22 +2,62 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Icon } from '@/components/ui';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 export default function DashboardPage() {
-  const { data: session, status } = useSession();
+  const { data: nextAuthSession, status: nextAuthStatus } = useSession();
+  const [supabaseSession, setSupabaseSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // 合并检查两种认证系统的 session
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    }
-  }, [status, router]);
+    let cancelled = false;
 
-  if (status === 'loading') {
+    const checkAuth = async () => {
+      // 1. 检查 Supabase session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!cancelled) {
+        setSupabaseSession(session);
+        setLoading(false);
+      }
+
+      // 2. 如果两种都没登录，跳转登录页
+      if (!session && nextAuthStatus === 'unauthenticated') {
+        router.push('/login');
+      }
+    };
+
+    checkAuth();
+
+    // 监听 Supabase auth 状态变化
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!cancelled) {
+        setSupabaseSession(session);
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, [nextAuthStatus, router]);
+
+  // 合并两种 session 数据
+  const session = supabaseSession?.user || nextAuthSession?.user;
+  const isLoading = loading || nextAuthStatus === 'loading';
+
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -30,7 +70,7 @@ export default function DashboardPage() {
 
   if (!session) return null;
 
-  const isAdmin = (session.user as any)?.role === 'ADMIN';
+  const isAdmin = (supabaseSession?.user as any)?.role === 'ADMIN' || (nextAuthSession?.user as any)?.role === 'ADMIN';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -40,20 +80,20 @@ export default function DashboardPage() {
           {/* Welcome Section */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
             <div className="flex items-center gap-4">
-              {session.user?.image && (
+              {(session as any)?.image && (
                 <img
-                  src={session.user.image}
-                  alt={session.user.name || 'User'}
+                  src={(session as any).image}
+                  alt={(session as any).name || 'User'}
                   className="w-16 h-16 rounded-full"
                 />
               )}
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
-                  Welcome, {session.user?.name || 'User'}!
+                  Welcome, {(session as any)?.name || 'User'}!
                 </h1>
-                <p className="text-gray-600">{session.user?.email}</p>
+                <p className="text-gray-600">{(session as any)?.email}</p>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mt-2">
-                  {(session.user as any)?.role || 'USER'}
+                  {(session as any)?.role || 'USER'}
                 </span>
               </div>
             </div>

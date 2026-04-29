@@ -6,10 +6,15 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+// Next.js 16 标准写法：params 必须是 Promise
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const body = await req.json();
-    const { id } = params;
+    // 必须 await 获取 params
+    const { id } = await params;
+    const body = await request.json();
     const { status, contentEn, titleEn, category, monetization, difficultyLevel } = body;
 
     const updates: any = {};
@@ -19,13 +24,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (monetization) updates.monetization = monetization;
     if (difficultyLevel) updates.difficulty_level = difficultyLevel;
 
-    // 🚀 Publish Logic
     if (status === 'approved') {
       updates.status = 'published';
       updates.published_at = new Date().toISOString();
-      updates.reviewed_by = 'admin_current_session'; // TODO: Get real user ID from Session
+      updates.reviewed_by = 'admin_user'; // 这里后续改为从 Session 获取
     } else {
-      updates.status = status; // scored, rejected, needs_rewrite
+      updates.status = status;
     }
 
     const { error } = await supabase.from('Article').update(updates).eq('id', id);
