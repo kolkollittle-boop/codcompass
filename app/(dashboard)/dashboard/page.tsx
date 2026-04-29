@@ -165,10 +165,14 @@ export default function DashboardPage() {
                 <Icon name="shield" size={24} className="text-indigo-600" />
                 <h2 className="text-xl font-bold text-indigo-900">Admin Panel</h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <a href="/admin" className="bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
                   <h3 className="font-bold text-gray-900 mb-1">Admin Dashboard</h3>
                   <p className="text-sm text-gray-600">Manage all content</p>
+                </a>
+                <a href="/admin/review" className="bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <h3 className="font-bold text-gray-900 mb-1">Article Review</h3>
+                  <p className="text-sm text-gray-600">Review & publish articles</p>
                 </a>
                 <a href="/admin/articles" className="bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
                   <h3 className="font-bold text-gray-900 mb-1">Articles</h3>
