@@ -21,8 +21,8 @@ export async function GET(req: NextRequest) {
     if (status) {
       query = query.eq('status', status);
     } else {
-      // 默认显示待审核和被拒绝的文章
-      query = query.in('status', ['REVIEW', 'ARCHIVED']);
+      // 默认只显示待审核的文章
+      query = query.eq('status', 'REVIEW');
     }
 
     const { data, error } = await query;
