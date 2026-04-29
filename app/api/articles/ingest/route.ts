@@ -24,10 +24,16 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, content, sourceUrl, mentorSummary, difficultyLevel, isPromotional, chinesePreview, images } = body;
-    // 兼容两种字段名：aiScore (API期望) 和 score (AI返回)
+    const { title, content, sourceUrl } = body;
+    
+    // 兼容两种字段名：camelCase 和 snake_case
     const aiScore = body.aiScore ?? body.score;
     const aiFeedback = body.aiFeedback ?? body.dimensions;
+    const mentorSummary = body.mentorSummary ?? body.mentor_summary;
+    const difficultyLevel = body.difficultyLevel ?? body.difficulty_level;
+    const isPromotional = body.isPromotional ?? body.is_promotional;
+    const chinesePreview = body.chinesePreview ?? body.chinese_preview;
+    const images = body.images;
 
     if (!title || !content) {
         return NextResponse.json({ error: 'Missing title or content' }, { status: 400 });
@@ -36,6 +42,7 @@ export async function POST(req: NextRequest) {
     console.log('[Ingest] Received aiScore:', aiScore, 'isPromotional:', isPromotional);
     console.log('[Ingest] Chinese preview length:', chinesePreview?.length || 0);
     console.log('[Ingest] Images count:', images?.length || 0);
+    console.log('[Ingest] Content preview (first 100 chars):', content?.substring(0, 100));
 
     // 2. 自动分流逻辑
     // 使用数据库枚举值：REVIEW (待审核), ARCHIVED (已归档/拒绝)
