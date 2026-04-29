@@ -57,6 +57,14 @@ export default function DashboardPage() {
   const session = supabaseSession?.user || nextAuthSession?.user;
   const isLoading = loading || nextAuthStatus === 'loading';
 
+  // Debug: log session data
+  useEffect(() => {
+    console.log('[Dashboard] NextAuth session:', nextAuthSession);
+    console.log('[Dashboard] Supabase session:', supabaseSession);
+    console.log('[Dashboard] Merged session:', session);
+    console.log('[Dashboard] Is admin check:', (nextAuthSession?.user as any)?.role === 'ADMIN');
+  }, [nextAuthSession, supabaseSession, session]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
