@@ -8,12 +8,13 @@ const supabase = createClient(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await req.json();
     const { action, difficultyLevel, monetization, contentEn, titleEn } = body;
-    const articleId = params.id;
+    const articleId = id;
 
     // 先获取现有的 qualityDetails
     const { data: existingArticle } = await supabase
