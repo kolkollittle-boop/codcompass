@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Play, RefreshCw, Save, Plus, Trash2, Clock, Globe, Languages } from 'lucide-react';
+import { ArrowLeft, Play, RefreshCw, Save, Plus, Trash2, Clock, Globe, Languages, X } from 'lucide-react';
 
 type CrawlerConfig = {
   schedule: string;
@@ -67,6 +67,8 @@ export default function CrawlerSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [triggering, setTriggering] = useState(false);
   const [crawlerRunning, setCrawlerRunning] = useState(false);
+  const [showLogModal, setShowLogModal] = useState(false);
+  const [crawlerLog, setCrawlerLog] = useState('');
   const [customSchedule, setCustomSchedule] = useState('');
   const [newTag, setNewTag] = useState('');
   const [newKeyword, setNewKeyword] = useState('');
@@ -117,45 +119,53 @@ export default function CrawlerSettingsPage() {
 
   const triggerCrawler = async () => {
     setTriggering(true);
+    setCrawlerLog('');
+    setShowLogModal(true);
+    
     try {
       const res = await fetch('/api/admin/crawler', { method: 'POST' });
       const json = await res.json();
       if (json.success) {
-        alert('爬虫已在本地启动！请查看终端输出获取进度。');
-        // 开始轮询状态
-        pollCrawlerStatus();
+        setCrawlerRunning(true);
+        // 使用 SSE 接收实时日志
+        startSSELogStream();
       } else {
-        alert(`触发失败: ${json.error}`);
+        setCrawlerLog(prev => prev + `\n❌ 启动失败: ${json.error}`);
       }
     } catch (e: any) {
-      alert(`触发失败: ${e.message}`);
+      setCrawlerLog(prev => prev + `\n❌ 启动失败: ${e.message}`);
     } finally {
       setTriggering(false);
     }
   };
 
-  // 轮询爬虫状态
-  const pollCrawlerStatus = async () => {
-    const checkStatus = async () => {
+  // SSE 实时日志流
+  const startSSELogStream = () => {
+    const eventSource = new EventSource('/api/admin/crawler?stream=true');
+    
+    eventSource.onmessage = (event) => {
       try {
-        const res = await fetch('/api/admin/crawler');
-        const json = await res.json();
-        setCrawlerRunning(json.isRunning);
+        const data = JSON.parse(event.data);
+        setCrawlerLog(data.log || '');
+        setCrawlerRunning(data.isRunning);
         
-        if (json.isRunning) {
-          // 继续轮询
-          setTimeout(checkStatus, 3000);
-        } else if (json.lastRunStatus === 'success') {
-          alert('爬虫运行完成！');
-        } else if (json.lastRunStatus === 'error') {
-          alert(`爬虫运行出错: ${json.lastRunOutput?.slice(-200) || '未知错误'}`);
+        if (!data.isRunning) {
+          eventSource.close();
+          if (data.status === 'success') {
+            setCrawlerLog(prev => prev + '\n\n✅ 爬虫运行完成！');
+          } else {
+            setCrawlerLog(prev => prev + '\n\n❌ 爬虫运行出错');
+          }
         }
       } catch (e) {
-        setCrawlerRunning(false);
+        // 忽略解析错误
       }
     };
-    
-    setTimeout(checkStatus, 2000);
+
+    eventSource.onerror = () => {
+      eventSource.close();
+      setCrawlerRunning(false);
+    };
   };
 
   const addSource = () => {
@@ -508,6 +518,57 @@ export default function CrawlerSettingsPage() {
           </div>
         </section>
       </main>
+
+      {/* 日志弹窗 */}
+      {showLogModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-3xl bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl">
+            {/* 弹窗头部 */}
+            <div className="flex items-center justify-between p-4 border-b border-zinc-700">
+              <h3 className="font-mono font-bold text-cyan-400 tracking-wider">
+                {crawlerRunning ? '⚡ 爬虫运行中...' : '📋 爬虫日志'}
+              </h3>
+              <button
+                onClick={() => setShowLogModal(false)}
+                className="text-zinc-400 hover:text-zinc-200 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            {/* 日志内容区域 */}
+            <div className="p-4 h-96 overflow-y-auto font-mono text-xs text-zinc-300 bg-zinc-950 whitespace-pre-wrap">
+              {crawlerLog || '等待爬虫启动...'}
+            </div>
+            
+            {/* 底部状态栏 */}
+            <div className="p-3 border-t border-zinc-700 bg-zinc-900 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {crawlerRunning && (
+                  <>
+                    <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                    <span className="text-xs text-emerald-400">运行中</span>
+                  </>
+                )}
+                {!crawlerRunning && crawlerLog.includes('✅') && (
+                  <span className="text-xs text-emerald-400">✅ 已完成</span>
+                )}
+                {!crawlerRunning && crawlerLog.includes('❌') && (
+                  <span className="text-xs text-red-400">❌ 已失败</span>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(crawlerLog);
+                }}
+                className="text-xs text-zinc-400 hover:text-cyan-400 transition-colors"
+              >
+                复制日志
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
