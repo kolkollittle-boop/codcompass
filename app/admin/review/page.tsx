@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Check, X, Save, Eye, Edit3, Sparkles, Image } from 'lucide-react';
+import { Loader2, Check, X, Save, Eye, Edit3, Sparkles, Image, CheckSquare, Square, Layers } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -30,6 +30,10 @@ export default function AdminReviewDashboard() {
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<'edit' | 'preview'>('preview');
   const [editorContent, setEditorContent] = useState('');
+  
+  // 多选状态
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [batchProcessing, setBatchProcessing] = useState(false);
 
   const fetchArticles = async () => {
     try {
@@ -51,6 +55,75 @@ export default function AdminReviewDashboard() {
   const handleSelect = (art: Article) => {
     setSelected(art);
     setEditorContent(art.contentEn);
+  };
+
+  // 切换单个文章的选择状态
+  const toggleSelectId = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  // 全选/取消全选
+  const toggleSelectAll = () => {
+    if (selectedIds.size === articles.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(articles.map(a => a.id)));
+    }
+  };
+
+  // 批量操作
+  const handleBatchAction = async (action: 'approve' | 'reject') => {
+    if (selectedIds.size === 0) {
+      alert('请先选择要操作的文章');
+      return;
+    }
+    
+    if (!confirm(`确定要${action === 'approve' ? '发布' : '拒绝'} ${selectedIds.size} 篇文章吗？`)) {
+      return;
+    }
+    
+    setBatchProcessing(true);
+    let successCount = 0;
+    let failCount = 0;
+    
+    for (const id of selectedIds) {
+      try {
+        const res = await fetch(`/api/admin/articles/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action }),
+        });
+        
+        const json = await res.json();
+        if (json.success) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch (e) {
+        failCount++;
+      }
+    }
+    
+    setBatchProcessing(false);
+    setSelectedIds(new Set());
+    
+    // 刷新文章列表
+    setArticles(prev => prev.filter(a => !selectedIds.has(a.id)));
+    
+    if (selected && selectedIds.has(selected.id)) {
+      setSelected(null);
+    }
+    
+    alert(`批量操作完成：成功 ${successCount} 篇，失败 ${failCount} 篇`);
   };
 
   const handleAction = async (action: 'approve' | 'reject' | 'save') => {
@@ -89,14 +162,45 @@ export default function AdminReviewDashboard() {
 
   return (
     <div className="h-screen bg-zinc-950 text-zinc-100 flex flex-col">
-      <header className="h-12 border-b border-zinc-800 flex items-center px-6 bg-zinc-900/50">
+      <header className="h-12 border-b border-zinc-800 flex items-center px-6 bg-zinc-900/50 justify-between">
         <span className="font-mono font-bold text-cyan-400 tracking-wider">⚡ ADMIN REVIEW TERMINAL</span>
+        {selectedIds.size > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-400">已选 {selectedIds.size} 篇</span>
+            <Button 
+              size="sm" 
+              onClick={() => handleBatchAction('approve')} 
+              disabled={batchProcessing}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white h-7 text-xs"
+            >
+              <Check className="w-3 h-3 mr-1" /> 批量发布
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={() => handleBatchAction('reject')} 
+              disabled={batchProcessing}
+              variant="destructive"
+              className="h-7 text-xs"
+            >
+              <X className="w-3 h-3 mr-1" /> 批量拒绝
+            </Button>
+          </div>
+        )}
       </header>
 
       <ResizablePanelGroup direction="horizontal" className="flex-1">
         <ResizablePanel defaultSize={20} minSize={15}>
           <div className="h-full overflow-y-auto p-4 space-y-2 border-r border-zinc-800">
-            <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Pending Queue ({articles.length})</h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Pending Queue ({articles.length})</h2>
+              <button 
+                onClick={toggleSelectAll}
+                className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+              >
+                {selectedIds.size === articles.length ? <CheckSquare className="w-3 h-3" /> : <Square className="w-3 h-3" />}
+                {selectedIds.size === articles.length ? '取消全选' : '全选'}
+              </button>
+            </div>
             {loading ? <Loader2 className="animate-spin mx-auto mt-10 text-zinc-600" /> :
               articles.map(art => {
                 const qd = art.qualityDetails || {};
@@ -104,17 +208,28 @@ export default function AdminReviewDashboard() {
                 const difficulty = qd.difficulty_level || 'L2';
                 const date = art.createdAt || art.crawledAt;
                 const timeStr = date ? new Date(date).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+                const isSelected = selectedIds.has(art.id);
                 return (
-                  <button key={art.id} onClick={() => handleSelect(art)} className={`w-full text-left p-3 rounded-md border transition-all ${selected?.id === art.id ? 'bg-cyan-950/40 border-cyan-700' : 'bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800'}`}>
-                    <div className="flex justify-between items-start mb-1">
-                      <span className="font-medium text-sm truncate max-w-[110px]">{art.titleEn}</span>
-                      <Badge variant={score > 80 ? 'default' : 'secondary'} className="text-[10px]">{score}</Badge>
+                  <div key={art.id} className={`w-full text-left p-3 rounded-md border transition-all ${selected?.id === art.id ? 'bg-cyan-950/40 border-cyan-700' : 'bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800'}`}>
+                    <div className="flex items-start gap-2">
+                      <button 
+                        onClick={() => toggleSelectId(art.id)}
+                        className="mt-0.5 text-zinc-500 hover:text-cyan-400 flex-shrink-0"
+                      >
+                        {isSelected ? <CheckSquare className="w-4 h-4 text-cyan-400" /> : <Square className="w-4 h-4" />}
+                      </button>
+                      <button onClick={() => handleSelect(art)} className="flex-1 text-left min-w-0">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="font-medium text-sm truncate max-w-[110px]">{art.titleEn}</span>
+                          <Badge variant={score > 80 ? 'default' : 'secondary'} className="text-[10px]">{score}</Badge>
+                        </div>
+                        <div className="flex gap-2 text-[10px] text-zinc-500">
+                          <span>{difficulty}</span> • <span>{art.isPremium ? '💎 Pro' : 'Free'}</span>
+                        </div>
+                        {timeStr && <div className="text-[10px] text-zinc-600 mt-1">{timeStr}</div>}
+                      </button>
                     </div>
-                    <div className="flex gap-2 text-[10px] text-zinc-500">
-                      <span>{difficulty}</span> • <span>{art.isPremium ? '💎 Pro' : 'Free'}</span>
-                    </div>
-                    {timeStr && <div className="text-[10px] text-zinc-600 mt-1">{timeStr}</div>}
-                  </button>
+                  </div>
                 );
               })
             }
@@ -206,7 +321,13 @@ export default function AdminReviewDashboard() {
                 </div>
               </>
             ) : (
-              <div className="h-full flex items-center justify-center text-zinc-600 text-sm">No selection</div>
+              <div className="h-full flex items-center justify-center text-zinc-600 text-sm">
+                <div className="text-center">
+                  <Layers className="w-8 h-8 mx-auto mb-2 text-zinc-700" />
+                  <p>选择文章进行审核</p>
+                  <p className="text-xs mt-1">勾选左侧复选框可批量操作</p>
+                </div>
+              </div>
             )}
           </div>
         </ResizablePanel>
