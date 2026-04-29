@@ -22,6 +22,8 @@ type Article = {
   mentor_summary?: string;
   category?: string;
   monetization?: string;
+  createdAt?: string;
+  processed_at?: string;
 };
 
 export default function AdminReviewDashboard() {
@@ -33,13 +35,17 @@ export default function AdminReviewDashboard() {
 
   const fetchArticles = async () => {
     try {
-      setTimeout(() => {
-        setArticles([
-          { id: '1', titleEn: 'Cursor AI: Advanced Features', contentEn: '## Introduction...', ai_score: 88, difficulty_level: 'L2', status: 'scored', mentor_summary: '核心在于理解 AI 上下文。适合进阶开发者。', category: 'ai', monetization: 'premium' },
-        ]);
-        setLoading(false);
-      }, 800);
-    } catch (e) { console.error(e); }
+      setLoading(true);
+      const res = await fetch('/api/admin/articles');
+      const json = await res.json();
+      if (json.success && json.data) {
+        setArticles(json.data);
+      }
+      setLoading(false);
+    } catch (e) {
+      console.error(e);
+      setLoading(false);
+    }
   };
 
   useEffect(() => { fetchArticles(); }, []);
@@ -65,17 +71,22 @@ export default function AdminReviewDashboard() {
           <div className="h-full overflow-y-auto p-4 space-y-2 border-r border-zinc-800">
             <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Pending Queue ({articles.length})</h2>
             {loading ? <Loader2 className="animate-spin mx-auto mt-10 text-zinc-600" /> :
-              articles.map(art => (
-                <button key={art.id} onClick={() => handleSelect(art)} className={`w-full text-left p-3 rounded-md border transition-all ${selected?.id === art.id ? 'bg-cyan-950/40 border-cyan-700' : 'bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800'}`}>
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="font-medium text-sm truncate max-w-[130px]">{art.titleEn}</span>
-                    <Badge variant={art.ai_score > 80 ? 'default' : 'secondary'} className="text-[10px]">{art.ai_score}</Badge>
-                  </div>
-                  <div className="flex gap-2 text-[10px] text-zinc-500">
-                    <span>{art.difficulty_level}</span> • <span>{art.monetization === 'premium' ? '💎 Pro' : 'Free'}</span>
-                  </div>
-                </button>
-              ))
+              articles.map(art => {
+                const date = art.createdAt || art.processed_at;
+                const timeStr = date ? new Date(date).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+                return (
+                  <button key={art.id} onClick={() => handleSelect(art)} className={`w-full text-left p-3 rounded-md border transition-all ${selected?.id === art.id ? 'bg-cyan-950/40 border-cyan-700' : 'bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800'}`}>
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="font-medium text-sm truncate max-w-[110px]">{art.titleEn}</span>
+                      <Badge variant={art.ai_score > 80 ? 'default' : 'secondary'} className="text-[10px]">{art.ai_score}</Badge>
+                    </div>
+                    <div className="flex gap-2 text-[10px] text-zinc-500">
+                      <span>{art.difficulty_level}</span> • <span>{art.monetization === 'premium' ? '💎 Pro' : 'Free'}</span>
+                    </div>
+                    {timeStr && <div className="text-[10px] text-zinc-600 mt-1">{timeStr}</div>}
+                  </button>
+                );
+              })
             }
           </div>
         </ResizablePanel>
