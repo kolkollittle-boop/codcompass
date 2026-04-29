@@ -30,10 +30,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Missing title or content' }, { status: 400 });
     }
 
-    // ⚖️ 2. 自动分流逻辑
-    let status = 'scored';
+    // ️ 2. 自动分流逻辑
+    // 使用数据库枚举值：REVIEW (待审核), ARCHIVED (已归档/拒绝)
+    let status = 'REVIEW';
     if (!aiScore || aiScore < 60 || isPromotional) {
-      status = 'rejected';
+      status = 'ARCHIVED';
     }
 
     // 🔗 3. 生成唯一 Slug
