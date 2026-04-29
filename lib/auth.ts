@@ -1,20 +1,18 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 
-// Check if Google OAuth is configured
-const isGoogleConfigured = process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET;
-
-if (!isGoogleConfigured) {
-  console.warn('[NextAuth] Google OAuth not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.');
-}
+// Debug: log environment variables (remove in production)
+console.log('[NextAuth] GOOGLE_CLIENT_ID exists:', !!process.env.GOOGLE_CLIENT_ID);
+console.log('[NextAuth] GOOGLE_CLIENT_SECRET exists:', !!process.env.GOOGLE_CLIENT_SECRET);
+console.log('[NextAuth] NEXTAUTH_SECRET exists:', !!process.env.NEXTAUTH_SECRET);
+console.log('[NextAuth] NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
 
 export const { auth, handlers } = NextAuth({
   providers: [
-    // Google OAuth Provider (only if configured)
-    ...(isGoogleConfigured ? [Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    })] : []),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
   pages: {
     signIn: '/login',
