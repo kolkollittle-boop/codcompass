@@ -24,11 +24,16 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, content, sourceUrl, aiScore, aiFeedback, mentorSummary, difficultyLevel, isPromotional } = body;
+    const { title, content, sourceUrl, mentorSummary, difficultyLevel, isPromotional } = body;
+    // 兼容两种字段名：aiScore (API期望) 和 score (AI返回)
+    const aiScore = body.aiScore ?? body.score;
+    const aiFeedback = body.aiFeedback ?? body.dimensions;
 
     if (!title || !content) {
         return NextResponse.json({ error: 'Missing title or content' }, { status: 400 });
     }
+
+    console.log('[Ingest] Received aiScore:', aiScore, 'isPromotional:', isPromotional);
 
     // ️ 2. 自动分流逻辑
     // 使用数据库枚举值：REVIEW (待审核), ARCHIVED (已归档/拒绝)
@@ -36,6 +41,7 @@ export async function POST(req: NextRequest) {
     if (!aiScore || aiScore < 60 || isPromotional) {
       status = 'ARCHIVED';
     }
+    console.log('[Ingest] Setting status:', status);
 
     // 🔗 3. 生成唯一 Slug
     const uniqueSlug = `${generateSlug(title)}-${Date.now().toString().slice(-6)}`;
