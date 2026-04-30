@@ -10,20 +10,19 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get('status');
+    const limit = parseInt(searchParams.get('limit') || '100');
     
     let query = supabase
       .from('Article')
       .select('*, qualityDetails')
       .order('createdAt', { ascending: false })
-      .limit(50);
+      .limit(limit);
     
     // 如果指定了 status 参数，则过滤
     if (status) {
       query = query.eq('status', status);
-    } else {
-      // 默认只显示待审核的文章
-      query = query.eq('status', 'REVIEW');
     }
+    // 不指定 status 时返回所有文章
 
     const { data, error } = await query;
 

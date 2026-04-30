@@ -22,12 +22,12 @@ export default function ArticlesAdminPage() {
   }, [status, session, router]);
 
   useEffect(() => {
-    // Fetch articles
+    // Fetch all articles using admin API
     const fetchArticles = async () => {
       try {
-        const res = await fetch('/api/articles?limit=50');
+        const res = await fetch('/api/admin/articles');
         const data = await res.json();
-        setArticles(data.articles || []);
+        setArticles(data.data || []);
       } catch (error) {
         console.error('Failed to fetch articles:', error);
       } finally {
@@ -40,12 +40,39 @@ export default function ArticlesAdminPage() {
     }
   }, [status]);
 
+  const handleEdit = (slug: string) => {
+    router.push(`/admin/review?slug=${slug}`);
+  };
+
+  const handleDelete = async (slug: string, title: string) => {
+    if (!confirm(`确定要删除文章 "${title}" 吗？此操作不可撤销。`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/articles/${slug}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setArticles(articles.filter(a => a.slug !== slug));
+        alert('文章已删除');
+      } else {
+        const error = await res.json();
+        alert(`删除失败: ${error.error || '未知错误'}`);
+      }
+    } catch (error) {
+      console.error('Delete failed:', error);
+      alert('删除失败，请重试');
+    }
+  };
+
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-zinc-400">Loading...</p>
         </div>
       </div>
     );
@@ -54,82 +81,94 @@ export default function ArticlesAdminPage() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
-      <main className="flex-grow bg-gray-50">
+      <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">📝 Manage Articles</h1>
-              <p className="text-gray-600 mt-1">Create, edit, and manage all articles</p>
+              <h1 className="text-2xl font-bold text-white">📝 文章管理</h1>
+              <p className="text-zinc-400 mt-1">创建、编辑和管理所有文章</p>
             </div>
             <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
-              + New Article
+              + 新建文章
             </button>
           </div>
 
           {/* Articles Table */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
+            <table className="min-w-full divide-y divide-zinc-800">
+              <thead className="bg-zinc-800/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Article
+                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                    文章
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Category
+                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                    分类
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                    状态
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Premium
+                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                    类型
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Views
+                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                    评分
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                    操作
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-zinc-900 divide-y divide-zinc-800">
                 {articles.map((article) => (
-                  <tr key={article.slug} className="hover:bg-gray-50">
+                  <tr key={article.slug} className="hover:bg-zinc-800/50 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{article.titleEn}</div>
-                      <div className="text-sm text-gray-500">{article.slug}</div>
+                      <div className="text-sm font-medium text-white">{article.titleEn}</div>
+                      <div className="text-xs text-zinc-500 truncate max-w-xs">{article.slug}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                         {article.categories?.[0]?.Category?.[0]?.name || 'General'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        article.isPublished 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
+                        article.status === 'PUBLISHED' 
+                          ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                          : article.status === 'REVIEW'
+                          ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                          : 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20'
                       }`}>
-                        {article.isPublished ? 'Published' : 'Draft'}
+                        {article.status === 'PUBLISHED' ? '已发布' : article.status === 'REVIEW' ? '待审核' : article.status === 'ARCHIVED' ? '已归档' : '草稿'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         article.isPremium 
-                          ? 'bg-amber-100 text-amber-800' 
-                          : 'bg-gray-100 text-gray-800'
+                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' 
+                          : 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20'
                       }`}>
-                        {article.isPremium ? 'Premium' : 'Free'}
+                        {article.isPremium ? '付费' : '免费'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {article.viewCount || 0}
+                    <td className="px-6 py-4 text-sm text-zinc-300">
+                      {article.qualityScore ? `${article.qualityScore}/100` : '-'}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
-                      <button className="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
-                      <button className="text-red-600 hover:text-red-900">Delete</button>
+                      <button 
+                        onClick={() => handleEdit(article.slug)}
+                        className="text-indigo-400 hover:text-indigo-300 mr-4 transition-colors"
+                      >
+                        编辑
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(article.slug, article.titleEn)}
+                        className="text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        删除
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -139,10 +178,10 @@ export default function ArticlesAdminPage() {
             {articles.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-4xl mb-4">📝</div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No articles yet</h3>
-                <p className="text-gray-600 mb-4">Create your first article to get started</p>
+                <h3 className="text-lg font-medium text-white mb-2">暂无文章</h3>
+                <p className="text-zinc-400 mb-4">创建第一篇文章开始</p>
                 <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
-                  Create Article
+                  创建文章
                 </button>
               </div>
             )}
