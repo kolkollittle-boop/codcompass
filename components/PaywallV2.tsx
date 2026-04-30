@@ -14,19 +14,19 @@ interface PaywallV2Props {
 
 const copyTemplates = {
   A: {
-    title: '效率升级',
-    description: '你已看到 Hybrid Search 如何将检索精度提升 27%。接下来的核心代码将展示如何通过 3 行配置实现这一飞跃，并附带生产环境调优参数。升级 Pro，直接带走 Blueprint。',
-    cta: '升级 Pro，带走 Blueprint',
+    title: 'Efficiency Upgrade',
+    description: 'You\'ve seen how Hybrid Search improves retrieval accuracy by 27%. The core code below shows how to achieve this with just 3 lines of configuration, plus production tuning parameters. Upgrade to Pro and take the Blueprint with you.',
+    cta: 'Upgrade Pro, Get the Blueprint',
   },
   B: {
-    title: '成本优化',
-    description: '在 100GB 规模下，错误的索引策略每小时都在浪费你的内存。付费解锁接下来的「索引分片与内存优化方案」，我们将帮你降低 40% 的运行成本。',
-    cta: '升级 Pro，节省 40% 成本',
+    title: 'Cost Optimization',
+    description: 'At 100GB scale, wrong indexing strategies waste memory every hour. Unlock the "Index Sharding & Memory Optimization" section to reduce your running costs by 40%.',
+    cta: 'Upgrade Pro, Save 40% Costs',
   },
   C: {
-    title: '结果导向',
-    description: '幻觉率下降 35% 的关键，就藏在接下来的 Re-ranking 权重矩阵与动态调优代码中。别再让垃圾数据污染你的上下文窗口和公司预算。升级 Pro，立即获取完整生产级实现 + Blueprint（docker-compose + 基准测试脚本）。',
-    cta: '升级 Pro，获取完整实现',
+    title: 'Results-Driven',
+    description: 'The key to reducing hallucination by 35% lies in the Re-ranking weight matrix and dynamic tuning code below. Stop letting garbage data pollute your context window and company budget. Upgrade to Pro for the complete production-grade implementation + Blueprint (docker-compose + benchmark scripts).',
+    cta: 'Upgrade Pro, Get Full Implementation',
   },
 };
 

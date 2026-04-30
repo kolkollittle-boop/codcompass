@@ -43,7 +43,7 @@ CREATE INDEX IF NOT EXISTS "Article_seriesId_idx" ON "Article"("seriesId");
 CREATE INDEX IF NOT EXISTS "Article_difficultyLevel_idx" ON "Article"("difficultyLevel");
 
 -- 5. 插入样板间专题数据（RAG 架构进阶系列）
-INSERT INTO "ArticleSeries" ("id", "slug", "title", "titleEn", "description", "totalParts", "estimatedTime", "order", "isPublished")
+INSERT INTO "ArticleSeries" ("id", "slug", "title", "titleEn", "description", "totalParts", "estimatedTime", "order", "isPublished", "createdAt", "updatedAt")
 VALUES (
     'rag-architecture-advanced-001',
     'rag-architecture-advanced',
@@ -53,5 +53,7 @@ VALUES (
     7,
     120,
     1,
-    true
+    true,
+    NOW(),
+    NOW()
 ) ON CONFLICT ("slug") DO NOTHING;
