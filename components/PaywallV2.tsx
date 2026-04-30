@@ -71,11 +71,11 @@ export default function PaywallV2({
               href="/login"
               className="px-8 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium rounded-lg border border-zinc-700 transition-colors"
             >
-              已订阅？登录
+              Already subscribed? Sign in
             </Link>
           </div>
           <p className="text-xs text-zinc-500 mt-4">
-            随时取消 · 30 天退款保证
+            Cancel anytime · 30-day money-back guarantee
           </p>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function PaywallV2({
               {displayCta}
             </Link>
             <p className="text-xs text-zinc-500 mt-3">
-              随时取消 · 30 天退款保证
+              Cancel anytime · 30-day money-back guarantee
             </p>
           </div>
         </div>
