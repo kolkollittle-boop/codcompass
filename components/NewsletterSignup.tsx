@@ -2,7 +2,11 @@
 
 import { useState } from 'react';
 
-export default function NewsletterSignup() {
+interface NewsletterSignupProps {
+  variant?: 'default' | 'dark';
+}
+
+export default function NewsletterSignup({ variant = 'default' }: NewsletterSignupProps) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
@@ -18,27 +22,42 @@ export default function NewsletterSignup() {
 
     setStatus('loading');
     
-    // TODO: Integrate with your email service (ConvertKit, Mailchimp, etc.)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
       
-      setStatus('success');
-      setMessage('Thanks for subscribing! Check your inbox for confirmation.');
-      setEmail('');
+      const json = await res.json();
+      
+      if (res.ok) {
+        setStatus('success');
+        setMessage(json.message || 'Thanks for subscribing! Check your inbox for confirmation.');
+        setEmail('');
+      } else {
+        setStatus('error');
+        setMessage(json.error || 'Something went wrong. Please try again.');
+      }
     } catch (error) {
       setStatus('error');
       setMessage('Something went wrong. Please try again.');
     }
   };
 
+  const isDark = variant === 'dark';
+
   return (
-    <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-8 sm:p-12">
+    <div className={`rounded-2xl p-8 sm:p-12 ${
+      isDark
+        ? 'bg-gradient-to-br from-zinc-900 to-zinc-800 border border-white/[0.08]'
+        : 'bg-gradient-to-br from-indigo-50 to-purple-50'
+    }`}>
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <h2 className={`text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
           Stay Ahead of the Curve
         </h2>
-        <p className="text-lg text-gray-600 mb-8">
+        <p className={`text-lg mb-8 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>
           Get weekly technical insights, tutorials, and best practices delivered to your inbox.
         </p>
 
@@ -48,7 +67,11 @@ export default function NewsletterSignup() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className={`flex-1 px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+              isDark
+                ? 'bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500'
+                : 'border-gray-300'
+            }`}
             disabled={status === 'loading'}
           />
           <button
@@ -68,7 +91,7 @@ export default function NewsletterSignup() {
           </p>
         )}
 
-        <p className="mt-4 text-xs text-gray-500">
+        <p className={`mt-4 text-xs ${isDark ? 'text-zinc-500' : 'text-gray-500'}`}>
           No spam, ever. Unsubscribe anytime. We respect your privacy.
         </p>
       </div>

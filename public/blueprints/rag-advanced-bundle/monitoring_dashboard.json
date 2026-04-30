@@ -1,0 +1,142 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "targets": [
+        {
+          "expr": "rate(rag_query_duration_seconds_sum[5m]) / rate(rag_query_duration_seconds_count[5m])",
+          "legendFormat": "Average Query延迟",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(rag_query_duration_seconds_bucket[5m]))",
+          "legendFormat": "P95 查询延迟",
+          "refId": "B"
+        }
+      ],
+      "title": "RAG 查询延迟",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "expr": "rag_recall_at_10 * 100",
+          "legendFormat": "Recall@10",
+          "refId": "A"
+        },
+        {
+          "expr": "rag_precision_at_10 * 100",
+          "legendFormat": "Precision@10",
+          "refId": "B"
+        }
+      ],
+      "title": "检索质量指标",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes{job=\"qdrant\"}",
+          "legendFormat": "Qdrant 内存",
+          "refId": "A"
+        },
+        {
+          "expr": "process_resident_memory_bytes{job=\"reranker\"}",
+          "legendFormat": "Re-ranker 内存",
+          "refId": "B"
+        }
+      ],
+      "title": "内存使用",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "targets": [
+        {
+          "expr": "rag_vector_count",
+          "legendFormat": "向量总数",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(rag_queries_total[5m])",
+          "legendFormat": "QPS",
+          "refId": "B"
+        }
+      ],
+      "title": "系统规模",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["rag", "monitoring"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "RAG 生产监控面板",
+  "uid": "rag-production-monitoring",
+  "version": 1
+}

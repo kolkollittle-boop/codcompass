@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getPublishedArticles, getArticleCount } from '@/lib/supabase';
+import { getPublishedArticles, getArticleCount, supabaseAdmin } from '@/lib/supabase';
 import { getArticleContent, type Locale } from '@/lib/i18n';
 import { Icon } from '@/components/ui';
 import { CATEGORIES, categoryBySlug } from '@/lib/categories';
@@ -80,6 +80,31 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
   const locale = (resolvedParams.locale as Locale) || 'en';
   const t = translations[locale];
   
+  // 获取已发布的专题列表
+  let seriesList: any[] = [];
+  if (supabaseAdmin) {
+    const { data } = await supabaseAdmin
+      .from('ArticleSeries')
+      .select('*')
+      .eq('isPublished', true)
+      .order('createdAt', { ascending: false })
+      .limit(6);
+    
+    if (data) {
+      // 获取每个专题的文章数量
+      seriesList = await Promise.all(
+        data.map(async (s: any) => {
+          const { count } = await supabaseAdmin
+            .from('Article')
+            .select('*', { count: 'exact', head: true })
+            .eq('seriesId', s.id)
+            .eq('isPublished', true);
+          return { ...s, articleCount: count ?? 0 };
+        })
+      );
+    }
+  }
+  
   // Get current page from URL
   const currentPage = parseInt(resolvedSearchParams.page || '1') || 1;
   const categoryFilter = resolvedSearchParams.category;
@@ -123,6 +148,47 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* 专题路径展示区 */}
+          {seriesList.length > 0 && (
+            <div className="mb-12">
+              <div className="flex items-center gap-2 mb-6">
+                <Icon name="graduation-cap" size={20} className="text-indigo-600" />
+                <h2 className="text-xl font-bold text-gray-900">
+                  {locale === 'zh' ? '学习路径' : 'Learning Paths'}
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {seriesList.map((series) => {
+                  const seriesTitle = locale === 'zh' && series.title ? series.title : series.titleEn;
+                  const estimatedTime = series.estimatedTime || Math.max(5, series.totalParts * 10);
+                  return (
+                    <Link
+                      key={series.id}
+                      href={`/${locale}/kb/series/${series.slug}` as any}
+                      className="group block p-4 bg-white rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+                          <Icon name="book-marked" size={18} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                            {seriesTitle}
+                          </h3>
+                          <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
+                            <span>{series.articleCount} {locale === 'zh' ? '篇' : 'parts'}</span>
+                            <span>·</span>
+                            <span>~{estimatedTime} {locale === 'zh' ? '分钟' : 'min'}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="text-center mb-12">
             <h1 className="text-3xl font-bold text-gray-900">{t.title}</h1>
             <p className="mt-4 text-lg text-gray-600">

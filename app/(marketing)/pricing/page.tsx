@@ -1,115 +1,234 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import PricingCard from '@/components/PricingCard';
+import PricingCardV2, { type PricingPlanV2 } from '@/components/PricingCardV2';
+import { Check, Shield, Clock, ArrowRight } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pricing - Choose Your Plan',
-  description: 'Flexible pricing plans for developers. Start free, upgrade to Builder ($9.99/mo) or Pro ($29.99/mo) for unlimited access to all tutorials and features.',
-  keywords: ['developer subscription', 'tech tutorials pricing', 'React courses', 'TypeScript courses', 'Next.js courses', 'developer tools pricing'],
+  title: 'Pricing - Codcompass',
+  description: 'Flexible pricing plans for developers. Start with 7-day trial, upgrade to Pro ($15/mo), Team ($49/mo) or Enterprise for unlimited access.',
+  keywords: ['developer subscription', 'tech tutorials pricing', 'AI knowledge base', 'developer tools pricing'],
   openGraph: {
-    title: 'Pricing - Choose Your Plan',
-    description: 'Flexible pricing plans for developers. Start free, upgrade to Builder ($9.99/mo) or Pro ($29.99/mo) for unlimited access.',
+    title: 'Pricing - Codcompass',
+    description: 'Flexible pricing plans for developers. Start with 7-day trial.',
     url: 'https://www.codcompass.com/pricing',
     siteName: 'Codcompass',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pricing - Choose Your Plan',
-    description: 'Flexible pricing plans for developers. Start free, upgrade to Builder ($9.99/mo) or Pro ($29.99/mo) for unlimited access.',
+    title: 'Pricing - Codcompass',
+    description: 'Flexible pricing plans for developers. Start with 7-day trial.',
   },
 };
 
-export default function PricingPage() {
-  const pricingPlans = [
-    {
-      name: 'Free',
-      price: '$0',
-      description: 'Perfect for getting started',
-      features: [
-        'Access to 10% of articles',
-        'Basic search functionality',
-        'Weekly newsletter',
-      ],
-      cta: 'Get Started',
-      mostPopular: false,
-      planId: 'free',
-    },
-    {
-      name: 'Builder',
-      price: '$9.99',
-      description: 'Best for individual professionals',
-      features: [
-        'Full article access',
-        'Advanced search',
-        'Save articles for later',
-        'Monthly newsletter',
-        'Email support',
-      ],
-      cta: 'Start Free Trial',
-      mostPopular: true,
-      planId: 'builder',
-    },
-    {
-      name: 'Pro',
-      price: '$29',
-      description: 'For power users and teams',
-      features: [
-        'Everything in Builder',
-        'Early access to new content',
-        'Team collaboration',
-        'Custom integrations',
-        'Priority support',
-      ],
-      cta: 'Start Free Trial',
-      mostPopular: false,
-      planId: 'pro',
-    },
-    {
-      name: 'Enterprise',
-      price: '$49',
-      description: 'For organizations',
-      features: [
-        'Unlimited access',
-        'Custom branding',
-        'SSO Integration',
-        'Dedicated account manager',
-        '24/7 premium support',
-      ],
-      cta: 'Contact Sales',
-      mostPopular: false,
-      planId: 'enterprise',
-    },
-  ];
+const pricingPlans: PricingPlanV2[] = [
+  {
+    name: 'Pro',
+    price: '$15',
+    originalPrice: '$29',
+    description: 'For individual developers who want unlimited access to all tutorials and expert insights.',
+    features: [
+      'Unlimited article access',
+      'All learning paths & series',
+      'Production blueprints & checklists',
+      'Weekly newsletter with curated insights',
+      'Priority email support',
+      '30-day money-back guarantee',
+    ],
+    cta: 'Start 7-Day Free Trial',
+    ctaHref: '/checkout?plan=pro&trial=7d',
+    icon: 'sparkles',
+    valueProof: 'Save 10+ hours/week on research',
+    refundGuarantee: true,
+  },
+  {
+    name: 'Team',
+    price: '$49',
+    originalPrice: '$99',
+    description: 'For teams of 5-20 developers who need collaboration and shared knowledge.',
+    features: [
+      'Everything in Pro, plus:',
+      'Up to 20 team members',
+      'Team dashboard & analytics',
+      'Shared bookmarks & collections',
+      'Team admin console',
+      'Priority Slack support',
+      'Custom onboarding session',
+    ],
+    cta: 'Start 7-Day Free Trial',
+    ctaHref: '/checkout?plan=team&trial=7d',
+    highlighted: true,
+    badge: 'Most Popular',
+    icon: 'zap',
+    valueProof: 'Save $500+/month vs individual plans',
+    refundGuarantee: true,
+  },
+  {
+    name: 'Enterprise',
+    price: 'Custom',
+    description: 'For organizations that need custom solutions, SSO, and dedicated support.',
+    features: [
+      'Everything in Team, plus:',
+      'Unlimited team members',
+      'SSO / SAML integration',
+      'Custom branding',
+      'Dedicated account manager',
+      '24/7 premium support',
+      'Custom content requests',
+      'SLA guarantee',
+    ],
+    cta: 'Contact Sales',
+    ctaHref: '/contact',
+    icon: 'building',
+    valueProof: 'Tailored to your organization',
+  },
+];
 
+const faqData = [
+  {
+    question: 'What happens after my 7-day trial?',
+    answer: 'After your trial ends, you\'ll be automatically subscribed to the plan you chose. You can cancel anytime before the trial ends and won\'t be charged.',
+  },
+  {
+    question: 'Can I cancel my subscription anytime?',
+    answer: 'Yes, you can cancel your subscription at any time. There are no long-term contracts or cancellation fees. Your access will continue until the end of your billing period.',
+  },
+  {
+    question: 'How does the 30-day money-back guarantee work?',
+    answer: 'If you\'re not satisfied with your subscription within the first 30 days, contact us for a full refund. No questions asked.',
+  },
+  {
+    question: 'Can I switch between plans?',
+    answer: 'Yes, you can upgrade or downgrade your plan at any time. When upgrading, you\'ll be prorated for the remainder of your billing cycle. When downgrading, the change takes effect at the next billing date.',
+  },
+  {
+    question: 'Do you offer discounts for startups or education?',
+    answer: 'Yes! We offer 50% off for verified startups (less than 2 years old, under 10 employees) and educational institutions. Contact us to apply.',
+  },
+  {
+    question: 'What payment methods do you accept?',
+    answer: 'We accept all major credit cards (Visa, Mastercard, Amex) and PayPal. For Enterprise plans, we also support invoice-based billing.',
+  },
+];
+
+export default function PricingPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#0a0a0a] text-neutral-200">
       <Header />
 
       <main className="flex-grow">
-        <section className="py-12 bg-white sm:py-16 lg:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl lg:text-5xl">
-                Pricing Plans
-              </h1>
-              <p className="mt-4 text-xl text-gray-500">
-                Choose the perfect plan for your knowledge needs
-              </p>
+        {/* Hero Section */}
+        <section className="py-24 px-4 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 via-purple-600/10 to-indigo-600/10 blur-3xl opacity-30" />
+          <div className="relative z-10 max-w-4xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20 mb-6">
+              <Clock className="w-4 h-4" />
+              Limited: 7-Day Free Trial on All Plans
             </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-500 mb-6">
+              Simple, Transparent Pricing
+            </h1>
+            <p className="text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto mb-8">
+              Start learning today with a 7-day free trial. No credit card required.
+              Cancel anytime with our 30-day money-back guarantee.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-neutral-500">
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-green-400" />
+                7-day free trial
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-green-400" />
+                30-day money-back guarantee
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-green-400" />
+                Cancel anytime
+              </div>
+            </div>
+          </div>
+        </section>
 
-            <div className="mt-16 space-y-12 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-x-8">
+        {/* Pricing Cards */}
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
               {pricingPlans.map((plan) => (
-                <PricingCard key={plan.name} plan={plan} />
+                <PricingCardV2 key={plan.name} plan={plan} />
               ))}
             </div>
+          </div>
+        </section>
 
-            <div className="mt-16 text-center">
-              <p className="text-lg text-gray-500">
-                Need custom solutions? Contact us for enterprise options.
+        {/* Value Proposition Section */}
+        <section className="py-24 px-4 bg-zinc-900/50">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+              Why Developers Choose Codcompass
+            </h2>
+            <p className="text-lg text-neutral-400 mb-12">
+              Join thousands of developers who trust Codcompass for their technical learning
+            </p>
+            <div className="grid sm:grid-cols-3 gap-8">
+              <div className="p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl">
+                <div className="text-4xl font-bold text-indigo-400 mb-2">10K+</div>
+                <div className="text-sm text-neutral-400">Articles Curated</div>
+              </div>
+              <div className="p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl">
+                <div className="text-4xl font-bold text-indigo-400 mb-2">25K+</div>
+                <div className="text-sm text-neutral-400">Monthly Readers</div>
+              </div>
+              <div className="p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl">
+                <div className="text-4xl font-bold text-indigo-400 mb-2">4.9/5</div>
+                <div className="text-sm text-neutral-400">User Rating</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-24 px-4">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-lg text-neutral-400">
+                Everything you need to know about our pricing
               </p>
             </div>
+            <div className="space-y-6">
+              {faqData.map((faq, index) => (
+                <div
+                  key={index}
+                  className="p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl"
+                >
+                  <h3 className="text-lg font-semibold text-white mb-3">{faq.question}</h3>
+                  <p className="text-neutral-400 leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="py-24 px-4 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 blur-3xl opacity-30" />
+          <div className="relative z-10 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Ready to Level Up Your Skills?
+            </h2>
+            <p className="text-lg text-neutral-400 mb-8">
+              Start your 7-day free trial today. No credit card required.
+            </p>
+            <a
+              href="/kb"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-neutral-200 transition-all"
+            >
+              Browse Articles
+              <ArrowRight className="w-5 h-5" />
+            </a>
           </div>
         </section>
       </main>

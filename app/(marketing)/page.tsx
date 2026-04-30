@@ -2,6 +2,9 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import SeriesCard from "@/components/SeriesCard";
+import DiscordCommunityCard from "@/components/DiscordCommunityCard";
+import BrandBanner from "@/components/BrandBanner";
 import Icon from "@/components/ui/Icon";
 import { Spotlight } from "@/components/ui/aceternity/spotlight";
 import { BackgroundGradient } from "@/components/ui/aceternity/background-gradient";
@@ -20,12 +23,30 @@ const stats = [
   { value: 'Weekly', label: 'Updates' },
 ];
 
+// 获取专题数据（服务端组件直接调用）
+async function getPublishedSeries(limit = 6) {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const res = await fetch(`${baseUrl}/api/series?limit=${limit}`, {
+      next: { revalidate: 300 } // 5 分钟缓存
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.series || [];
+  } catch {
+    return [];
+  }
+}
+
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0a0a] text-neutral-200">
       <Header />
 
       <main className="flex-grow relative overflow-hidden">
+        {/* Brand Banner */}
+        <BrandBanner variant="topbar" />
+
         {/* Hero Section with Spotlight */}
         <section className="relative flex flex-col items-center justify-center py-32 px-4 text-center">
           <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="rgba(99, 102, 241, 0.5)" />
@@ -92,10 +113,20 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Learning Paths - 专题路径展示区 */}
+        <LearningPathsSection />
+
         {/* Newsletter */}
         <section className="py-24 px-4 bg-zinc-900/50">
           <div className="max-w-4xl mx-auto">
             <NewsletterSignup />
+          </div>
+        </section>
+
+        {/* Discord Community */}
+        <section className="py-24 px-4">
+          <div className="max-w-4xl mx-auto">
+            <DiscordCommunityCard locale="en" />
           </div>
         </section>
 
@@ -120,5 +151,49 @@ export default function HomePage() {
 
       <Footer />
     </div>
+  );
+}
+
+// 专题路径展示区组件
+async function LearningPathsSection() {
+  const series = await getPublishedSeries(6);
+  
+  if (!series || series.length === 0) {
+    return null; // 没有专题时不显示
+  }
+  
+  return (
+    <section className="py-24 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4">
+            <Icon name="graduation-cap" size={14} />
+            Learning Paths
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-500">
+            Structured Learning, Not Random Reading
+          </h2>
+          <p className="mt-4 text-lg text-neutral-400 max-w-2xl mx-auto">
+            Follow curated learning paths designed to take you from fundamentals to production-ready skills.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {series.map((s: any) => (
+            <BackgroundGradient key={s.id} containerClassName="w-full h-full">
+              <SeriesCard series={s} locale="en" />
+            </BackgroundGradient>
+          ))}
+        </div>
+        <div className="mt-12 text-center">
+          <Link
+            href={"/kb" as any}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 hover:bg-white/10 transition-all text-sm font-medium"
+          >
+            Browse All Articles
+            <Icon name="arrow-right" size={16} />
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
