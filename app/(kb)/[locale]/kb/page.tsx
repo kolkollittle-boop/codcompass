@@ -147,13 +147,14 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
     : [];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* 专题路径展示区 */}
           {seriesList.length > 0 && (
             <div className="mb-12">
               <div className="flex items-center gap-2 mb-6">
-                <Icon name="graduation-cap" size={20} className="text-indigo-600" />
-                <h2 className="text-xl font-bold text-gray-900">
+                <Icon name="graduation-cap" size={20} className="text-indigo-400" />
+                <h2 className="text-xl font-bold text-white">
                   {locale === 'zh' ? '学习路径' : 'Learning Paths'}
                 </h2>
               </div>
@@ -165,17 +166,17 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                     <Link
                       key={series.id}
                       href={`/${locale}/kb/series/${series.slug}` as any}
-                      className="group block p-4 bg-white rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all"
+                      className="group block p-4 bg-zinc-900 rounded-xl border border-zinc-800 hover:border-indigo-500/30 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] transition-all"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center flex-shrink-0">
                           <Icon name="book-marked" size={18} />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                          <h3 className="text-sm font-semibold text-white group-hover:text-indigo-400 transition-colors line-clamp-2">
                             {seriesTitle}
                           </h3>
-                          <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
+                          <div className="mt-2 flex items-center gap-3 text-xs text-zinc-500">
                             <span>{series.articleCount} {locale === 'zh' ? '篇' : 'parts'}</span>
                             <span>·</span>
                             <span>~{estimatedTime} {locale === 'zh' ? '分钟' : 'min'}</span>
@@ -190,8 +191,8 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
           )}
 
           <div className="text-center mb-12">
-            <h1 className="text-3xl font-bold text-gray-900">{t.title}</h1>
-            <p className="mt-4 text-lg text-gray-600">
+            <h1 className="text-3xl font-bold text-white">{t.title}</h1>
+            <p className="mt-4 text-lg text-zinc-400">
               {t.subtitle}
             </p>
             <div className="mt-6 flex justify-center gap-2 flex-wrap">
@@ -199,8 +200,8 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 href={`/${locale}/kb`}
                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                   !categoryFilter
-                    ? 'bg-indigo-100 text-indigo-700'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 border border-zinc-700'
                 }`}
               >
                 {t.allTopics}
@@ -215,8 +216,8 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                     href={`/${locale}/kb?category=${slug}`}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                       isActive
-                        ? 'bg-indigo-100 text-indigo-700'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                        : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 border border-zinc-700'
                     }`}
                   >
                     {label}
@@ -231,34 +232,34 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
               articles.map((article: any) => (
                 <article
                   key={article.id}
-                  className="bg-white rounded-xl border border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all group"
+                  className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 hover:border-indigo-500/30 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] transition-all group"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                           {article.category}
                         </span>
                         {article.isPremium && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
                             <Icon name="lock" size={12} />
                             {t.premium}
                           </span>
                         )}
                         {article.isTrending && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
                             <Icon name="flame" size={12} />
                             {t.trending}
                           </span>
                         )}
                       </div>
-                      <h2 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                      <h2 className="text-xl font-semibold text-white group-hover:text-indigo-400 transition-colors">
                         <Link href={`/${locale}/kb/${article.slug}`}>
                           {article.title}
                         </Link>
                       </h2>
-                      <p className="mt-2 text-gray-600">{article.excerpt}</p>
-                      <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
+                      <p className="mt-2 text-zinc-400">{article.excerpt}</p>
+                      <div className="mt-3 flex items-center gap-4 text-sm text-zinc-500">
                         <time>{article.date}</time>
                         <span>·</span>
                         <span>{article.readTime}</span>
@@ -266,7 +267,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                     </div>
                     <Link
                       href={`/${locale}/kb/${article.slug}`}
-                      className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors"
+                      className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-800 text-zinc-400 group-hover:bg-indigo-500/10 group-hover:text-indigo-400 transition-colors border border-zinc-700"
                     >
                       <Icon name="arrow-right" size={18} />
                     </Link>
@@ -275,11 +276,11 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
               ))
             ) : (
               <div className="text-center py-16">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 flex items-center justify-center">
-                  <Icon name="book" size={32} className="text-indigo-600" />
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-500/10 flex items-center justify-center">
+                  <Icon name="book" size={32} className="text-indigo-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.noArticles}</h2>
-                <p className="text-gray-600">{t.checkBack}</p>
+                <h2 className="text-2xl font-bold text-white mb-2">{t.noArticles}</h2>
+                <p className="text-zinc-400">{t.checkBack}</p>
               </div>
             )}
           </div>
@@ -292,7 +293,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 {currentPage > 1 && (
                   <Link
                     href={`/${locale}/kb?page=${currentPage - 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
-                    className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
                   >
                     <Icon name="chevron-left" size={16} />
                     {locale === 'zh' ? '上一页' : 'Previous'}
@@ -312,14 +313,14 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                     return (
                       <div key={page} className="flex items-center">
                         {showEllipsis && (
-                          <span className="px-2 text-gray-500">...</span>
+                          <span className="px-2 text-zinc-500">...</span>
                         )}
                         <Link
                           href={`/${locale}/kb?page=${page}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
                           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                             page === currentPage
                               ? 'bg-indigo-600 text-white'
-                              : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                              : 'text-zinc-300 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800'
                           }`}
                         >
                           {page}
@@ -332,7 +333,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 {currentPage < Math.ceil(totalArticles / itemsPerPage) && (
                   <Link
                     href={`/${locale}/kb?page=${currentPage + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
-                    className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
                   >
                     {locale === 'zh' ? '下一页' : 'Next'}
                     <Icon name="chevron-right" size={16} />
@@ -341,6 +342,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
               </nav>
             </div>
           )}
+      </div>
     </div>
   );
 }
