@@ -250,15 +250,28 @@ export default function AdminReviewDashboard() {
                 const timeStr = date ? new Date(date).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
                 const isSelected = selectedIds.has(art.id);
                 return (
-                  <div key={art.id} className={`w-full text-left p-3 rounded-md border transition-all ${selected?.id === art.id ? 'bg-cyan-950/40 border-cyan-700' : 'bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800'}`}>
-                    <div className="flex items-start gap-2">
-                      <button 
-                        onClick={() => toggleSelectId(art.id)}
-                        className="mt-0.5 text-zinc-500 hover:text-cyan-400 flex-shrink-0"
+                  <div key={art.id} className={`w-full text-left p-3 rounded-md border transition-all cursor-pointer ${selected?.id === art.id ? 'bg-cyan-950/40 border-cyan-700' : 'bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800'} ${isSelected ? 'border-cyan-500 bg-cyan-950/20' : ''}`}>
+                    <div className="flex items-start gap-3" onClick={(e) => {
+                      // 如果点击的是复选框区域，切换选择；否则选中文章
+                      if ((e.target as HTMLElement).closest('[data-checkbox]')) {
+                        toggleSelectId(art.id);
+                      } else {
+                        handleSelect(art);
+                      }
+                    }}>
+                      {/* 增大的复选框区域 */}
+                      <button
+                        data-checkbox
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSelectId(art.id);
+                        }}
+                        className="mt-0.5 p-1 -m-1 text-zinc-500 hover:text-cyan-400 flex-shrink-0 rounded transition-colors"
+                        title={isSelected ? '取消选择' : '选择此文章'}
                       >
-                        {isSelected ? <CheckSquare className="w-4 h-4 text-cyan-400" /> : <Square className="w-4 h-4" />}
+                        {isSelected ? <CheckSquare className="w-5 h-5 text-cyan-400" /> : <Square className="w-5 h-5" />}
                       </button>
-                      <button onClick={() => handleSelect(art)} className="flex-1 text-left min-w-0">
+                      <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start mb-1">
                           <span className="font-medium text-sm truncate max-w-[110px]">{art.titleEn}</span>
                           <Badge variant={score > 80 ? 'default' : 'secondary'} className="text-[10px]">{score}</Badge>
@@ -267,7 +280,7 @@ export default function AdminReviewDashboard() {
                           <span>{difficulty}</span> • <span>{art.isPremium ? '💎 Pro' : 'Free'}</span>
                         </div>
                         {timeStr && <div className="text-[10px] text-zinc-600 mt-1">{timeStr}</div>}
-                      </button>
+                      </div>
                     </div>
                   </div>
                 );
