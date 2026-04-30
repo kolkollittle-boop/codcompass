@@ -40,56 +40,56 @@ export async function restructureArticle(
         messages: [
           {
             role: 'system',
-            content: `你是一位资深技术编辑，负责将英文技术文章重构为 Codcompass 2.0 标准结构。
+            content: `You are a senior technical editor. Restructure the English technical article into Codcompass 2.0 standard format.
 
-Codcompass 2.0 文章标准结构：
-1. **现状分析**：当前痛点、失效模式、为什么传统方法不行
-2. **WOW Moment**：实验数据对比表、关键发现、甜点位
-3. **核心方案**：技术实现细节、代码示例、架构决策
-4. **避坑指南**：3-7 条常见错误和最佳实践
-5. **交付物**：可下载的 Blueprint、Checklist、配置模板
+Codcompass 2.0 Article Structure:
+1. **Current Situation Analysis**: Pain points, failure modes, why traditional methods don't work
+2. **WOW Moment**: Experimental data comparison table, key findings, sweet spot
+3. **Core Solution**: Technical implementation details, code examples, architecture decisions
+4. **Pitfall Guide**: 3-7 common mistakes and best practices
+5. **Deliverables**: Downloadable Blueprint, Checklist, configuration templates
 
-要求：
-- 保持技术深度，不要简化核心内容
-- 添加实验数据对比表（如果原文没有，基于技术常识推断合理数据）
-- 提取 3-7 条避坑指南
-- 代码块保持完整，不要修改
-- 使用中文输出（技术术语保持英文）
-- 保持 Markdown 格式
+Requirements:
+- Keep technical depth, do NOT simplify core content
+- Add experimental data comparison table (if original doesn't have one, infer reasonable data based on technical knowledge)
+- Extract 3-7 pitfall guides
+- Keep code blocks intact, do NOT modify them
+- **OUTPUT IN ENGLISH** (keep technical terms as-is)
+- Keep Markdown format
 
-输出格式（严格按照以下模板）：
+Output format (strictly follow this template):
 
-# [文章标题]
+# [Article Title]
 
-## 现状分析
-[当前痛点和失效模式分析]
+## Current Situation Analysis
+[Pain points and failure mode analysis]
 
-## WOW Moment：关键发现
-[实验数据对比表]
+## WOW Moment: Key Findings
+[Experimental data comparison table]
 
-| 方案 | 指标1 | 指标2 | 指标3 |
-|------|-------|-------|-------|
-| [方案A] | [数据] | [数据] | [数据] |
-| [方案B] | [数据] | [数据] | [数据] |
+| Approach | Metric 1 | Metric 2 | Metric 3 |
+|----------|----------|----------|----------|
+| [Approach A] | [data] | [data] | [data] |
+| [Approach B] | [data] | [data] | [data] |
 
-## 核心方案
-[技术实现和代码示例]
+## Core Solution
+[Technical implementation and code examples]
 
-## 避坑指南
-1. **[陷阱名称]**：[详细说明]
-2. **[陷阱名称]**：[详细说明]
+## Pitfall Guide
+1. **[Pitfall Name]**: [Detailed explanation]
+2. **[Pitfall Name]**: [Detailed explanation]
 ...
 
-## 交付物
-[Blueprint 和 Checklist 说明]`,
+## Deliverables
+[Blueprint and Checklist description]`,
           },
           {
             role: 'user',
-            content: `请将以下文章重构为 Codcompass 2.0 标准结构：
+            content: `Please restructure the following article into Codcompass 2.0 standard format:
 
-标题：${originalTitle}
+Title: ${originalTitle}
 
-原文内容：
+Original content:
 ${originalContent.substring(0, 8000)}`,
           },
         ],
@@ -155,6 +155,9 @@ function extractExpectedOutcome(content: string): string {
     /提升[^\n]{5,30}/g,
     /降低[^\n]{5,30}/g,
     /减少[^\n]{5,30}/g,
+    /reduce[^\n]{5,50}/gi,
+    /improve[^\n]{5,50}/gi,
+    /increase[^\n]{5,50}/gi,
   ];
 
   for (const pattern of patterns) {
@@ -175,7 +178,7 @@ function extractTags(content: string, title: string): string[] {
     'RAG', 'Agent', 'LLM', 'Vector DB', 'Embedding', 'Re-ranking',
     'React', 'Next.js', 'TypeScript', 'Python', 'Docker', 'Kubernetes',
     'API', 'Microservices', 'Serverless', 'CI/CD',
-    'AI', 'Machine Learning', 'Deep Learning',
+    'AI', 'Machine Learning', 'Deep Learning', 'Rust', 'Function',
   ];
 
   const tags: string[] = [];
