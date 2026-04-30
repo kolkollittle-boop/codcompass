@@ -260,7 +260,8 @@ async function main() {
   }
 
   // 2. 并发处理配置
-  const CONCURRENCY = 3; // 同时处理的文章数量
+  const CONCURRENCY = 2; // 同时处理的文章数量（降低并发避免API限速）
+  const SCORE_THRESHOLD = 75; // 75分以上自动审核通过
   let successCount = 0;
   let failCount = 0;
   let skippedCount = 0;
@@ -287,6 +288,12 @@ async function main() {
       
       if (!evaluation.score) {
         console.log(`⏭️ Skipping: AI scoring failed`);
+        return { success: false, skipped: true, title: article.title };
+      }
+      
+      // 低于阈值则跳过
+      if (evaluation.score < SCORE_THRESHOLD) {
+        console.log(`⏭️ Skipping: score ${evaluation.score} below threshold ${SCORE_THRESHOLD}`);
         return { success: false, skipped: true, title: article.title };
       }
       
@@ -343,10 +350,10 @@ async function main() {
       else failCount++;
     });
     
-    // 批次间添加短暂延迟，避免 API 限速
+    // 批次间添加延迟，避免 API 限速
     if (i + CONCURRENCY < articles.length) {
-      console.log(`\n⏳ Waiting 2 seconds before next batch...`);
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`\n⏳ Waiting 5 seconds before next batch...`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
     }
   }
 

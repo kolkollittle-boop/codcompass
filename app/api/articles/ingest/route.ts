@@ -45,9 +45,14 @@ export async function POST(req: NextRequest) {
     console.log('[Ingest] Content preview (first 100 chars):', content?.substring(0, 100));
 
     // 2. 自动分流逻辑
-    // 使用数据库枚举值：REVIEW (待审核), ARCHIVED (已归档/拒绝)
+    // 使用数据库枚举值：PUBLISHED (已发布), REVIEW (待审核), ARCHIVED (已归档/拒绝)
     let status = 'REVIEW';
-    if (!aiScore || aiScore < 60 || isPromotional) {
+    if (isPromotional) {
+      status = 'ARCHIVED';
+    } else if (aiScore && aiScore >= 75) {
+      // 75分以上自动审核通过，直接发布
+      status = 'PUBLISHED';
+    } else if (!aiScore || aiScore < 60) {
       status = 'ARCHIVED';
     }
     console.log('[Ingest] Setting status:', status);
