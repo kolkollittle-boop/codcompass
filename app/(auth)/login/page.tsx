@@ -8,7 +8,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  // Google 登录 (使用 NextAuth)
+  // Google login (using NextAuth)
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError('');

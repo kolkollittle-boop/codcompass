@@ -19,19 +19,19 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // 合并检查两种认证系统的 session
+  // Check session from both auth systems
   useEffect(() => {
     let cancelled = false;
 
     const checkAuth = async () => {
-      // 1. 检查 Supabase session
+      // 1. Check Supabase session
       const { data: { session } } = await supabase.auth.getSession();
       if (!cancelled) {
         setSupabaseSession(session);
         setLoading(false);
       }
 
-      // 2. 如果两种都没登录，跳转登录页
+      // 2. If neither is logged in, redirect to login page
       if (!session && nextAuthStatus === 'unauthenticated') {
         router.push('/login');
       }
@@ -39,7 +39,7 @@ export default function DashboardPage() {
 
     checkAuth();
 
-    // 监听 Supabase auth 状态变化
+    // Listen for Supabase auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!cancelled) {
         setSupabaseSession(session);
@@ -53,7 +53,7 @@ export default function DashboardPage() {
     };
   }, [nextAuthStatus, router]);
 
-  // 合并两种 session 数据
+  // Merge session data from both systems
   const session = supabaseSession?.user || nextAuthSession?.user;
   const isLoading = loading || nextAuthStatus === 'loading';
 

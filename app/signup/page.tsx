@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-// 使用项目已有的 supabase-js 库，避免缺少依赖报错
+// Use existing supabase-js library to avoid missing dependency errors
 import { createClient } from '@supabase/supabase-js';
 
 export default function SignUp() {
@@ -11,8 +11,8 @@ export default function SignUp() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  // 初始化 Supabase 客户端
-  // 确保 .env.local 中有 NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY
+  // Initialize Supabase client
+  // Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in .env.local
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -33,7 +33,7 @@ export default function SignUp() {
     if (error) {
       setError(error.message);
     } else {
-      alert('注册成功！请检查邮箱或联系管理员激活。');
+      alert('Registration successful! Please check your email or contact the administrator to activate your account.');
       router.push('/login');
     }
   };

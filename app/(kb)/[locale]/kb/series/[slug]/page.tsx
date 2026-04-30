@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: SeriesPageProps): Promise<Met
     return { title: 'Series Not Found' };
   }
 
-  const title = resolvedParams.locale === 'zh' && series.title ? series.title : series.titleEn;
+  const title = series.titleEn || series.title;
 
   return {
     title: `${title} - Series`,
@@ -42,25 +42,12 @@ const translations = {
     readArticle: 'Read Article',
     unlockWithPro: 'Unlock with Pro',
   },
-  zh: {
-    backToKB: '返回知识库',
-    series: '专题',
-    articles: '篇文章',
-    estimatedTime: '预计时间',
-    minutes: '分钟',
-    startLearning: '开始学习',
-    article: '篇',
-    free: '免费',
-    premium: '付费',
-    readArticle: '阅读文章',
-    unlockWithPro: 'Pro 解锁',
-  },
 };
 
 export default async function SeriesPage({ params }: SeriesPageProps) {
   const resolvedParams = await params;
   const locale = (resolvedParams.locale as Locale) || 'en';
-  const t = translations[locale];
+  const t = translations.en; // Always use English translations
 
   const { series, articles } = await getSeriesArticles(resolvedParams.slug, locale);
 
@@ -68,14 +55,14 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
     notFound();
   }
 
-  const title = locale === 'zh' && series.title ? series.title : series.titleEn;
-  const description = locale === 'zh' && series.description ? series.description : series.description;
+  const title = series.titleEn || series.title;
+  const description = series.description;
   const estimatedTime = series.estimatedTime || Math.max(5, series.totalParts * 10);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* 返回按钮 */}
+        {/* Back button */}
         <Link
           href={`/${locale}/kb`}
           className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-cyan-400 mb-8 transition-colors"
@@ -84,7 +71,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
           {t.backToKB}
         </Link>
 
-        {/* 专题头部 */}
+        {/* Series header */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4">
             <Icon name="book-marked" size={14} />
@@ -106,7 +93,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
           </div>
         </div>
 
-        {/* 文章列表 */}
+        {/* Articles list */}
         <div className="space-y-4">
           {articles.map((article: any, index: number) => {
             const articleTitle = article.translations?.[0]?.title || article.titleEn;
@@ -171,19 +158,19 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
           })}
         </div>
 
-        {/* 底部 CTA */}
+        {/* Bottom CTA */}
         <div className="mt-16 text-center p-8 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 rounded-2xl border border-indigo-500/30">
           <h2 className="text-2xl font-bold text-white mb-3">
             {t.startLearning}
           </h2>
           <p className="text-zinc-400 mb-6">
-            {locale === 'zh' ? '解锁所有文章，获取完整学习体验' : 'Unlock all articles for the complete learning experience'}
+            Unlock all articles for the complete learning experience
           </p>
           <Link
             href="/pricing"
             className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors"
           >
-            {locale === 'zh' ? '查看定价' : 'View Pricing'}
+            View Pricing
             <Icon name="arrow-right" size={18} />
           </Link>
         </div>

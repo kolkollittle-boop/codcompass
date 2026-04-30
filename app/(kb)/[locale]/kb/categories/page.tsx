@@ -14,13 +14,6 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const resolvedParams = await params;
   const locale = resolvedParams.locale;
   
-  if (locale === 'zh') {
-    return {
-      title: '文章分类 - Codcompass',
-      description: '浏览所有技术分类：AI & LLM、数据库、API 开发、前端、后端、DevOps、移动开发、安全、产品创业。',
-    };
-  }
-  
   return {
     title: 'Categories - Codcompass',
     description: 'Browse all technical categories: AI & LLM, Database, API Development, Frontend, Backend, DevOps, Mobile Development, Security, Product & Startup.',
@@ -35,19 +28,12 @@ const translations = {
     viewAll: 'View All Articles',
     popularArticles: 'Popular Articles',
   },
-  zh: {
-    title: '按分类浏览',
-    subtitle: '探索我们按主题组织的全面技术教程库',
-    articles: '篇文章',
-    viewAll: '查看全部文章',
-    popularArticles: '热门文章',
-  },
 };
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const resolvedParams = await params;
   const locale = resolvedParams.locale;
-  const t = translations[locale];
+  const t = translations.en; // Always use English translations
   
   // Fetch dynamic counts
   const totalCount = await getArticleCount();
@@ -101,11 +87,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               </div>
               
               <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
-                {locale === 'zh' ? category.nameZh : category.name}
+                {category.name}
               </h3>
               
               <p className="text-sm text-zinc-400 mb-4">
-                {locale === 'zh' ? category.description : category.descriptionEn}
+                {category.descriptionEn || category.description}
               </p>
               
               {category.articles.length > 0 && (
@@ -144,25 +130,25 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <div>
               <div className="text-3xl font-bold text-white">{totalCount}</div>
               <div className="text-sm text-zinc-400 mt-1">
-                {locale === 'zh' ? '篇文章' : 'Articles'}
+                Articles
               </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-white">{CATEGORIES.length}</div>
               <div className="text-sm text-zinc-400 mt-1">
-                {locale === 'zh' ? '个分类' : 'Categories'}
+                Categories
               </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-white">{premiumCount}</div>
               <div className="text-sm text-zinc-400 mt-1">
-                {locale === 'zh' ? '篇付费' : 'Premium'}
+                Premium
               </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-white">2</div>
               <div className="text-sm text-zinc-400 mt-1">
-                {locale === 'zh' ? '种语言' : 'Languages'}
+                Languages
               </div>
             </div>
           </div>

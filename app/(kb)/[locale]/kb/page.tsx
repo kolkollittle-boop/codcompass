@@ -22,21 +22,6 @@ export async function generateMetadata({ params }: KbIndexPageProps): Promise<Me
   const resolvedParams = await params;
   const locale = (resolvedParams.locale as Locale) || 'en';
   
-  if (locale === 'zh') {
-    return {
-      title: '知识库 - 技术教程与指南',
-      description: '浏览我们全面的技术教程库，涵盖 React、TypeScript、Next.js、AI/ML 和 DevOps。专家见解和生产就绪的代码示例。',
-      keywords: ['React 教程', 'TypeScript 指南', 'Next.js 教程', 'AI/ML 教程', 'DevOps 指南', '代码示例', '技术教程'],
-      openGraph: {
-        title: '知识库 - 技术教程与指南',
-        description: '浏览我们全面的技术教程库，涵盖 React、TypeScript、Next.js、AI/ML 和 DevOps。',
-        url: 'https://www.codcompass.com/zh/kb',
-        siteName: 'Codcompass',
-        type: 'website',
-      },
-    };
-  }
-  
   return {
     title: 'Knowledge Base - Technical Tutorials & Guides',
     description: 'Browse our comprehensive library of technical tutorials covering React, TypeScript, Next.js, AI/ML, and DevOps. Expert insights and production-ready code examples.',
@@ -44,7 +29,7 @@ export async function generateMetadata({ params }: KbIndexPageProps): Promise<Me
     openGraph: {
       title: 'Knowledge Base - Technical Tutorials & Guides',
       description: 'Browse our comprehensive library of technical tutorials covering React, TypeScript, Next.js, AI/ML, and DevOps.',
-      url: 'https://www.codcompass.com/en/kb',
+      url: `https://www.codcompass.com/${locale}/kb`,
       siteName: 'Codcompass',
       type: 'website',
     },
@@ -62,25 +47,15 @@ const translations = {
     noArticles: 'No articles yet',
     checkBack: "We're working on adding content. Check back soon!",
   },
-  zh: {
-    title: '知识库',
-    subtitle: '为开发者精选的技术教程和专家见解',
-    allTopics: '所有主题',
-    premium: '付费',
-    trending: '热门',
-    read: '阅读',
-    noArticles: '暂无文章',
-    checkBack: '我们正在添加内容，请稍后再来！',
-  },
 };
 
 export default async function KbIndexPage({ params, searchParams }: KbIndexPageProps) {
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
   const locale = (resolvedParams.locale as Locale) || 'en';
-  const t = translations[locale];
+  const t = translations.en; // Always use English translations
   
-  // 获取已发布的专题列表
+  // Fetch published series
   let seriesList: any[] = [];
   if (supabaseAdmin) {
     const { data } = await supabaseAdmin
@@ -91,7 +66,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
       .limit(6);
     
     if (data) {
-      // 获取每个专题的文章数量
+      // Get article count for each series
       seriesList = await Promise.all(
         data.map(async (s: any) => {
           const { count } = await supabaseAdmin
@@ -128,8 +103,8 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
         const firstCat = a.categories?.[0]?.Category?.[0];
         const catSlug = firstCat?.slug || '';
         const catInfo = categoryBySlug(catSlug);
-        const categoryName = catInfo 
-          ? (locale === 'zh' ? catInfo.nameZh : catInfo.name) 
+        const categoryName = catInfo
+          ? catInfo.name
           : 'General';
         return {
           id: a.id,
@@ -149,18 +124,18 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* 专题路径展示区 */}
+          {/* Learning Paths Section */}
           {seriesList.length > 0 && (
             <div className="mb-12">
               <div className="flex items-center gap-2 mb-6">
                 <Icon name="graduation-cap" size={20} className="text-indigo-400" />
                 <h2 className="text-xl font-bold text-white">
-                  {locale === 'zh' ? '学习路径' : 'Learning Paths'}
+                  Learning Paths
                 </h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {seriesList.map((series) => {
-                  const seriesTitle = locale === 'zh' && series.title ? series.title : series.titleEn;
+                  const seriesTitle = series.titleEn || series.title;
                   const estimatedTime = series.estimatedTime || Math.max(5, series.totalParts * 10);
                   return (
                     <Link
@@ -177,9 +152,9 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                             {seriesTitle}
                           </h3>
                           <div className="mt-2 flex items-center gap-3 text-xs text-zinc-500">
-                            <span>{series.articleCount} {locale === 'zh' ? '篇' : 'parts'}</span>
+                            <span>{series.articleCount} parts</span>
                             <span>·</span>
-                            <span>~{estimatedTime} {locale === 'zh' ? '分钟' : 'min'}</span>
+                            <span>~{estimatedTime} min</span>
                           </div>
                         </div>
                       </div>
@@ -209,7 +184,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
               {CATEGORIES.map((cat) => {
                 const slug = cat.slug;
                 const isActive = categoryFilter === slug;
-                const label = locale === 'zh' ? cat.nameZh : cat.name;
+                const label = cat.name;
                 return (
                   <Link
                     key={slug}
@@ -296,7 +271,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                     className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
                   >
                     <Icon name="chevron-left" size={16} />
-                    {locale === 'zh' ? '上一页' : 'Previous'}
+                    Previous
                   </Link>
                 )}
 
@@ -335,7 +310,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                     href={`/${locale}/kb?page=${currentPage + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
                     className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors"
                   >
-                    {locale === 'zh' ? '下一页' : 'Next'}
+                    Next
                     <Icon name="chevron-right" size={16} />
                   </Link>
                 )}

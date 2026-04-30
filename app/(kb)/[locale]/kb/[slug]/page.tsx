@@ -80,36 +80,24 @@ const translations = {
     productionBundle: 'Production Bundle',
     bundleValue: 'Complete productivity toolkit for this article',
   },
-  zh: {
-    backToKB: '返回知识库',
-    premium: '🔒 付费',
-    unlockArticle: '解锁全文',
-    subscribeText: '获取所有付费教程、代码示例和专家见解的无限访问权限。',
-    subscribeBtn: '订阅，每月 $15 起',
-    cancelText: '随时取消 · 30 天退款保证',
-    sources: '来源',
-    readTime: (minutes: number) => `${minutes} 分钟阅读`,
-    productionBundle: '生产力工具包',
-    bundleValue: '本篇完整生产力工具包',
-  },
 };
 
-// 避坑 Checklist 数据
+// Pitfall Avoidance Checklist
 const checklistData = [
-  { id: '1', text: '分片禁忌：别盲目按固定 token 切分，忽略语义边界会导致碎片化检索', icon: 'warning' as const },
-  { id: '2', text: '权重陷阱：Hybrid Search 默认 0.5:0.5 往往平庸，需动态调整', icon: 'warning' as const },
-  { id: '3', text: '内存杀手：HNSW ef_construction 设置不当会在 50GB+ 时爆炸', icon: 'warning' as const },
-  { id: '4', text: 'Re-ranking 成本陷阱：不要对 top-50 全量 rerank，建议先过滤再对 top-10~20 处理', icon: 'warning' as const },
-  { id: '5', text: '元数据"假性"失效：过滤条件未建物理索引会导致查询延迟飙升', icon: 'info' as const },
-  { id: '6', text: '模型与切分的"断层"：切分块超出 Embedding 模型上下文会被截断', icon: 'info' as const },
-  { id: '7', text: '索引更新的"断崖式"抖动：未配置合理 Commit/Flush 间隔会导致周期性响应超时', icon: 'shield' as const },
+  { id: '1', text: 'Sharding Taboo: Never split by fixed token count blindly; ignoring semantic boundaries leads to fragmented retrieval', icon: 'warning' as const },
+  { id: '2', text: 'Weight Trap: Hybrid Search default 0.5:0.5 is often mediocre; dynamic adjustment is needed', icon: 'warning' as const },
+  { id: '3', text: 'Memory Killer: Improper HNSW ef_construction settings will explode at 50GB+', icon: 'warning' as const },
+  { id: '4', text: 'Re-ranking Cost Trap: Do not re-rank top-50 entirely; filter first then process top-10~20', icon: 'warning' as const },
+  { id: '5', text: 'Metadata "False" Failure: Missing physical indexes on filter conditions causes query latency spikes', icon: 'info' as const },
+  { id: '6', text: 'Model-Split "Gap": Chunks exceeding Embedding model context will be truncated', icon: 'info' as const },
+  { id: '7', text: 'Index Update "Cliff" Jitter: Unconfigured Commit/Flush intervals cause periodic response timeouts', icon: 'shield' as const },
 ];
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const resolvedParams = await params;
   const locale = (resolvedParams.locale as Locale) || 'en';
   const slug = resolvedParams.slug;
-  const t = translations[locale];
+  const t = translations.en; // Always use English translations
   
   // Fetch article from Supabase
   const dbArticle = await getArticleBySlug(slug, locale);
@@ -122,14 +110,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const content = getArticleContent(dbArticle, locale);
   const categoryName = dbArticle.categories?.[0]?.Category?.[0]?.name || 'General';
   
-  // 使用新字段或回退到旧逻辑
+  // Use new fields or fallback to old logic
   const difficulty = dbArticle.difficultyLevel || difficultyMap[categoryName] || 'L2';
   const readTime = dbArticle.readingTime || Math.max(3, Math.ceil(dbArticle.contentEn.length / 2000));
   
   // Increment view count
   await incrementViewCount(dbArticle.id);
 
-  // 获取专题信息
+  // Fetch series info
   let seriesData: { id: string; slug: string; title: string; totalParts: number; estimatedTime: number | null } | null = null;
   let seriesParts: Array<{ order: number; title: string; slug: string; isPublished: boolean }> = [];
   if (dbArticle.series) {
@@ -156,20 +144,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const freeContent = content.content.slice(0, freeContentLength);
   const premiumContent = content.content.slice(freeContentLength);
 
-  // 解析标签
+  // Parse tags
   const tags = dbArticle.tags?.map(t => t.Tag?.[0]?.name).filter(Boolean) || [];
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 返回按钮 */}
+        {/* Back button */}
         <Link href={`/${locale}/kb`} className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-cyan-400 mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />
           {t.backToKB}
         </Link>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* 主内容区 */}
+          {/* Main content */}
           <main className="flex-1 min-w-0">
             {/* Header Meta Card */}
             <HeaderMetaCard
@@ -259,7 +247,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             )}
           </main>
 
-          {/* 侧边栏 - Path Navigator */}
+          {/* Sidebar - Path Navigator */}
           {seriesData && seriesParts.length > 0 && (
             <aside className="lg:w-80 flex-shrink-0">
               <PathNavigator

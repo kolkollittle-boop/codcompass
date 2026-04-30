@@ -28,17 +28,13 @@ const translations = {
     allCategories: 'All Categories',
     articlesIn: 'Articles in',
   },
-  zh: {
-    allCategories: '所有分类',
-    articlesIn: '分类：',
-  },
 };
 
 export default async function CategorySlugPage({ params }: CategorySlugPageProps) {
   const resolvedParams = await params;
   const locale = resolvedParams.locale;
   const slug = resolvedParams.categorySlug;
-  const t = translations[locale];
+  const t = translations.en; // Always use English translations
   
   const catInfo = categoryBySlug(slug);
   if (!catInfo) notFound();
@@ -55,10 +51,10 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
           </Link>
           <h1 className="text-4xl font-bold flex items-center gap-3">
             <span>{catInfo.icon}</span>
-            {locale === 'zh' ? catInfo.nameZh : catInfo.name}
+            {catInfo.name}
           </h1>
           <p className="mt-4 text-xl text-white/80">
-            {t.articlesIn} {locale === 'zh' ? catInfo.nameZh : catInfo.name}
+            {t.articlesIn} {catInfo.name}
           </p>
         </div>
       </div>
