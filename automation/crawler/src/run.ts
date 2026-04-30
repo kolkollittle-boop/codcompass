@@ -1,6 +1,7 @@
 // automation/crawler/src/run.ts
 import { scoreArticle } from './ai-scorer';
 import { ingestArticle } from './ingest';
+import { restructureArticle } from './article-restructurer';
 import TurndownService from 'turndown';
 
 // Dev.to API 配置
@@ -301,9 +302,16 @@ async function main() {
       console.log(`   Difficulty: ${evaluation.difficulty_level || 'N/A'}`);
       console.log(`   Promotional: ${evaluation.is_promotional || false}`);
       
+      // AI 重构文章为标准结构
+      console.log(`🔄 Restructuring article to Codcompass 2.0 format...`);
+      const restructured = await restructureArticle(article.title, markdown, evaluation);
+      console.log(`✅ Article restructured (${restructured.content.length} chars)`);
+      console.log(`   Tags: ${restructured.tags.join(', ') || 'N/A'}`);
+      console.log(`   Reading time: ${restructured.readingTimeMinutes} min`);
+      
       // AI 翻译（中文预览）
       console.log(`🌐 Translating to Chinese...`);
-      const chinesePreview = await translateToChinese(article.title, markdown);
+      const chinesePreview = await translateToChinese(restructured.title, restructured.content);
       if (chinesePreview) {
         console.log(`✅ Chinese preview generated (${chinesePreview.length} chars)`);
       }
@@ -311,16 +319,20 @@ async function main() {
       // 入库
       console.log(`📡 Sending to database...`);
       await ingestArticle({
-        title: article.title,
-        content: markdown,
+        title: restructured.title,
+        content: restructured.content,
         sourceUrl: article.url,
         score: evaluation.score,
         dimensions: evaluation.dimensions,
-        difficulty_level: evaluation.difficulty_level,
+        difficulty_level: restructured.difficultyLevel,
         is_promotional: evaluation.is_promotional,
         mentor_summary: evaluation.mentor_summary,
         chinese_preview: chinesePreview,
         images: images,
+        tags: restructured.tags,
+        reading_time_minutes: restructured.readingTimeMinutes,
+        expected_outcome: restructured.expectedOutcome,
+        excerpt: restructured.excerpt,
       });
       
       console.log(`✅ Successfully processed`);

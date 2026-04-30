@@ -34,6 +34,12 @@ export async function POST(req: NextRequest) {
     const isPromotional = body.isPromotional ?? body.is_promotional;
     const chinesePreview = body.chinesePreview ?? body.chinese_preview;
     const images = body.images;
+    
+    // 新增字段：标签、阅读时间、预期收益、摘要
+    const tags = body.tags || [];
+    const readingTimeMinutes = body.readingTimeMinutes ?? 0;
+    const expectedOutcome = body.expectedOutcome ?? '';
+    const excerpt = body.excerpt ?? '';
 
     if (!title || !content) {
         return NextResponse.json({ error: 'Missing title or content' }, { status: 400 });
@@ -68,6 +74,10 @@ export async function POST(req: NextRequest) {
       difficulty_level: difficultyLevel || 'L2',
       chinese_preview: chinesePreview || '',
       images: images || [],
+      tags: tags,
+      reading_time_minutes: readingTimeMinutes,
+      expected_outcome: expectedOutcome,
+      excerpt: excerpt,
     };
 
     const { data, error } = await supabase
