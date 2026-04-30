@@ -2,8 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Codcompass 2.0 Theme System
+ *
+ * 配色方案说明：
+ * - 所有颜色使用 HSL 格式：hue saturation lightness
+ * - 修改下方变量即可全局更改配色
+ * - 支持 light/dark 两种主题模式
+ *
+ * 主要颜色变量说明：
+ * --codcompass-background: 页面背景色
+ * --codcompass-surface: 卡片/表面背景色
+ * --codcompass-surface-hover: 悬停状态色
+ * --codcompass-text-primary: 主要文字色
+ * --codcompass-text-secondary: 次要文字色
+ * --codcompass-text-muted: 弱化文字色
+ * --codcompass-border: 边框色
+ * --codcompass-border-hover: 悬停边框色
+ * --codcompass-brand: 品牌主色（靛蓝色）
+ * --codcompass-brand-light: 品牌浅色
+ * --codcompass-brand-glow: 品牌发光色
+ * --codcompass-accent-purple: 紫色强调
+ * --codcompass-accent-cyan: 青色强调
+ * --codcompass-accent-green: 绿色（免费/成功）
+ * --codcompass-accent-amber: 琥珀色（付费/警告）
+ * --codcompass-accent-red: 红色（热门/错误）
+ */
+
 @layer base {
   :root {
+    /* shadcn/ui 基础变量 */
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -24,9 +52,39 @@
     --input: 240 5.9% 90%;
     --ring: 240 10% 3.9%;
     --radius: 0.75rem;
+
+    /* Codcompass 自定义主题变量 - Light Mode */
+    --codcompass-background: 0 0% 98%;          /* #fafafa 浅灰背景 */
+    --codcompass-surface: 0 0% 100%;              /* #ffffff 白色卡片 */
+    --codcompass-surface-hover: 240 5% 96%;       /* #f5f5f7 悬停状态 */
+    --codcompass-text-primary: 240 10% 10%;       /* #1a1a2e 主要文字 */
+    --codcompass-text-secondary: 240 4% 45%;      /* #6b6b7b 次要文字 */
+    --codcompass-text-muted: 240 4% 65%;          /* #9ca3af 弱化文字 */
+    --codcompass-border: 240 6% 90%;              /* #e5e5ea 边框 */
+    --codcompass-border-hover: 240 5% 80%;        /* #d1d1d6 悬停边框 */
+    
+    /* 品牌色 - Indigo */
+    --codcompass-brand: 243 75% 59%;              /* #6366f1 靛蓝 */
+    --codcompass-brand-light: 243 75% 70%;        /* #818cf8 浅靛蓝 */
+    --codcompass-brand-dark: 243 75% 45%;         /* #4f46e5 深靛蓝 */
+    --codcompass-brand-glow: 243 75% 65%;         /* 发光效果 */
+    --codcompass-brand-bg: 243 75% 96%;           /* #eef2ff 品牌背景 */
+    
+    /* 强调色 */
+    --codcompass-accent-purple: 271 81% 56%;      /* #a855f7 紫色 */
+    --codcompass-accent-purple-bg: 271 81% 96%;   /* #faf5ff 紫色背景 */
+    --codcompass-accent-cyan: 187 100% 42%;       /* #06b6d4 青色 */
+    --codcompass-accent-cyan-bg: 187 100% 96%;    /* #ecfeff 青色背景 */
+    --codcompass-accent-green: 142 76% 36%;       /* #16a34a 绿色 */
+    --codcompass-accent-green-bg: 142 76% 96%;    /* #f0fdf4 绿色背景 */
+    --codcompass-accent-amber: 38 92% 50%;        /* #f59e0b 琥珀 */
+    --codcompass-accent-amber-bg: 38 92% 96%;     /* #fffbeb 琥珀背景 */
+    --codcompass-accent-red: 0 84% 60%;           /* #ef4444 红色 */
+    --codcompass-accent-red-bg: 0 84% 96%;        /* #fef2f2 红色背景 */
   }
 
   .dark {
+    /* shadcn/ui 基础变量 */
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
@@ -46,6 +104,35 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+
+    /* Codcompass 自定义主题变量 - Dark Mode */
+    --codcompass-background: 240 10% 4%;          /* #0a0a0a 深黑背景 */
+    --codcompass-surface: 240 4% 16%;             /* #27272a zinc-900 卡片 */
+    --codcompass-surface-hover: 240 5% 20%;       /* #303035 悬停状态 */
+    --codcompass-text-primary: 0 0% 98%;          /* #fafafa 主要文字 */
+    --codcompass-text-secondary: 240 5% 65%;      /* #a1a1aa zinc-400 次要 */
+    --codcompass-text-muted: 240 4% 35%;          /* #52525b zinc-600 弱化 */
+    --codcompass-border: 240 4% 16%;              /* #27272a zinc-800 边框 */
+    --codcompass-border-hover: 240 5% 26%;        /* #404045 悬停边框 */
+    
+    /* 品牌色 - Dark Mode */
+    --codcompass-brand: 243 75% 59%;              /* #6366f1 靛蓝 */
+    --codcompass-brand-light: 243 75% 70%;        /* #818cf8 */
+    --codcompass-brand-dark: 243 75% 45%;         /* #4f46e5 */
+    --codcompass-brand-glow: 243 75% 65%;         /* 发光效果 */
+    --codcompass-brand-bg: 243 75% 10%;           /* 品牌背景（深色） */
+    
+    /* 强调色 - Dark Mode */
+    --codcompass-accent-purple: 271 81% 66%;      /* #c084fc */
+    --codcompass-accent-purple-bg: 271 81% 10%;   /* 紫色背景（深色） */
+    --codcompass-accent-cyan: 187 100% 52%;       /* #22d3ee */
+    --codcompass-accent-cyan-bg: 187 100% 10%;    /* 青色背景（深色） */
+    --codcompass-accent-green: 142 76% 46%;       /* #22c55e */
+    --codcompass-accent-green-bg: 142 76% 10%;    /* 绿色背景（深色） */
+    --codcompass-accent-amber: 38 92% 60%;        /* #fbbf24 */
+    --codcompass-accent-amber-bg: 38 92% 10%;     /* 琥珀背景（深色） */
+    --codcompass-accent-red: 0 84% 70%;           /* #f87171 */
+    --codcompass-accent-red-bg: 0 84% 10%;        /* 红色背景（深色） */
   }
 }
 
@@ -56,6 +143,169 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+  }
+}
+
+/**
+ * Codcompass Component Classes
+ *
+ * 使用方式：
+ * <div class="cc-page">页面容器</div>
+ * <div class="cc-card">卡片容器</div>
+ * <span class="cc-text-primary">主要文字</span>
+ * <span class="cc-text-secondary">次要文字</span>
+ * <span class="cc-text-muted">弱化文字</span>
+ * <div class="cc-badge">标签</div>
+ * <div class="cc-badge cc-badge--success">成功标签</div>
+ * <button class="cc-btn cc-btn--primary">按钮</button>
+ */
+
+@layer components {
+  /* 页面容器 */
+  .cc-page {
+    min-height: 100vh;
+    background-color: hsl(var(--codcompass-background));
+    color: hsl(var(--codcompass-text-primary));
+  }
+
+  /* 卡片/表面 */
+  .cc-card {
+    background-color: hsl(var(--codcompass-surface));
+    border: 1px solid hsl(var(--codcompass-border));
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+  }
+
+  .cc-card:hover {
+    background-color: hsl(var(--codcompass-surface-hover));
+    border-color: hsl(var(--codcompass-brand) / 0.3);
+    box-shadow: 0 0 15px hsl(var(--codcompass-brand) / 0.1);
+  }
+
+  /* 文字样式 */
+  .cc-text-primary {
+    color: hsl(var(--codcompass-text-primary));
+  }
+
+  .cc-text-secondary {
+    color: hsl(var(--codcompass-text-secondary));
+  }
+
+  .cc-text-muted {
+    color: hsl(var(--codcompass-text-muted));
+  }
+
+  /* 品牌文字 */
+  .cc-text-brand {
+    color: hsl(var(--codcompass-brand));
+  }
+
+  /* 标签/Badge */
+  .cc-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: hsl(var(--codcompass-brand-bg));
+    color: hsl(var(--codcompass-brand));
+    border: 1px solid hsl(var(--codcompass-brand) / 0.2);
+  }
+
+  .cc-badge--success {
+    background-color: hsl(var(--codcompass-accent-green-bg));
+    color: hsl(var(--codcompass-accent-green));
+    border-color: hsl(var(--codcompass-accent-green) / 0.2);
+  }
+
+  .cc-badge--warning {
+    background-color: hsl(var(--codcompass-accent-amber-bg));
+    color: hsl(var(--codcompass-accent-amber));
+    border-color: hsl(var(--codcompass-accent-amber) / 0.2);
+  }
+
+  .cc-badge--danger {
+    background-color: hsl(var(--codcompass-accent-red-bg));
+    color: hsl(var(--codcompass-accent-red));
+    border-color: hsl(var(--codcompass-accent-red) / 0.2);
+  }
+
+  .cc-badge--purple {
+    background-color: hsl(var(--codcompass-accent-purple-bg));
+    color: hsl(var(--codcompass-accent-purple));
+    border-color: hsl(var(--codcompass-accent-purple) / 0.2);
+  }
+
+  /* 按钮 */
+  .cc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .cc-btn--primary {
+    background-color: hsl(var(--codcompass-brand));
+    color: #ffffff;
+  }
+
+  .cc-btn--primary:hover {
+    background-color: hsl(var(--codcompass-brand-dark));
+    box-shadow: 0 0 20px hsl(var(--codcompass-brand) / 0.3);
+  }
+
+  .cc-btn--secondary {
+    background-color: hsl(var(--codcompass-surface));
+    color: hsl(var(--codcompass-text-primary));
+    border: 1px solid hsl(var(--codcompass-border));
+  }
+
+  .cc-btn--secondary:hover {
+    background-color: hsl(var(--codcompass-surface-hover));
+    border-color: hsl(var(--codcompass-brand) / 0.3);
+  }
+
+  .cc-btn--ghost {
+    background-color: transparent;
+    color: hsl(var(--codcompass-text-secondary));
+  }
+
+  .cc-btn--ghost:hover {
+    background-color: hsl(var(--codcompass-surface));
+    color: hsl(var(--codcompass-text-primary));
+  }
+
+  /* 渐变背景 */
+  .cc-gradient-hero {
+    background: linear-gradient(135deg,
+      hsl(var(--codcompass-brand) / 0.2) 0%,
+      hsl(var(--codcompass-background)) 50%,
+      hsl(var(--codcompass-accent-purple) / 0.2) 100%
+    );
+  }
+
+  .cc-gradient-brand {
+    background: linear-gradient(135deg,
+      hsl(var(--codcompass-brand)) 0%,
+      hsl(var(--codcompass-accent-purple)) 100%
+    );
+  }
+
+  /* 发光效果 */
+  .cc-glow {
+    box-shadow: 0 0 20px hsl(var(--codcompass-brand) / 0.15);
+  }
+
+  .cc-glow-brand {
+    box-shadow: 0 0 30px hsl(var(--codcompass-brand) / 0.3);
   }
 }
 

@@ -71,7 +71,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -89,22 +89,22 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <Link
               key={category.slug}
               href={`/${locale}/kb/categories/${category.slug}` as any}
-              className="group bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-all hover:-translate-y-1"
+              className="group bg-zinc-900 rounded-2xl border border-zinc-800 p-6 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:border-indigo-500/30 transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-2xl`}>
                   {category.icon}
                 </div>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-zinc-500">
                   {category.totalArticles} {t.articles}
                 </span>
               </div>
               
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
+              <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
                 {locale === 'zh' ? category.nameZh : category.name}
               </h3>
               
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-zinc-400 mb-4">
                 {locale === 'zh' ? category.description : category.descriptionEn}
               </p>
               
@@ -114,12 +114,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                     <Link
                       key={article.id}
                       href={`/${locale}/kb/${article.slug}`}
-                      className="flex items-center gap-2 text-sm hover:text-indigo-600 group/article"
+                      className="flex items-center gap-2 text-sm hover:text-indigo-400 group/article"
                     >
-                      <svg className="w-4 h-4 text-gray-400 flex-shrink-0 group-hover/article:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-zinc-500 flex-shrink-0 group-hover/article:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
-                      <span className="text-gray-700 truncate">
+                      <span className="text-zinc-300 truncate">
                         {getArticleContent(article, locale).title}
                       </span>
                     </Link>
@@ -127,8 +127,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </div>
               )}
               
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <span className="text-sm text-indigo-600 font-medium group-hover:text-indigo-700">
+              <div className="mt-4 pt-4 border-t border-zinc-800">
+                <span className="text-sm text-indigo-400 font-medium group-hover:text-indigo-300">
                   {t.viewAll} →
                 </span>
               </div>
@@ -139,29 +139,29 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
       {/* Quick Stats */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-8">
+        <div className="bg-gradient-to-r from-indigo-600/10 to-purple-600/10 rounded-2xl p-8 border border-indigo-500/20">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div className="text-3xl font-bold text-gray-900">{totalCount}</div>
-              <div className="text-sm text-gray-600 mt-1">
+              <div className="text-3xl font-bold text-white">{totalCount}</div>
+              <div className="text-sm text-zinc-400 mt-1">
                 {locale === 'zh' ? '篇文章' : 'Articles'}
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-gray-900">{CATEGORIES.length}</div>
-              <div className="text-sm text-gray-600 mt-1">
+              <div className="text-3xl font-bold text-white">{CATEGORIES.length}</div>
+              <div className="text-sm text-zinc-400 mt-1">
                 {locale === 'zh' ? '个分类' : 'Categories'}
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-gray-900">{premiumCount}</div>
-              <div className="text-sm text-gray-600 mt-1">
+              <div className="text-3xl font-bold text-white">{premiumCount}</div>
+              <div className="text-sm text-zinc-400 mt-1">
                 {locale === 'zh' ? '篇付费' : 'Premium'}
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-gray-900">2</div>
-              <div className="text-sm text-gray-600 mt-1">
+              <div className="text-3xl font-bold text-white">2</div>
+              <div className="text-sm text-zinc-400 mt-1">
                 {locale === 'zh' ? '种语言' : 'Languages'}
               </div>
             </div>
