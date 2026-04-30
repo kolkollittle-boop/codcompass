@@ -63,11 +63,7 @@ export async function POST(req: NextRequest) {
     }
     console.log('[Ingest] Setting status:', status);
 
-    // 3. 生成唯一 Slug
-    const uniqueSlug = `${generateSlug(title)}-${Date.now().toString().slice(-6)}`;
-
-    // 4. 数据持久化
-    // 将所有额外数据合并到 qualityDetails JSON 字段
+    // 3. 构建 qualityDetails 数据
     const qualityDetailsData = {
       ...(aiFeedback || {}),
       mentor_summary: mentorSummary,
@@ -80,6 +76,48 @@ export async function POST(req: NextRequest) {
       excerpt: excerpt,
     };
 
+    // 4. 去重检查：基于原始 URL
+    if (sourceUrl) {
+      const { data: existingArticle } = await supabase
+        .from('Article')
+        .select('id, slug, status')
+        .eq('originalUrl', sourceUrl)
+        .maybeSingle();
+
+      if (existingArticle) {
+        // 如果文章已存在且被手动删除（ARCHIVED），则跳过
+        if (existingArticle.status === 'ARCHIVED') {
+          console.log('[Ingest] Article already archived, skipping:', sourceUrl);
+          return NextResponse.json({ success: true, status: 'SKIPPED_DUPLICATE', message: 'Article was previously archived, skipping' });
+        }
+        // 如果文章已存在且已发布，跳过
+        if (existingArticle.status === 'PUBLISHED') {
+          console.log('[Ingest] Article already published, skipping:', sourceUrl);
+          return NextResponse.json({ success: true, status: 'SKIPPED_DUPLICATE', message: 'Article already exists, skipping' });
+        }
+        // 如果文章存在但状态为 REVIEW，更新现有记录
+        console.log('[Ingest] Article exists in REVIEW status, updating:', existingArticle.slug);
+        const { data, error } = await supabase
+          .from('Article')
+          .update({
+            titleEn: title,
+            contentEn: content,
+            qualityScore: aiScore,
+            qualityDetails: qualityDetailsData,
+            updatedAt: new Date().toISOString(),
+          })
+          .eq('id', existingArticle.id)
+          .select();
+
+        if (error) throw error;
+        return NextResponse.json({ success: true, status: 'UPDATED', data });
+      }
+    }
+
+    // 5. 生成唯一 Slug
+    const uniqueSlug = `${generateSlug(title)}-${Date.now().toString().slice(-6)}`;
+
+    // 6. 数据持久化
     const { data, error } = await supabase
       .from('Article')
       .insert({
