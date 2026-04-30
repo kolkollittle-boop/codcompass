@@ -53,6 +53,29 @@ export type Article = {
     seoTitle: string | null;
     seoDescription: string | null;
   }>;
+  // Codcompass 2.0 新增字段
+  difficultyLevel: string | null;   // L1, L2, L3, L4
+  readingTime: number | null;       // 预计阅读时间（分钟）
+  expectedOutcome: string | null;   // 预期收益短句
+  seriesId: string | null;          // 所属专题 ID
+  seriesOrder: number | null;       // 专题中的顺序
+  blueprintUrl: string | null;      // Production Blueprint 下载链接
+  blueprintName: string | null;     // Blueprint 文件名
+  series?: ArticleSeries | null;    // 专题信息
+};
+
+export type ArticleSeries = {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn: string;
+  description: string | null;
+  totalParts: number;
+  estimatedTime: number | null;
+  order: number;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export async function getArticleBySlug(slug: string, locale?: string): Promise<Article | null> {
@@ -74,9 +97,17 @@ export async function getArticleBySlug(slug: string, locale?: string): Promise<A
       likeCount,
       seoTitle,
       seoDescription,
+      difficultyLevel,
+      readingTime,
+      expectedOutcome,
+      seriesId,
+      seriesOrder,
+      blueprintUrl,
+      blueprintName,
       categories:_ArticleToCategory!_ArticleToCategory_A_fkey(Category(slug, name)),
       tags:_ArticleToTag!_ArticleToTag_A_fkey(Tag(slug, name)),
-      translations:ArticleTranslation(locale, title, content, excerpt, description, seoTitle, seoDescription)
+      translations:ArticleTranslation(locale, title, content, excerpt, description, seoTitle, seoDescription),
+      series:ArticleSeries(id, slug, title, titleEn, description, totalParts, estimatedTime, order, isPublished)
     `)
     .eq('slug', slug)
     .eq('isPublished', true);
@@ -98,9 +129,17 @@ export async function getArticleBySlug(slug: string, locale?: string): Promise<A
       likeCount,
       seoTitle,
       seoDescription,
+      difficultyLevel,
+      readingTime,
+      expectedOutcome,
+      seriesId,
+      seriesOrder,
+      blueprintUrl,
+      blueprintName,
       categories:_ArticleToCategory!_ArticleToCategory_A_fkey(Category(slug, name)),
       tags:_ArticleToTag!_ArticleToTag_A_fkey(Tag(slug, name)),
-      translations:ArticleTranslation!ArticleTranslation_articleId_fkey(locale, title, content, excerpt, description, seoTitle, seoDescription)
+      translations:ArticleTranslation!ArticleTranslation_articleId_fkey(locale, title, content, excerpt, description, seoTitle, seoDescription),
+      series:ArticleSeries(id, slug, title, titleEn, description, totalParts, estimatedTime, order, isPublished)
     `);
   }
 
@@ -289,4 +328,45 @@ export async function getPremiumCount(): Promise<number> {
     .eq('isPremium', true);
   if (error) { console.error('[getPremiumCount] Error:', error); return 0; }
   return count ?? 0;
+}
+
+// Codcompass 2.0 新增：获取专题文章列表
+export async function getSeriesArticles(seriesSlug: string, locale?: string): Promise<{ series: any | null; articles: any[] }> {
+  if (!supabaseAdmin) return { series: null, articles: [] };
+
+  // 先获取专题信息
+  const { data: seriesData } = await supabaseAdmin
+    .from('ArticleSeries')
+    .select('*')
+    .eq('slug', seriesSlug)
+    .single();
+
+  if (!seriesData) return { series: null, articles: [] };
+
+  // 获取该专题下的所有文章
+  const { data: articles, error } = await supabaseAdmin
+    .from('Article')
+    .select(`
+      id,
+      slug,
+      titleEn,
+      excerptEn,
+      isPremium,
+      isPublished,
+      seriesOrder,
+      difficultyLevel,
+      readingTime,
+      publishedAt,
+      translations:ArticleTranslation(locale, title, excerpt)
+    `)
+    .eq('seriesId', seriesData.id)
+    .eq('isPublished', true)
+    .order('seriesOrder', { ascending: true });
+
+  if (error) {
+    console.error('[getSeriesArticles] Error:', error);
+    return { series: seriesData, articles: [] };
+  }
+
+  return { series: seriesData, articles: articles || [] };
 }

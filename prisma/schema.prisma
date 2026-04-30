@@ -101,6 +101,16 @@ model Article {
   canonicalUrl   String?
   publishedBy    String?
   editedAt       DateTime?
+  
+  // Codcompass 2.0 新增字段
+  difficultyLevel String?              // L1, L2, L3, L4
+  readingTime     Int?                 // 预计阅读时间（分钟）
+  expectedOutcome String?              // 预期收益短句
+  seriesId        String?              // 所属专题 ID
+  seriesOrder     Int?                 // 专题中的顺序
+  blueprintUrl    String?              // Production Blueprint 下载链接
+  blueprintName   String?              // Blueprint 文件名
+  
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
   translations   ArticleTranslation[]
@@ -108,12 +118,15 @@ model Article {
   bookmarks      Bookmark[]
   categories     Category[]           @relation("ArticleToCategory")
   tags           Tag[]                @relation("ArticleToTag")
+  series         ArticleSeries?       @relation(fields: [seriesId], references: [id])
 
   @@index([slug])
   @@index([status])
   @@index([isPublished])
   @@index([publishedAt])
   @@index([sourceSite])
+  @@index([seriesId])
+  @@index([difficultyLevel])
 }
 
 model ArticleTranslation {
@@ -224,6 +237,26 @@ model CrawlerConfig {
   updatedAt              DateTime @updatedAt
 
   @@index([enabled])
+}
+
+// Codcompass 2.0 新增：专题路径模型
+model ArticleSeries {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  titleEn     String
+  description String?
+  totalParts  Int       @default(1)
+  estimatedTime Int?    // 总预计学习时间（分钟）
+  order       Int       @default(0)
+  isPublished Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  articles    Article[]
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([order])
 }
 
 enum UserRole {
