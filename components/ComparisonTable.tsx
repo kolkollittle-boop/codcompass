@@ -5,24 +5,24 @@ interface ComparisonItem {
 
 const comparisons: ComparisonItem[] = [
   {
-    pain: '看完文章还要自己从零搭环境、反复踩坑',
-    solution: '直接下载 Blueprint，一键部署到生产',
+    pain: 'Build from scratch after reading, waste time on pitfalls',
+    solution: 'Download Blueprint, deploy to production instantly',
   },
   {
-    pain: '碎片化阅读，学完就忘',
-    solution: '系统化学习路径 + 进度追踪',
+    pain: 'Fragmented reading, forget after learning',
+    solution: 'Systematic learning paths + progress tracking',
   },
   {
-    pain: '自己踩坑，浪费几天',
-    solution: '7 条避坑指南，提前绕过陷阱',
+    pain: 'Waste days on pitfalls',
+    solution: '7 pitfall guides, avoid traps in advance',
   },
   {
-    pain: '到处找资料，效率低',
-    solution: '一站式平台，每周 3-5 篇更新',
+    pain: 'Search everywhere for materials, low efficiency',
+    solution: 'One-stop platform, 3-5 weekly updates',
   },
   {
-    pain: '付费后觉得不值',
-    solution: '30 天无条件退款保证',
+    pain: 'Feel it\'s not worth it after paying',
+    solution: '30-day unconditional money-back guarantee',
   },
 ];
 
@@ -32,21 +32,21 @@ export default function ComparisonTable() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-500">
-            为什么开发者选择 Codcompass 2.0
+            Why Developers Choose Codcompass 2.0
           </h2>
           <p className="mt-4 text-lg text-neutral-400">
-            我们不只是提供内容，而是交付生产力
+            We don't just deliver content, we deliver productivity
           </p>
         </div>
 
-        {/* 对比表格 */}
+        {/* Comparison Table */}
         <div className="rounded-2xl border border-white/[0.08] overflow-hidden bg-zinc-900">
-          {/* 表头 */}
+          {/* Table Header */}
           <div className="grid grid-cols-2 border-b border-white/[0.08]">
             <div className="p-4 sm:p-6 bg-red-500/5">
               <div className="flex items-center gap-2 text-red-400 font-semibold">
                 <span className="text-xl">😰</span>
-                <span>传统学习方式</span>
+                <span>Traditional Learning</span>
               </div>
             </div>
             <div className="p-4 sm:p-6 bg-green-500/5 border-l border-white/[0.08]">

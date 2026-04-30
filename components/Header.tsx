@@ -33,20 +33,8 @@ export default function Header({ locale = 'en' }: HeaderProps) {
 
   const isAdmin = (session?.user as any)?.role === 'ADMIN';
 
-  const t = locale === 'zh' ? {
-    kb: '知识库',
-    categories: '分类',
-    blog: '博客',
-    pricing: '定价',
-    about: '关于',
-    dashboard: '仪表盘',
-    bookmarks: '书签',
-    settings: '设置',
-    admin: '管理面板',
-    signOut: '退出登录',
-    signIn: '登录',
-    getStarted: '开始使用',
-  } : {
+  // Always use English translations for site-wide English
+  const t = {
     kb: 'Knowledge Base',
     categories: 'Categories',
     blog: 'Blog',

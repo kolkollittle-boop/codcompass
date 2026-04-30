@@ -11,23 +11,23 @@ interface TrustBadge {
 const badges: TrustBadge[] = [
   {
     icon: 'code',
-    title: '每周生产级实战',
-    description: '聚焦真实落地，而非理论摘要',
+    title: 'Weekly Production Practice',
+    description: 'Real-world implementation, not theory summaries',
   },
   {
     icon: 'download',
     title: 'Production Blueprint',
-    description: '下载即用，省去搭环境和调参的时间',
+    description: 'Download and use, skip environment setup and tuning',
   },
   {
     icon: 'graduation-cap',
-    title: '系统化学习路径',
-    description: '从 RAG 到多 Agent，结构化进阶',
+    title: 'Systematic Learning Paths',
+    description: 'Structured progression from RAG to multi-Agent',
   },
   {
     icon: 'alert-triangle',
-    title: '生产避坑指南',
-    description: '来自真实项目的 7 条高频坑点总结',
+    title: 'Production Pitfall Guide',
+    description: '7 high-frequency pitfalls from real projects',
   },
 ];
 

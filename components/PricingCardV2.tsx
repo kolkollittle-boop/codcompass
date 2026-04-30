@@ -96,7 +96,7 @@ export default function PricingCardV2({ plan }: { plan: PricingPlanV2 }) {
       {plan.refundGuarantee && (
         <div className="mt-4 flex items-center justify-center gap-2 text-xs text-zinc-500">
           <Shield className="w-3.5 h-3.5" />
-          30 天退款保证
+          30-day money-back guarantee
         </div>
       )}
     </div>

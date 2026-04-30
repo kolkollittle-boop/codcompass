@@ -16,7 +16,8 @@ interface SeriesCardProps {
 }
 
 export default function SeriesCard({ series, locale = 'en' }: SeriesCardProps) {
-  const title = locale === 'zh' && series.title ? series.title : series.titleEn;
+  // Always use English title for site-wide English
+  const title = series.titleEn || series.title;
   const estimatedTime = series.estimatedTime || Math.max(5, series.totalParts * 10);
   
   return (
@@ -31,7 +32,7 @@ export default function SeriesCard({ series, locale = 'en' }: SeriesCardProps) {
             <Icon name="book-marked" size={20} />
           </div>
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            {series.articleCount} {locale === 'zh' ? '篇' : 'parts'}
+            {series.articleCount} parts
           </span>
         </div>
         
@@ -51,11 +52,11 @@ export default function SeriesCard({ series, locale = 'en' }: SeriesCardProps) {
         <div className="flex items-center gap-4 text-xs text-neutral-500 pt-4 border-t border-white/[0.06]">
           <span className="flex items-center gap-1">
             <Icon name="clock" size={12} />
-            ~{estimatedTime} {locale === 'zh' ? '分钟' : 'min'}
+            ~{estimatedTime} min
           </span>
           <span className="flex items-center gap-1">
             <Icon name="git-branch" size={12} />
-            {locale === 'zh' ? '专题系列' : 'Series'}
+            Series
           </span>
         </div>
       </article>

@@ -17,23 +17,8 @@ const linkWithLocale = (locale: string, path: string) => {
 };
 
 export default function Footer({ locale = 'en' }: FooterProps) {
-  const t = locale === 'zh' ? {
-    description: '面向开发者和专业人士的优质知识库。',
-    product: '产品',
-    kb: '知识库',
-    blog: '博客',
-    pricing: '定价',
-    checkout: '结账',
-    help: '帮助中心',
-    company: '公司',
-    about: '关于',
-    contact: '联系我们',
-    status: '状态',
-    legal: '法律',
-    privacy: '隐私政策',
-    terms: '服务条款',
-    rights: '保留所有权利。',
-  } : {
+  // Always use English translations for site-wide English
+  const t = {
     description: 'Premium knowledge base for developers and professionals.',
     product: 'Product',
     kb: 'Knowledge Base',
