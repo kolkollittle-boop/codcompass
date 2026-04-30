@@ -172,48 +172,79 @@ function cleanHtml(html: string): string {
 }
 
 /**
- * 使用 AI 翻译文章为中文
+ * 使用 AI 翻译文章为中文（全文翻译）
  */
 async function translateToChinese(title: string, content: string): Promise<string> {
   try {
-    const response = await fetch('https://coding.dashscope.aliyuncs.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'qwen3.5-plus',
-        messages: [
-          {
-            role: 'system',
-            content: `你是一位专业的技术翻译家，擅长将英文技术文章翻译成流畅的中文。
+    // 如果内容太长，分段翻译（每段约 3000 字）
+    const MAX_CHUNK_SIZE = 3000;
+    
+    if (content.length <= MAX_CHUNK_SIZE) {
+      // 短内容：一次翻译
+      return await translateChunk(title, content);
+    }
+    
+    // 长内容：分段翻译后合并
+    const chunks: string[] = [];
+    for (let i = 0; i < content.length; i += MAX_CHUNK_SIZE) {
+      const chunk = content.substring(i, i + MAX_CHUNK_SIZE);
+      const isLastChunk = i + MAX_CHUNK_SIZE >= content.length;
+      const translated = await translateChunk(
+        isLastChunk ? title : `（续）`,
+        chunk
+      );
+      if (translated) {
+        chunks.push(translated);
+      }
+      // API 速率限制
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    
+    return chunks.join('\n\n---\n\n');
+  } catch (error) {
+    console.error(`❌ Translation error:`, error);
+    return '';
+  }
+}
+
+/**
+ * 翻译单个段落
+ */
+async function translateChunk(title: string, content: string): Promise<string> {
+  const response = await fetch('https://coding.dashscope.aliyuncs.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'qwen3.5-plus',
+      messages: [
+        {
+          role: 'system',
+          content: `你是一位专业的技术翻译家，擅长将英文技术文章翻译成流畅的中文。
 请保持以下要求：
 1. 技术术语保持英文（如 React, TypeScript, API 等）
 2. 代码块不要翻译
 3. 保持 Markdown 格式不变
 4. 只翻译文本内容
-5. 输出翻译后的中文内容`,
-          },
-          {
-            role: 'user',
-            content: `请将以下文章标题和开头部分翻译成中文（只翻译前 500 字作为预览）：\n\n标题：${title}\n\n内容预览：${content.substring(0, 500)}`,
-          },
-        ],
-      }),
-    });
-    
-    if (!response.ok) {
-      console.warn(`⚠️ Translation failed: ${response.status}`);
-      return '';
-    }
-    
-    const data = await response.json();
-    return data.choices?.[0]?.message?.content || '';
-  } catch (error) {
-    console.error(`❌ Translation error:`, error);
+5. 输出翻译后的中文内容，不要添加额外说明`,
+        },
+        {
+          role: 'user',
+          content: `请将以下文章翻译成中文：\n\n标题：${title}\n\n内容：${content}`,
+        },
+      ],
+    }),
+  });
+  
+  if (!response.ok) {
+    console.warn(`⚠️ Translation failed: ${response.status}`);
     return '';
   }
+  
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content || '';
 }
 
 async function main() {

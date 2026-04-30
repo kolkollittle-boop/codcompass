@@ -186,7 +186,7 @@ export default function AdminReviewDashboard() {
     <div className="h-screen bg-zinc-950 text-zinc-100 flex flex-col">
       <header className="h-12 border-b border-zinc-800 flex items-center px-6 bg-zinc-900/50 justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/en/kb" className="text-zinc-400 hover:text-cyan-400 transition-colors">
+          <Link href="/admin" className="text-zinc-400 hover:text-cyan-400 transition-colors">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <span className="font-mono font-bold text-cyan-400 tracking-wider">⚡ ADMIN REVIEW TERMINAL</span>
