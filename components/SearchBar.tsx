@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 
 interface SearchResult {
@@ -9,7 +8,6 @@ interface SearchResult {
   slug: string;
   titleEn: string;
   excerptEn: string | null;
-  category: string;
 }
 
 export default function SearchBar() {
@@ -38,28 +36,10 @@ export default function SearchBar() {
 
       setIsLoading(true);
       try {
-        // Simple search using Supabase ILIKE
-        const { data } = await supabase
-          .from('Article')
-          .select(`
-            id,
-            slug,
-            titleEn,
-            excerptEn,
-            categories:_ArticleToCategory!_ArticleToCategory_A_fkey(Category(name))
-          `)
-          .or(`titleEn.ilike.%${query}%,excerptEn.ilike.%${query}%`)
-          .eq('isPublished', true)
-          .limit(10);
-
-        if (data) {
-          setResults(data.map((a: any) => ({
-            id: a.id,
-            slug: a.slug,
-            titleEn: a.titleEn,
-            excerptEn: a.excerptEn,
-            category: a.categories?.[0]?.Category?.[0]?.name || 'General',
-          })));
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const json = await res.json();
+        if (json.results) {
+          setResults(json.results);
         }
       } catch (error) {
         console.error('Search error:', error);
@@ -110,11 +90,6 @@ export default function SearchBar() {
                     setQuery('');
                   }}
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-medium px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full">
-                      {result.category}
-                    </span>
-                  </div>
                   <h4 className="text-sm font-medium text-gray-900">{result.titleEn}</h4>
                   {result.excerptEn && (
                     <p className="text-xs text-gray-500 mt-1 line-clamp-2">
