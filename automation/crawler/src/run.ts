@@ -248,7 +248,7 @@ async function translateChunk(title: string, content: string): Promise<string> {
 }
 
 async function main() {
-  console.log("🚀 Starting Codcompass Crawler...");
+  console.log("🚀 Starting Codcompass Crawler (Concurrent Mode)...");
   console.log("📡 Source: Dev.to API\n");
 
   // 1. 获取文章列表
@@ -259,13 +259,15 @@ async function main() {
     return;
   }
 
-  // 2. 处理每篇文章
+  // 2. 并发处理配置
+  const CONCURRENCY = 3; // 同时处理的文章数量
   let successCount = 0;
   let failCount = 0;
+  let skippedCount = 0;
   
-  for (let i = 0; i < articles.length; i++) {
-    const article = articles[i];
-    console.log(`\n[${i + 1}/${articles.length}] Processing: ${article.title}`);
+  // 单篇文章处理函数
+  async function processArticle(article: DevToArticle, index: number) {
+    console.log(`\n[${index + 1}/${articles.length}] Processing: ${article.title}`);
     
     try {
       // 获取完整内容并转换为 Markdown
@@ -273,8 +275,7 @@ async function main() {
       
       if (!markdown || markdown.length < 100) {
         console.log(`⏭️ Skipping: content too short (${markdown?.length || 0} chars)`);
-        failCount++;
-        continue;
+        return { success: false, skipped: true, title: article.title };
       }
       
       console.log(`📝 Content length: ${markdown.length} chars`);
@@ -286,8 +287,7 @@ async function main() {
       
       if (!evaluation.score) {
         console.log(`⏭️ Skipping: AI scoring failed`);
-        failCount++;
-        continue;
+        return { success: false, skipped: true, title: article.title };
       }
       
       console.log(`✅ Score: ${evaluation.score}/100`);
@@ -316,20 +316,44 @@ async function main() {
         images: images,
       });
       
-      successCount++;
       console.log(`✅ Successfully processed`);
-      
-      // 速率限制
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      return { success: true, skipped: false, title: article.title };
     } catch (error) {
       console.error(`❌ Failed to process "${article.title}":`, error);
-      failCount++;
+      return { success: false, skipped: false, title: article.title, error };
+    }
+  }
+  
+  // 3. 分批并发处理
+  for (let i = 0; i < articles.length; i += CONCURRENCY) {
+    const batch = articles.slice(i, i + CONCURRENCY);
+    const batchIndex = Math.floor(i / CONCURRENCY) + 1;
+    const totalBatches = Math.ceil(articles.length / CONCURRENCY);
+    
+    console.log(`\n📦 Batch ${batchIndex}/${totalBatches} (processing ${batch.length} articles concurrently)`);
+    
+    const results = await Promise.all(
+      batch.map((article, batchIdx) => processArticle(article, i + batchIdx))
+    );
+    
+    // 统计批次结果
+    results.forEach(result => {
+      if (result.success) successCount++;
+      else if (result.skipped) skippedCount++;
+      else failCount++;
+    });
+    
+    // 批次间添加短暂延迟，避免 API 限速
+    if (i + CONCURRENCY < articles.length) {
+      console.log(`\n⏳ Waiting 2 seconds before next batch...`);
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
   }
 
   console.log("\n" + "=".repeat(50));
   console.log("🎉 Crawler completed!");
   console.log(`✅ Success: ${successCount}`);
+  console.log(`⏭️ Skipped (low quality): ${skippedCount}`);
   console.log(`❌ Failed: ${failCount}`);
   console.log(`📊 Total: ${articles.length}`);
 }
