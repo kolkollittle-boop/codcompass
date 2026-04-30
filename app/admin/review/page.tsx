@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Check, X, Save, Eye, Edit3, Sparkles, Image, CheckSquare, Square, Layers, ArrowLeft, Play, RefreshCw } from 'lucide-react';
+import { Loader2, Check, X, Save, Eye, Edit3, Sparkles, Image, CheckSquare, Square, Layers, ArrowLeft, Play, RefreshCw, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -38,11 +38,15 @@ export default function AdminReviewDashboard() {
   
   // 爬虫状态
   const [crawlerRunning, setCrawlerRunning] = useState(false);
+  
+  // 排序状态
+  const [sortOrder, setSortOrder] = useState<'default' | 'score-asc' | 'score-desc'>('default');
 
   const fetchArticles = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/articles');
+      // 只获取待审核的文章
+      const res = await fetch('/api/admin/articles?status=REVIEW');
       const json = await res.json();
       if (json.success && json.data) {
         setArticles(json.data);
@@ -55,6 +59,37 @@ export default function AdminReviewDashboard() {
   };
 
   useEffect(() => { fetchArticles(); }, []);
+
+  // 获取排序后的文章列表
+  const getSortedArticles = () => {
+    if (sortOrder === 'default') return articles;
+    
+    const sorted = [...articles].sort((a, b) => {
+      const scoreA = a.qualityScore || 0;
+      const scoreB = b.qualityScore || 0;
+      return sortOrder === 'score-desc' ? scoreB - scoreA : scoreA - scoreB;
+    });
+    return sorted;
+  };
+
+  // 切换排序
+  const toggleSortOrder = () => {
+    if (sortOrder === 'default') setSortOrder('score-desc');
+    else if (sortOrder === 'score-desc') setSortOrder('score-asc');
+    else setSortOrder('default');
+  };
+
+  const getSortIcon = () => {
+    if (sortOrder === 'default') return <ArrowUpDown className="w-3 h-3" />;
+    if (sortOrder === 'score-desc') return <ArrowDown className="w-3 h-3" />;
+    return <ArrowUp className="w-3 h-3" />;
+  };
+
+  const getSortLabel = () => {
+    if (sortOrder === 'default') return '默认排序';
+    if (sortOrder === 'score-desc') return '评分 ↓';
+    return '评分 ↑';
+  };
 
   const handleSelect = (art: Article) => {
     setSelected(art);
@@ -233,16 +268,26 @@ export default function AdminReviewDashboard() {
           <div className="h-full overflow-y-auto p-4 space-y-2 border-r border-zinc-800">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Pending Queue ({articles.length})</h2>
-              <button 
-                onClick={toggleSelectAll}
-                className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
-              >
-                {selectedIds.size === articles.length ? <CheckSquare className="w-3 h-3" /> : <Square className="w-3 h-3" />}
-                {selectedIds.size === articles.length ? '取消全选' : '全选'}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleSortOrder}
+                  className="text-xs text-zinc-400 hover:text-cyan-400 flex items-center gap-1 px-2 py-1 rounded bg-zinc-800/50 hover:bg-zinc-800 transition-colors"
+                  title="切换评分排序"
+                >
+                  {getSortIcon()}
+                  <span className="hidden sm:inline">{getSortLabel()}</span>
+                </button>
+                <button
+                  onClick={toggleSelectAll}
+                  className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+                >
+                  {selectedIds.size === articles.length ? <CheckSquare className="w-3 h-3" /> : <Square className="w-3 h-3" />}
+                  {selectedIds.size === articles.length ? '取消全选' : '全选'}
+                </button>
+              </div>
             </div>
             {loading ? <Loader2 className="animate-spin mx-auto mt-10 text-zinc-600" /> :
-              articles.map(art => {
+              getSortedArticles().map(art => {
                 const qd = art.qualityDetails || {};
                 const score = art.qualityScore || 0;
                 const difficulty = qd.difficulty_level || 'L2';
