@@ -32,7 +32,7 @@ export default function SeriesCard({ series, locale = 'en' }: SeriesCardProps) {
             <Icon name="book-marked" size={20} />
           </div>
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            {series.articleCount} parts
+            {series.articleCount || series.totalParts} parts
           </span>
         </div>
         
