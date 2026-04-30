@@ -9,14 +9,14 @@ export const metadata: Metadata = {
 
 export default function RefundPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
       <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Refund Policy</h1>
-          <p className="text-gray-500 mb-8">Last updated: April 26, 2026</p>
+          <h1 className="text-3xl font-bold text-white mb-8">Refund Policy</h1>
+          <p className="text-zinc-500 mb-8">Last updated: April 26, 2026</p>
 
-          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed">
+          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-zinc-300 prose-p:leading-relaxed prose-a:text-indigo-400">
             <p>
               At Codcompass, we want you to be completely satisfied with your subscription. This Refund Policy outlines your rights and our obligations regarding refunds.
             </p>

@@ -4,35 +4,35 @@ import Footer from '@/components/Footer';
 
 export default function BlogDetailPage({ params }: { params: { slug: string } }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
       <main className="flex-grow">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Back Link */}
-          <Link href="/blog" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium mb-8 inline-block">
+          <Link href="/blog" className="text-indigo-400 hover:text-indigo-300 text-sm font-medium mb-8 inline-block">
             ← Back to Blog
           </Link>
 
           {/* Header */}
-          <header className="mb-10 pb-8 border-b border-gray-200">
+          <header className="mb-10 pb-8 border-b border-zinc-800">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                 React
               </span>
-              <span className="text-sm text-gray-500">2026-04-20</span>
-              <span className="text-sm text-gray-500">·</span>
-              <span className="text-sm text-gray-500">8 min read</span>
+              <span className="text-sm text-zinc-500">2026-04-20</span>
+              <span className="text-sm text-zinc-500">·</span>
+              <span className="text-sm text-zinc-500">8 min read</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Getting Started with React Hooks
             </h1>
-            <div className="flex items-center text-gray-500 text-sm">
+            <div className="flex items-center text-zinc-500 text-sm">
               <span>By Codcompass Team</span>
             </div>
           </header>
 
           {/* Content */}
-          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed">
+          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-zinc-300 prose-p:leading-relaxed prose-a:text-indigo-400 prose-code:text-zinc-200">
             <p>
               React Hooks were introduced in React 16.8 and fundamentally changed how we write components. If you're still using class components, you're missing out on cleaner, more readable code.
             </p>

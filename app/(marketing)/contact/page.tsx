@@ -21,17 +21,17 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
       <main className="flex-grow">
         {/* Hero */}
-        <div className="bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <div className="bg-gradient-to-br from-indigo-600/20 via-zinc-900 to-purple-600/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
-              <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
                 Contact Us
               </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
                 Have any questions or suggestions? We're here to help
               </p>
             </div>
@@ -42,41 +42,41 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 gap-12">
             {/* Contact Info */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">Contact Information</h2>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
-                    <Icon name="mail" size={20} className="text-indigo-600" />
+                  <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center mr-4">
+                    <Icon name="mail" size={20} className="text-indigo-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">Email</h3>
-                    <p className="text-gray-600">support@codcompass.com</p>
+                    <h3 className="font-medium text-white">Email</h3>
+                    <p className="text-zinc-400">support@codcompass.com</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
-                    <Icon name="message" size={20} className="text-indigo-600" />
+                  <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center mr-4">
+                    <Icon name="message" size={20} className="text-indigo-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">Online Support</h3>
-                    <p className="text-gray-600">Weekdays 9:00 - 18:00 (UTC+8)</p>
+                    <h3 className="font-medium text-white">Online Support</h3>
+                    <p className="text-zinc-400">Weekdays 9:00 - 18:00 (UTC+8)</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
-                    <Icon name="globe" size={20} className="text-indigo-600" />
+                  <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center mr-4">
+                    <Icon name="globe" size={20} className="text-indigo-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">Social Media</h3>
-                    <p className="text-gray-600">@codcompass on Twitter/X</p>
+                    <h3 className="font-medium text-white">Social Media</h3>
+                    <p className="text-zinc-400">@codcompass on Twitter/X</p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-8 p-6 bg-gray-50 rounded-xl">
-                <h3 className="font-bold text-gray-900 mb-2"><Icon name="lightbulb" size={16} className="inline text-amber-500 mr-1" /> FAQ</h3>
-                <p className="text-gray-600 text-sm">
-                  Before contacting us, check our <a href="/help" className="text-indigo-600 hover:underline">Help Center</a> - you may already find the answer you need.
+              <div className="mt-8 p-6 bg-zinc-900 rounded-xl border border-zinc-800">
+                <h3 className="font-bold text-white mb-2"><Icon name="lightbulb" size={16} className="inline text-amber-400 mr-1" /> FAQ</h3>
+                <p className="text-zinc-400 text-sm">
+                  Before contacting us, check our <a href="/help" className="text-indigo-400 hover:underline">Help Center</a> - you may already find the answer you need.
                 </p>
               </div>
             </div>
@@ -84,51 +84,51 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div>
               {submitted ? (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
-                    <Icon name="check" size={24} className="text-green-600" />
+                <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-8 text-center">
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-green-500/10 flex items-center justify-center">
+                    <Icon name="check" size={24} className="text-green-400" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h3>
-                  <p className="text-gray-600">We will reply to you within 24 hours.</p>
+                  <h3 className="text-xl font-bold text-white mb-2">Message Sent!</h3>
+                  <p className="text-zinc-400">We will reply to you within 24 hours.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="name" className="block text-sm font-medium text-zinc-300 mb-2">
                       Name *
                     </label>
                     <input
                       type="text"
                       id="name"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
                       placeholder="Your name"
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
                       Email *
                     </label>
                     <input
                       type="email"
                       id="email"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
                       placeholder="your@email.com"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                     />
                   </div>
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="subject" className="block text-sm font-medium text-zinc-300 mb-2">
                       Subject *
                     </label>
                     <select
                       id="subject"
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white"
                       value={formData.subject}
                       onChange={(e) => setFormData({...formData, subject: e.target.value})}
                     >
@@ -141,14 +141,14 @@ export default function ContactPage() {
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="message" className="block text-sm font-medium text-zinc-300 mb-2">
                       Message *
                     </label>
                     <textarea
                       id="message"
                       required
                       rows={5}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
                       placeholder="Please describe your question or suggestion..."
                       value={formData.message}
                       onChange={(e) => setFormData({...formData, message: e.target.value})}

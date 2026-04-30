@@ -20,10 +20,10 @@ export default function SettingsPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+          <p className="mt-4 text-zinc-400">Loading...</p>
         </div>
       </div>
     );
@@ -47,25 +47,25 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
-      <main className="flex-grow bg-gray-50">
+      <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
-            <p className="text-gray-600 mt-1">Manage your profile and preferences</p>
+            <h1 className="text-2xl font-bold text-white">Account Settings</h1>
+            <p className="text-zinc-400 mt-1">Manage your profile and preferences</p>
           </div>
 
           {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm">
+            <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm">
               {success}
             </div>
           )}
 
           {/* Profile Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Profile Information</h2>
+          <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 mb-6">
+            <h2 className="text-lg font-bold text-white mb-4">Profile Information</h2>
             <div className="flex items-center gap-4 mb-6">
               {session.user?.image && (
                 <img
@@ -75,9 +75,9 @@ export default function SettingsPage() {
                 />
               )}
               <div>
-                <p className="font-medium text-gray-900">{session.user?.name || 'User'}</p>
-                <p className="text-sm text-gray-600">{session.user?.email}</p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mt-2">
+                <p className="font-medium text-white">{session.user?.name || 'User'}</p>
+                <p className="text-sm text-zinc-400">{session.user?.email}</p>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mt-2">
                   {(session.user as any)?.role || 'USER'}
                 </span>
               </div>
@@ -85,18 +85,18 @@ export default function SettingsPage() {
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-sm font-medium text-zinc-300 mb-2">
                   Display Name
                 </label>
                 <input
                   type="text"
                   id="name"
                   defaultValue={session.user?.name || ''}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
                   Email
                 </label>
                 <input
@@ -104,9 +104,9 @@ export default function SettingsPage() {
                   id="email"
                   defaultValue={session.user?.email || ''}
                   disabled
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+                  className="w-full px-4 py-3 border border-zinc-700 rounded-lg bg-zinc-800/50 text-zinc-500"
                 />
-                <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                <p className="text-xs text-zinc-500 mt-1">Email cannot be changed</p>
               </div>
               <button
                 type="submit"
@@ -119,12 +119,12 @@ export default function SettingsPage() {
           </div>
 
           {/* Subscription Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Subscription</h2>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 mb-6">
+            <h2 className="text-lg font-bold text-white mb-4">Subscription</h2>
+            <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg">
               <div>
-                <p className="font-medium text-gray-900">Free Plan</p>
-                <p className="text-sm text-gray-600">Access to 10% of articles</p>
+                <p className="font-medium text-white">Free Plan</p>
+                <p className="text-sm text-zinc-400">Access to 10% of articles</p>
               </div>
               <a
                 href="/pricing"
@@ -136,12 +136,12 @@ export default function SettingsPage() {
           </div>
 
           {/* Danger Zone */}
-          <div className="bg-white rounded-xl shadow-sm border border-red-200 p-6">
-            <h2 className="text-lg font-bold text-red-600 mb-4">Danger Zone</h2>
+          <div className="bg-zinc-900 rounded-xl border border-red-500/30 p-6">
+            <h2 className="text-lg font-bold text-red-400 mb-4">Danger Zone</h2>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900">Sign Out</p>
-                <p className="text-sm text-gray-600">Sign out of your account</p>
+                <p className="font-medium text-white">Sign Out</p>
+                <p className="text-sm text-zinc-400">Sign out of your account</p>
               </div>
               <button
                 onClick={handleSignOut}

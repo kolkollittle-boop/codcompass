@@ -23,10 +23,10 @@ export default function BookmarksPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+          <p className="mt-4 text-zinc-400">Loading...</p>
         </div>
       </div>
     );
@@ -39,14 +39,14 @@ export default function BookmarksPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
-      <main className="flex-grow bg-gray-50">
+      <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">🔖 My Bookmarks</h1>
-            <p className="text-gray-600 mt-1">Your saved articles for later reading</p>
+            <h1 className="text-2xl font-bold text-white">🔖 My Bookmarks</h1>
+            <p className="text-zinc-400 mt-1">Your saved articles for later reading</p>
           </div>
 
           {/* Bookmarks List */}
@@ -54,25 +54,25 @@ export default function BookmarksPage() {
             {bookmarks.map((bookmark) => (
               <div
                 key={bookmark.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:border-indigo-500/30 transition-all"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                         {bookmark.category}
                       </span>
-                      <span className="text-sm text-gray-500">{bookmark.date}</span>
+                      <span className="text-sm text-zinc-500">{bookmark.date}</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      <a href={`/kb/${bookmark.slug}`} className="hover:text-indigo-600 transition-colors">
+                    <h3 className="text-lg font-bold text-white mb-2">
+                      <a href={`/kb/${bookmark.slug}`} className="hover:text-indigo-400 transition-colors">
                         {bookmark.title}
                       </a>
                     </h3>
                   </div>
                   <button
                     onClick={() => handleRemoveBookmark(bookmark.id)}
-                    className="text-gray-400 hover:text-red-600 transition-colors"
+                    className="text-zinc-500 hover:text-red-400 transition-colors"
                     title="Remove bookmark"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,8 +87,8 @@ export default function BookmarksPage() {
           {bookmarks.length === 0 && (
             <div className="text-center py-12">
               <div className="text-4xl mb-4">🔖</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No bookmarks yet</h3>
-              <p className="text-gray-600 mb-4">Start saving articles to read later</p>
+              <h3 className="text-lg font-medium text-white mb-2">No bookmarks yet</h3>
+              <p className="text-zinc-400 mb-4">Start saving articles to read later</p>
               <a
                 href="/kb"
                 className="inline-block px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"

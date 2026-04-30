@@ -46,7 +46,7 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
   const articles = await getArticlesByCategorySlug(slug, 100, 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       {/* Header */}
       <div className={`bg-gradient-to-r ${catInfo.color} text-white py-16`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,7 +66,7 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
       {/* Articles List */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {articles.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20 text-zinc-500">
             No articles in this category yet.
           </div>
         ) : (
@@ -77,23 +77,23 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
                 <Link
                   key={article.id}
                   href={`/${locale}/kb/${article.slug}`}
-                  className="group bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md transition-all"
+                  className="group bg-zinc-900 rounded-2xl border border-zinc-800 p-6 hover:border-zinc-700 transition-all"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 mb-2">
+                      <h3 className="text-xl font-semibold text-white group-hover:text-indigo-400 mb-2">
                         {content.title}
                       </h3>
-                      <p className="text-gray-600 line-clamp-2 mb-3">
+                      <p className="text-zinc-400 line-clamp-2 mb-3">
                         {content.excerpt || content.description}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <div className="flex items-center gap-4 text-sm text-zinc-500">
                         <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
                         <span className="flex items-center gap-1">
                           👁️ {article.viewCount}
                         </span>
                         {article.isPremium && (
-                          <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full text-xs font-medium">
+                          <span className="bg-yellow-500/10 text-yellow-400 px-2 py-0.5 rounded-full text-xs font-medium border border-yellow-500/20">
                             Premium
                           </span>
                         )}

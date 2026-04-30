@@ -20,34 +20,34 @@ const incidents = [
 
 export default function StatusPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
       <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Service Status</h1>
+          <h1 className="text-3xl font-bold text-white mb-8">Service Status</h1>
 
           {/* Overall Status */}
-          <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
+          <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-6 mb-8">
             <div className="flex items-center">
               <div className="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
-              <span className="text-lg font-medium text-green-800">All Systems Operational</span>
+              <span className="text-lg font-medium text-green-400">All Systems Operational</span>
             </div>
-            <p className="text-green-600 mt-2">Last checked: Just now</p>
+            <p className="text-green-500 mt-2">Last checked: Just now</p>
           </div>
 
           {/* Services */}
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Service Status</h2>
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <h2 className="text-xl font-bold text-white mb-4">Service Status</h2>
+            <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
               {services.map((service) => (
                 <div
                   key={service.name}
-                  className="flex items-center justify-between px-6 py-4 border-b border-gray-100 last:border-0"
+                  className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 last:border-0"
                 >
-                  <span className="font-medium text-gray-900">{service.name}</span>
+                  <span className="font-medium text-white">{service.name}</span>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-gray-500">90-day uptime: {service.uptime}</span>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span className="text-sm text-zinc-500">90-day uptime: {service.uptime}</span>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
                       {service.status === 'operational' ? 'Operational' : service.status}
                     </span>
                   </div>
@@ -58,21 +58,21 @@ export default function StatusPage() {
 
           {/* Recent Incidents */}
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Incidents</h2>
+            <h2 className="text-xl font-bold text-white mb-4">Recent Incidents</h2>
             <div className="space-y-4">
               {incidents.map((incident) => (
                 <div
                   key={incident.date}
-                  className="bg-white rounded-xl border border-gray-200 p-6"
+                  className="bg-zinc-900 rounded-xl border border-zinc-800 p-6"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-gray-900">{incident.title}</h3>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <h3 className="font-medium text-white">{incident.title}</h3>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
                       Resolved
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500 mb-2">{incident.date}</p>
-                  <p className="text-gray-600">{incident.description}</p>
+                  <p className="text-sm text-zinc-500 mb-2">{incident.date}</p>
+                  <p className="text-zinc-400">{incident.description}</p>
                 </div>
               ))}
             </div>

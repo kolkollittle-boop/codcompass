@@ -44,17 +44,17 @@ export default function HelpPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
       <Header />
       <main className="flex-grow">
         {/* Hero */}
-        <div className="bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <div className="bg-gradient-to-br from-indigo-600/20 via-zinc-900 to-purple-600/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
-              <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
                 Help Center
               </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
                 Frequently asked questions and user guides
               </p>
             </div>
@@ -64,39 +64,39 @@ export default function HelpPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Quick Links */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <Link href="/contact" className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow text-center">
+            <Link href="/contact" className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition-shadow text-center">
               <div className="text-3xl mb-3">📧</div>
-              <h3 className="font-bold text-gray-900 mb-2">Contact Us</h3>
-              <p className="text-sm text-gray-600">Have questions? Send an email or fill out the contact form</p>
+              <h3 className="font-bold text-white mb-2">Contact Us</h3>
+              <p className="text-sm text-zinc-400">Have questions? Send an email or fill out the contact form</p>
             </Link>
-            <Link href="/pricing" className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow text-center">
+            <Link href="/pricing" className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition-shadow text-center">
               <div className="text-3xl mb-3">💰</div>
-              <h3 className="font-bold text-gray-900 mb-2">Pricing Plans</h3>
-              <p className="text-sm text-gray-600">View our subscription plans and features</p>
+              <h3 className="font-bold text-white mb-2">Pricing Plans</h3>
+              <p className="text-sm text-zinc-400">View our subscription plans and features</p>
             </Link>
-            <Link href={"/kb" as any} className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow text-center">
+            <Link href={"/kb" as any} className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition-shadow text-center">
               <div className="text-3xl mb-3">📚</div>
-              <h3 className="font-bold text-gray-900 mb-2">Knowledge Base</h3>
-              <p className="text-sm text-gray-600">Browse all technical tutorials and articles</p>
+              <h3 className="font-bold text-white mb-2">Knowledge Base</h3>
+              <p className="text-sm text-zinc-400">Browse all technical tutorials and articles</p>
             </Link>
           </div>
 
           {/* FAQ */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h2>
             <div className="space-y-4">
               {faqs.map((faq, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg border border-gray-200 overflow-hidden"
+                  className="bg-zinc-900 rounded-lg border border-zinc-800 overflow-hidden"
                 >
                   <button
                     onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50"
+                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-zinc-800"
                   >
-                    <span className="font-medium text-gray-900">{faq.question}</span>
+                    <span className="font-medium text-white">{faq.question}</span>
                     <svg
-                      className={`w-5 h-5 text-gray-500 transition-transform ${openIndex === index ? 'rotate-180' : ''}`}
+                      className={`w-5 h-5 text-zinc-400 transition-transform ${openIndex === index ? 'rotate-180' : ''}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -105,7 +105,7 @@ export default function HelpPage() {
                     </svg>
                   </button>
                   {openIndex === index && (
-                    <div className="px-6 pb-4 text-gray-600">
+                    <div className="px-6 pb-4 text-zinc-400">
                       {faq.answer}
                     </div>
                   )}
