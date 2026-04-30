@@ -20,12 +20,16 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm install && npx playwright install --with-deps
+      - name: Install Root Dependencies
+        run: npm ci --ignore-scripts || npm install
+
+      - name: Install Crawler Dependencies
+        working-directory: ./automation/crawler
+        run: npm ci --ignore-scripts || npm install
 
       - name: Run Crawler & AI Scorer
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
           NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
-        run: npx tsx automation/crawler/src/run.ts
+        run: cd automation/crawler && npx tsx src/run.ts
