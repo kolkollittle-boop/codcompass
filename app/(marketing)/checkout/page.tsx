@@ -88,16 +88,18 @@ export function CheckoutContent() {
       
       // Open Paddle checkout using Paddle.js
       if (data.priceId && window.Paddle) {
+        console.log('[Paddle] Opening checkout with priceId:', data.priceId);
         window.Paddle.Checkout.open({
           items: [{ priceId: data.priceId, quantity: 1 }],
           customer: { email, name: name || undefined },
           settings: {
-            displayMode: 'popup',
+            displayMode: 'overlay',
             theme: 'dark',
             locale: 'en',
           },
         });
       } else {
+        console.error('[Paddle] Missing priceId or Paddle not loaded', { priceId: data.priceId, paddleLoaded: !!window.Paddle });
         throw new Error('No price ID returned or Paddle not loaded');
       }
     } catch (err: any) {
