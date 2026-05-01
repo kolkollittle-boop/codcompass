@@ -116,14 +116,11 @@ export function CheckoutContent() {
         src="https://cdn.paddle.com/paddle/v2/paddle.js"
         onLoad={() => {
           if (window.Paddle) {
-            // Set sandbox environment before setup
-            if (window.Paddle.Environment) {
-              window.Paddle.Environment.set('sandbox');
-            }
             window.Paddle.Setup({
               token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || '',
+              environment: 'sandbox',
             });
-            console.log('[Paddle] Initialized with token:', process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN?.substring(0, 10) + '...');
+            console.log('[Paddle] Initialized with sandbox environment');
           }
         }}
       />
