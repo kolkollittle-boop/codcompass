@@ -17,8 +17,8 @@ const plans = [
     id: 'builder',
     name: 'Builder',
     monthlyPrice: '$9.99',
-    yearlyPrice: '$79.99',
-    yearlySavings: 'Save $39.89/year',
+    yearlyPrice: '$99',
+    yearlySavings: 'Save $20.88/year',
     description: 'Full article access, advanced search, and more.',
     features: [
       'Full article access',
@@ -31,9 +31,9 @@ const plans = [
   {
     id: 'pro',
     name: 'Pro',
-    monthlyPrice: '$29.9',
+    monthlyPrice: '$29',
     yearlyPrice: '$299',
-    yearlySavings: 'Save $98/year',
+    yearlySavings: 'Save $49/year',
     description: 'Everything in Builder, plus AI Q&A, code review, and team features.',
     features: [
       'Everything in Builder',

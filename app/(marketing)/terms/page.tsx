@@ -44,8 +44,8 @@ export default function TermsPage() {
             <p>We offer the following subscription plans (see /pricing page for details):</p>
             <ul>
               <li><strong>Free:</strong> Free, limited access</li>
-              <li><strong>Builder:</strong> $9.9/month or $99/year</li>
-              <li><strong>Pro:</strong> $29.9/month or $299/year</li>
+              <li><strong>Builder:</strong> $9.99/month or $99/year</li>
+              <li><strong>Pro:</strong> $29/month or $299/year</li>
               <li><strong>Enterprise:</strong> Custom pricing</li>
             </ul>
 

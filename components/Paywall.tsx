@@ -8,7 +8,7 @@ interface PaywallProps {
 }
 
 export default function Paywall({ 
-  price = '$9.9/mo',
+  price = '$9.99/mo',
   href = '/pricing' as const,
   variant = 'overlay'
 }: PaywallProps) {
