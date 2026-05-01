@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -47,7 +47,7 @@ const plans = [
   },
 ];
 
-export default function CheckoutPage() {
+export function CheckoutContent() {
   const searchParams = useSearchParams();
   const selectedPlan = searchParams?.get('plan') || 'builder';
   const selectedBilling = searchParams?.get('billing') || 'yearly';
@@ -263,5 +263,13 @@ export default function CheckoutPage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
