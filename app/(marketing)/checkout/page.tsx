@@ -118,9 +118,8 @@ export function CheckoutContent() {
           if (window.Paddle) {
             window.Paddle.Setup({
               token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || '',
-              environment: 'sandbox',
             });
-            console.log('[Paddle] Initialized with sandbox environment');
+            console.log('[Paddle] Initialized');
           }
         }}
       />
