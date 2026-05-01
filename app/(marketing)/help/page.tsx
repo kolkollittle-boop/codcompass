@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     question: 'What subscription plans are available?',
-    answer: 'We offer 4 plans: Free (free), Builder ($9.99/month), Pro ($29.99/month), and Enterprise (custom pricing). See the pricing page for details.',
+    answer: 'We offer 4 plans: Free (free), Builder ($9.9/month), Pro ($29.9/month), and Enterprise (custom pricing). See the pricing page for details.',
   },
   {
     question: 'How do I cancel my subscription?',

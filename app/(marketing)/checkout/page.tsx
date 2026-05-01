@@ -31,8 +31,8 @@ const plans = [
   {
     id: 'pro',
     name: 'Pro',
-    monthlyPrice: '$29',
-    yearlyPrice: '$249',
+    monthlyPrice: '$29.9',
+    yearlyPrice: '$299',
     yearlySavings: 'Save $98/year',
     description: 'Everything in Builder, plus AI Q&A, code review, and team features.',
     features: [

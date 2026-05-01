@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 const pricingPlans: PricingPlanV2[] = [
   {
     name: 'Builder',
-    price: '$9.99',
+    price: '$9.9',
     description: 'For individual developers who want full access to tutorials and expert insights.',
     features: [
       'Full article access',
@@ -41,7 +41,7 @@ const pricingPlans: PricingPlanV2[] = [
   },
   {
     name: 'Pro',
-    price: '$29',
+    price: '$29.9',
     description: 'For developers who need AI-powered tools and team collaboration features.',
     features: [
       'Everything in Builder, plus:',
