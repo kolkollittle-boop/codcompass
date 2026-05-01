@@ -1,6 +1,9 @@
 import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Allow local.codcompass.com for development
+  allowedDevOrigins: ['local.codcompass.com'],
+  
   // Prevent Next.js from bundling heavy Node.js libraries
   // These are only used by CLI scripts, not the web app
   serverExternalPackages: ['turndown', 'cheerio'],
@@ -21,7 +24,7 @@ const nextConfig: NextConfig = {
           // Prevent clickjacking
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'SAMEORIGIN',
           },
           // Prevent MIME-type sniffing
           {
@@ -43,13 +46,15 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               `default-src 'self'`,
-              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.lemonsqueezy.com https://www.googletagmanager.com https://*.google-analytics.com https://challenges.cloudflare.com`,
-              `style-src 'self' 'unsafe-inline'`,
-              `frame-src 'self' https://challenges.cloudflare.com`,
+              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.lemonsqueezy.com https://www.googletagmanager.com https://*.google-analytics.com https://challenges.cloudflare.com https://cdn.paddle.com https://*.paddle.com https://public.profitwell.com`,
+              `script-src-elem 'self' 'unsafe-inline' https://cdn.paddle.com https://*.paddle.com https://public.profitwell.com https://www.googletagmanager.com https://*.google-analytics.com`,
+              `style-src 'self' 'unsafe-inline' https://cdn.paddle.com`,
+              `style-src-elem 'self' 'unsafe-inline' https://cdn.paddle.com`,
+              `frame-src 'self' https://challenges.cloudflare.com https://*.paddle.com https://buy.paddle.com https://checkout-service.paddle.com`,
               `img-src 'self' data: https:`,
               `font-src 'self'`,
-              `connect-src 'self' https://*.supabase.co https://*.lemonsqueezy.com https://*.google-analytics.com`,
-              `frame-ancestors 'none'`,
+              `connect-src 'self' https://*.supabase.co https://*.lemonsqueezy.com https://*.google-analytics.com https://*.paddle.com https://checkout-service.paddle.com`,
+              `frame-ancestors 'self' https://buy.paddle.com https://*.paddle.com`,
               `base-uri 'self'`,
               `form-action 'self'`,
             ].join('; '),

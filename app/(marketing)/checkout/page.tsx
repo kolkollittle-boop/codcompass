@@ -1,20 +1,23 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import type { Metadata } from 'next';
+import Script from 'next/script';
 
-export const metadata: Metadata = {
-  title: 'Checkout - Codcompass',
-  description: 'Complete your subscription to access all premium tutorials and features.',
-  robots: 'noindex',
-};
+declare global {
+  interface Window {
+    Paddle?: any;
+  }
+}
 
 const plans = [
   {
     id: 'builder',
     name: 'Builder',
-    monthlyPrice: '$9.99/mo',
-    yearlyPrice: '$79.99/yr',
-    monthlySavings: '',
+    monthlyPrice: '$9.99',
+    yearlyPrice: '$79.99',
     yearlySavings: 'Save $39.89/year',
     description: 'Full article access, advanced search, and more.',
     features: [
@@ -28,9 +31,8 @@ const plans = [
   {
     id: 'pro',
     name: 'Pro',
-    monthlyPrice: '$29/mo',
-    yearlyPrice: '$249/yr',
-    monthlySavings: '',
+    monthlyPrice: '$29',
+    yearlyPrice: '$249',
     yearlySavings: 'Save $98/year',
     description: 'Everything in Builder, plus AI Q&A, code review, and team features.',
     features: [
@@ -45,21 +47,79 @@ const plans = [
   },
 ];
 
-export default async function CheckoutPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ plan?: string; billing?: string }>;
-}) {
-  const params = await searchParams;
-  const selectedPlan = params?.plan || 'builder';
-  const selectedBilling = params?.billing || 'monthly';
+export default function CheckoutPage() {
+  const searchParams = useSearchParams();
+  const selectedPlan = searchParams?.get('plan') || 'builder';
+  const selectedBilling = searchParams?.get('billing') || 'yearly';
   
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const plan = plans.find(p => p.id === selectedPlan) || plans[0];
   const price = selectedBilling === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
-  const savings = selectedBilling === 'yearly' ? plan.yearlySavings : plan.monthlySavings;
+  const savings = selectedBilling === 'yearly' ? plan.yearlySavings : '';
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Get price ID from API
+      const response = await fetch('/api/checkout/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId: plan.id,
+          billing: selectedBilling,
+          email,
+          name,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+
+      const data = await response.json();
+      
+      // Open Paddle checkout using Paddle.js
+      if (data.priceId && window.Paddle) {
+        window.Paddle.Checkout.open({
+          items: [{ priceId: data.priceId, quantity: 1 }],
+          customer: { email, name: name || undefined },
+          settings: {
+            displayMode: 'popup',
+            theme: 'dark',
+            locale: 'en',
+          },
+        });
+      } else {
+        throw new Error('No price ID returned or Paddle not loaded');
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+      {/* Load Paddle.js */}
+      <Script
+        src="https://cdn.paddle.com/paddle/v2/paddle.js"
+        onLoad={() => {
+          if (window.Paddle) {
+            window.Paddle.Setup({
+              token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || '',
+            });
+          }
+        }}
+      />
       <Header />
       <main className="flex-grow">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -125,10 +185,7 @@ export default async function CheckoutPage({
           <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
             <h2 className="text-lg font-semibold text-white mb-4">Payment Details</h2>
             
-            <form action="/api/checkout/create-session" method="POST" className="space-y-4">
-              <input type="hidden" name="planId" value={plan.id} />
-              <input type="hidden" name="billing" value={selectedBilling} />
-              
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-1">
@@ -137,7 +194,8 @@ export default async function CheckoutPage({
                 <input
                   type="email"
                   id="email"
-                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
                   placeholder="you@example.com"
@@ -152,33 +210,28 @@ export default async function CheckoutPage({
                 <input
                   type="text"
                   id="name"
-                  name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   required
                   className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
                   placeholder="John Doe"
                 />
               </div>
 
-              {/* Coupon */}
-              <div>
-                <label htmlFor="coupon" className="block text-sm font-medium text-zinc-300 mb-1">
-                  Coupon Code (optional)
-                </label>
-                <input
-                  type="text"
-                  id="coupon"
-                  name="coupon"
-                  className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
-                  placeholder="Enter code"
-                />
-              </div>
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
 
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors text-lg"
+                disabled={loading}
+                className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Subscribe for {price}
+                {loading ? 'Processing...' : `Subscribe for ${price}`}
               </button>
 
               {/* Security Note */}
