@@ -56,7 +56,7 @@ const nextConfig: NextConfig = {
               `connect-src 'self' https://*.supabase.co https://*.lemonsqueezy.com https://*.google-analytics.com https://*.paddle.com https://checkout-service.paddle.com`,
               `frame-ancestors 'self' https://buy.paddle.com https://*.paddle.com`,
               `base-uri 'self'`,
-              `form-action 'self'`,
+              `form-action 'self' https://*.paddle.com https://buy.paddle.com https://checkout-service.paddle.com`,
             ].join('; '),
           },
           // HSTS (only on HTTPS)
