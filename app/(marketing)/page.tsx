@@ -18,7 +18,9 @@ async function getPublishedSeries(limit = 6) {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     const res = await fetch(`${baseUrl}/api/series?limit=${limit}`, {
-      next: { revalidate: 300 } // 5 min cache
+      next: { revalidate: 300 }, // 5 min cache
+      // Avoid SSG hanging when the dev server is not up or the URL is unreachable (Next default prerender ~60s cap).
+      signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return [];
     const json = await res.json();
