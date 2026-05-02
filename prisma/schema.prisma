@@ -241,6 +241,23 @@ model CrawlerConfig {
   @@index([enabled])
 }
 
+/// Admin「立即运行」派发记录；实际爬虫在 GitHub Actions 等外部执行
+model CrawlerJob {
+  id             String   @id
+  status         String   @default("queued")
+  triggerSource  String   @default("admin")
+  dispatchTarget String?
+  githubRunUrl   String?
+  githubRunId    String?
+  errorMessage   String?
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
 // Codcompass 2.0 新增：专题路径模型
 model ArticleSeries {
   id          String    @id @default(cuid())

@@ -125,13 +125,19 @@ export default function AdminReviewDashboard() {
     try {
       const res = await fetch('/api/admin/crawler', { method: 'POST' });
       const json = await res.json();
-      if (json.success) {
-        alert('爬虫已触发！请在 GitHub Actions 中查看进度。');
+      if (res.ok && json.success) {
+        const lines = [
+          json.message || '已派发',
+          json.jobId ? `jobId: ${json.jobId}` : '',
+          json.actionsUrl ? `Actions: ${json.actionsUrl}` : '',
+          json.errorMessage ? `注意: ${json.errorMessage}` : '',
+        ].filter(Boolean);
+        alert(lines.join('\n'));
       } else {
-        alert(`触发失败: ${json.error}`);
+        alert(`触发失败: ${json.error || res.statusText}`);
       }
-    } catch (e: any) {
-      alert(`触发失败: ${e.message}`);
+    } catch (e: unknown) {
+      alert(`触发失败: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setCrawlerRunning(false);
     }

@@ -3,7 +3,15 @@ name: Crawler
 on:
   schedule:
     - cron: '0 * * * *'  # 每小时自动抓取一次
-  workflow_dispatch:      # 允许你在 Actions 界面手动点击运行按钮
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: 'CrawlerJob id from admin (optional, for tracing)'
+        required: false
+      triggered_by:
+        description: 'admin | schedule | push'
+        required: false
+        default: 'admin'
   push:
     branches:
       - main              # 每次推送代码到 main 也会尝试运行

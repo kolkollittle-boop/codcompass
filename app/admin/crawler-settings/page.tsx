@@ -66,7 +66,6 @@ export default function CrawlerSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [triggering, setTriggering] = useState(false);
-  const [crawlerRunning, setCrawlerRunning] = useState(false);
   const [showLogModal, setShowLogModal] = useState(false);
   const [crawlerLog, setCrawlerLog] = useState('');
   const [customSchedule, setCustomSchedule] = useState('');
@@ -117,55 +116,46 @@ export default function CrawlerSettingsPage() {
     }
   };
 
+  /** 立即运行：只入队 + 触发 GitHub Actions（API 不等待爬虫结束，通常数秒内返回） */
   const triggerCrawler = async () => {
     setTriggering(true);
     setCrawlerLog('');
     setShowLogModal(true);
-    
+
     try {
       const res = await fetch('/api/admin/crawler', { method: 'POST' });
       const json = await res.json();
-      if (json.success) {
-        setCrawlerRunning(true);
-        // 使用 SSE 接收实时日志
-        startSSELogStream();
-      } else {
-        setCrawlerLog(prev => prev + `\n❌ 启动失败: ${json.error}`);
+      if (!res.ok) {
+        setCrawlerLog(`❌ HTTP ${res.status}\n${json.message || json.error || res.statusText}`);
+        return;
       }
-    } catch (e: any) {
-      setCrawlerLog(prev => prev + `\n❌ 启动失败: ${e.message}`);
+      if (!json.success) {
+        setCrawlerLog(`❌ ${json.message || json.error || '派发失败'}`);
+        return;
+      }
+      let text = `${json.message || 'OK'}\n\njobId: ${json.jobId}\nstatus: ${json.status}`;
+      if (json.githubAccepted != null) text += `\ngithubAccepted: ${json.githubAccepted}`;
+      if (json.actionsUrl) text += `\n\nActions（日志与进度）:\n${json.actionsUrl}`;
+      if (json.errorMessage) text += `\n\ndispatchError: ${json.errorMessage}`;
+      setCrawlerLog(text);
+
+      if (json.jobId) {
+        await new Promise((r) => setTimeout(r, 600));
+        try {
+          const jr = await fetch(`/api/admin/crawler?jobId=${encodeURIComponent(json.jobId)}`);
+          const jd = await jr.json();
+          if (jd.success && jd.job) {
+            setCrawlerLog((prev) => `${prev}\n\n--- Supabase CrawlerJob ---\n${JSON.stringify(jd.job, null, 2)}`);
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+    } catch (e: unknown) {
+      setCrawlerLog(`❌ ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setTriggering(false);
     }
-  };
-
-  // SSE 实时日志流
-  const startSSELogStream = () => {
-    const eventSource = new EventSource('/api/admin/crawler?stream=true');
-    
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setCrawlerLog(data.log || '');
-        setCrawlerRunning(data.isRunning);
-        
-        if (!data.isRunning) {
-          eventSource.close();
-          if (data.status === 'success') {
-            setCrawlerLog(prev => prev + '\n\n✅ 爬虫运行完成！');
-          } else {
-            setCrawlerLog(prev => prev + '\n\n❌ 爬虫运行出错');
-          }
-        }
-      } catch (e) {
-        // 忽略解析错误
-      }
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close();
-      setCrawlerRunning(false);
-    };
   };
 
   const addSource = () => {
@@ -265,20 +255,14 @@ export default function CrawlerSettingsPage() {
           <span className="font-mono font-bold text-palette-accent tracking-wider">⚙️ CRAWLER SETTINGS</span>
         </div>
         <div className="ml-auto flex items-center gap-3">
-          {crawlerRunning && (
-            <span className="text-xs text-emerald-400 flex items-center gap-1">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-              运行中
-            </span>
-          )}
           <Button
             size="sm"
             onClick={triggerCrawler}
-            disabled={triggering || crawlerRunning}
+            disabled={triggering}
             className="bg-palette-primary hover:bg-palette-primary-hover text-white"
           >
-            {triggering || crawlerRunning ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
-            {triggering ? '启动中...' : crawlerRunning ? '运行中...' : '立即运行'}
+            {triggering ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
+            {triggering ? '派发中...' : '立即运行'}
           </Button>
           <Button onClick={saveConfig} disabled={saving}>
             <Save className="w-4 h-4 mr-2" />
@@ -526,7 +510,7 @@ export default function CrawlerSettingsPage() {
             {/* 弹窗头部 */}
             <div className="flex items-center justify-between p-4 border-b border-palette-border">
               <h3 className="font-mono font-bold text-palette-accent tracking-wider">
-                {crawlerRunning ? '⚡ 爬虫运行中...' : '📋 爬虫日志'}
+                📋 派发结果（不等待云端爬虫结束）
               </h3>
               <button
                 onClick={() => setShowLogModal(false)}
@@ -538,24 +522,17 @@ export default function CrawlerSettingsPage() {
             
             {/* 日志内容区域 */}
             <div className="p-4 h-96 overflow-y-auto font-mono text-xs text-palette-textSecondary bg-palette-bgPrimary whitespace-pre-wrap">
-              {crawlerLog || '等待爬虫启动...'}
+              {crawlerLog || '等待请求…'}
             </div>
             
             {/* 底部状态栏 */}
             <div className="p-3 border-t border-palette-border bg-palette-bgCard flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {crawlerRunning && (
-                  <>
-                    <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                    <span className="text-xs text-emerald-400">运行中</span>
-                  </>
-                )}
-                {!crawlerRunning && crawlerLog.includes('✅') && (
-                  <span className="text-xs text-emerald-400">✅ 已完成</span>
-                )}
-                {!crawlerRunning && crawlerLog.includes('❌') && (
-                  <span className="text-xs text-red-400">❌ 已失败</span>
-                )}
+              <div className="flex items-center gap-2 text-xs text-palette-textMuted">
+                {crawlerLog.startsWith('❌') ? (
+                  <span className="text-red-400">请求失败</span>
+                ) : crawlerLog ? (
+                  <span className="text-emerald-400">请求已结束（抓取在 GitHub Actions 继续）</span>
+                ) : null}
               </div>
               <button
                 onClick={() => {
