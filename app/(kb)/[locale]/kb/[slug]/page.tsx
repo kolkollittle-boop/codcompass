@@ -198,9 +198,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
             {/* Premium Content */}
             {(() => {
-              const articleAccessLevel = dbArticle.accessLevel || (dbArticle.isPremium ? 'pro' : 'free');
+              // Cast to string to avoid TypeScript narrowing issues
+              const articleAccessLevel = (dbArticle.accessLevel || (dbArticle.isPremium ? 'pro' : 'free')) as string;
               // TODO: Get user's actual subscription level from session
-              const userAccessLevel: 'free' | 'builder' | 'pro' = 'free'; // This should come from user session
+              const userAccessLevel = 'free' as string; // This should come from user session
               
               const hasAccess = articleAccessLevel === 'free' ||
                 (articleAccessLevel === 'builder' && (userAccessLevel === 'builder' || userAccessLevel === 'pro')) ||
