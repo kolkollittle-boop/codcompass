@@ -4,13 +4,18 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { auth } from '@/lib/auth';
 import { fetchPaddleCustomerEmail } from '@/lib/paddle-customer-api';
 
+export const dynamic = 'force-dynamic';
+
 type PaddleSubRow = Record<string, unknown>;
+
+const NO_STORE_HEADERS = { 'Cache-Control': 'private, no-store, max-age=0' } as const;
 
 function subscriptionLooksPaidRow(r: {
   status?: string | null;
   expires_at?: string | null;
 }): boolean {
-  const s = r.status || '';
+  const s = String(r.status || '').toLowerCase();
+  if (s === 'refunded') return false;
   if (s === 'active' || s === 'trialing' || s === 'past_due') return true;
   if ((s === 'canceled' || s === 'cancelled') && r.expires_at) {
     return new Date(r.expires_at).getTime() > Date.now();
@@ -73,7 +78,10 @@ export async function GET(req: NextRequest) {
     }
 
     if (!email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: NO_STORE_HEADERS }
+      );
     }
 
     const supabaseAdmin = createClient(
@@ -158,29 +166,35 @@ export async function GET(req: NextRequest) {
     }
 
     if (!subscription) {
-      return NextResponse.json({
-        plan: 'FREE',
-        status: 'inactive',
-        subscription: null
-      });
+      return NextResponse.json(
+        {
+          plan: 'FREE',
+          status: 'inactive',
+          subscription: null,
+        },
+        { headers: NO_STORE_HEADERS }
+      );
     }
 
     const planType = typeof subscription.plan_type === 'string' ? subscription.plan_type : '';
     const statusStr = typeof subscription.status === 'string' ? subscription.status : '';
 
-    return NextResponse.json({
-      plan: planType ? planType.toUpperCase() : 'FREE',
-      status: statusStr,
-      subscription: {
-        planType,
-        billingCycle: subscription.billing_cycle,
+    return NextResponse.json(
+      {
+        plan: planType ? planType.toUpperCase() : 'FREE',
         status: statusStr,
-        startedAt: subscription.started_at || null,
-        nextBilledAt: subscription.next_billed_at || null,
-        canceledAt: subscription.canceled_at || null,
-        customData: subscription.custom_data
-      }
-    });
+        subscription: {
+          planType,
+          billingCycle: subscription.billing_cycle,
+          status: statusStr,
+          startedAt: subscription.started_at || null,
+          nextBilledAt: subscription.next_billed_at || null,
+          canceledAt: subscription.canceled_at || null,
+          customData: subscription.custom_data,
+        },
+      },
+      { headers: NO_STORE_HEADERS }
+    );
   } catch (error: any) {
     console.error('[Subscription API] Error:', error);
     return NextResponse.json(

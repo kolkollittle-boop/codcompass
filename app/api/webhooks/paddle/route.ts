@@ -86,6 +86,11 @@ export async function POST(req: NextRequest) {
         await handleSubscriptionPastDue(eventData);
         break;
 
+      case 'adjustment.created':
+      case 'adjustment.updated':
+        await handleAdjustmentRefund(eventData);
+        break;
+
       default:
         console.log(`[Paddle Webhook] Unhandled event type: ${eventType}`);
     }
@@ -408,7 +413,12 @@ async function handleSubscriptionCanceled(data: any) {
 
   console.log(`[Paddle] Subscription canceled: ${subscriptionId}`);
 
-  // Update subscription status
+  const { data: existing } = await supabaseAdmin
+    .from('paddle_subscriptions')
+    .select('user_id')
+    .eq('paddle_subscription_id', subscriptionId)
+    .maybeSingle();
+
   const { error } = await supabaseAdmin
     .from('paddle_subscriptions')
     .update({
@@ -420,6 +430,97 @@ async function handleSubscriptionCanceled(data: any) {
 
   if (error) {
     console.error('[Paddle] Error canceling subscription:', error);
+  } else if (existing?.user_id) {
+    await syncUserPlan(existing.user_id as string, 'free');
+  }
+}
+
+/**
+ * Refund adjustments (Paddle Billing): when approved, mark matching subscription / txn row so /api/user/subscription shows Free.
+ * @see https://developer.paddle.com/webhooks/adjustments/adjustment-updated
+ */
+async function handleAdjustmentRefund(data: any) {
+  const action = data?.action;
+  const adjStatus = data?.status;
+  if (action !== 'refund') {
+    return;
+  }
+  if (adjStatus !== 'approved') {
+    console.log(`[Paddle] adjustment: refund not approved yet (${adjStatus}), id=${data?.id}`);
+    return;
+  }
+
+  const subscriptionId =
+    typeof data.subscription_id === 'string' && data.subscription_id
+      ? data.subscription_id
+      : null;
+  const transactionId =
+    typeof data.transaction_id === 'string' && data.transaction_id
+      ? data.transaction_id
+      : null;
+
+  console.log('[Paddle] Refund approved:', {
+    adjustmentId: data?.id,
+    subscriptionId,
+    transactionId,
+  });
+
+  const now = new Date().toISOString();
+
+  async function syncUsersForPaddleSubIds(ids: string[]) {
+    const uids = new Set<string>();
+    for (const sid of ids) {
+      const { data: rows } = await supabaseAdmin
+        .from('paddle_subscriptions')
+        .select('user_id')
+        .eq('paddle_subscription_id', sid);
+      for (const r of rows ?? []) {
+        const u = (r as { user_id?: string }).user_id;
+        if (u) uids.add(u);
+      }
+    }
+    for (const uid of uids) {
+      await syncUserPlan(uid, 'free');
+    }
+  }
+
+  const touchedIds: string[] = [];
+
+  if (subscriptionId) {
+    const { error } = await supabaseAdmin
+      .from('paddle_subscriptions')
+      .update({
+        status: 'canceled',
+        canceled_at: now,
+        updated_at: now,
+      })
+      .eq('paddle_subscription_id', subscriptionId);
+    if (error) {
+      console.error('[Paddle] refund: subscription row update', error);
+    } else {
+      touchedIds.push(subscriptionId);
+    }
+  }
+
+  if (transactionId) {
+    const txnKey = `txn_${transactionId}`;
+    const { error } = await supabaseAdmin
+      .from('paddle_subscriptions')
+      .update({
+        status: 'refunded',
+        canceled_at: now,
+        updated_at: now,
+      })
+      .eq('paddle_subscription_id', txnKey);
+    if (error) {
+      console.error('[Paddle] refund: transaction row update', error);
+    } else {
+      touchedIds.push(txnKey);
+    }
+  }
+
+  if (touchedIds.length) {
+    await syncUsersForPaddleSubIds(touchedIds);
   }
 }
 

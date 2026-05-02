@@ -73,6 +73,7 @@ export default function SettingsPage() {
         }
         const res = await fetch('/api/user/subscription', {
           credentials: 'include',
+          cache: 'no-store',
           headers,
         });
         if (res.ok) {
