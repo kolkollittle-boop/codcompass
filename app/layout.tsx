@@ -1,7 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import Providers from '@/components/Providers';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+
+const COLOR_THEME_BOOT = `(function(){try{var K='codcompass-color-theme';var C=['theme-blue-purple','theme-cyan-dark','theme-emerald-cyan'];var v=localStorage.getItem(K);var r=document.documentElement;for(var i=0;i<C.length;i++)r.classList.remove(C[i]);r.classList.add(C.indexOf(v)>=0?v:C[0]);}catch(e){}})();`;
 
 export const metadata: Metadata = {
   title: {
@@ -67,8 +70,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-white antialiased">
+        <Script id="codcompass-color-theme" strategy="beforeInteractive">
+          {COLOR_THEME_BOOT}
+        </Script>
         <GoogleAnalytics gaId="G-F3G2ZECQ0V" />
         <Providers>{children}</Providers>
       </body>

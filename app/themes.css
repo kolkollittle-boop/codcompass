@@ -1,0 +1,175 @@
+/**
+ * Codcompass color palettes (user-selectable via class on <html>).
+ * Switch: theme-blue-purple | theme-cyan-dark | theme-emerald-cyan
+ * Also maps --codcompass-* (HSL triplets) for Tailwind theme.* utilities.
+ */
+
+/* ==================== Scheme 1: Tech blue + neon purple (default) ==================== */
+.theme-blue-purple {
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --accent: #a855f7;
+  --accent-hover: #9333ea;
+
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --bg-tertiary: #334155;
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  --success: #22c55e;
+  --border: #334155;
+
+  --gradient-hero: linear-gradient(135deg, #0f172a 0%, #4c1d95 100%);
+  --gradient-button: linear-gradient(90deg, #3b82f6, #a855f7);
+
+  --codcompass-background: 222 47% 11%;
+  --codcompass-surface: 217 33% 17%;
+  --codcompass-surface-hover: 215 25% 22%;
+  --codcompass-text-primary: 210 40% 98%;
+  --codcompass-text-secondary: 213 27% 84%;
+  --codcompass-text-muted: 215 16% 47%;
+  --codcompass-border: 215 25% 27%;
+  --codcompass-border-hover: 215 20% 35%;
+  --codcompass-brand: 217 91% 60%;
+  --codcompass-brand-light: 213 94% 68%;
+  --codcompass-brand-dark: 221 83% 53%;
+  --codcompass-brand-glow: 217 91% 65%;
+  --codcompass-brand-bg: 217 91% 15%;
+  --codcompass-accent-purple: 271 81% 56%;
+  --codcompass-accent-purple-bg: 271 81% 12%;
+  --codcompass-accent-cyan: 187 92% 53%;
+  --codcompass-accent-cyan-bg: 187 50% 12%;
+  --codcompass-accent-green: 142 71% 45%;
+  --codcompass-accent-green-bg: 142 40% 12%;
+  --codcompass-accent-amber: 38 92% 50%;
+  --codcompass-accent-amber-bg: 38 60% 12%;
+  --codcompass-accent-red: 0 84% 60%;
+  --codcompass-accent-red-bg: 0 50% 12%;
+}
+
+/* ==================== Scheme 2: Deep space + electric cyan ==================== */
+.theme-cyan-dark {
+  --primary: #22d3ee;
+  --primary-hover: #67e8f9;
+  --accent: #67e8f9;
+  --accent-hover: #a5f3fc;
+
+  --bg-primary: #020617;
+  --bg-secondary: #0f172a;
+  --bg-card: #1e293b;
+  --bg-tertiary: #334155;
+
+  --text-primary: #e0f2fe;
+  --text-secondary: #bae6fd;
+  --text-muted: #7dd3fc;
+
+  --success: #4ade80;
+  --border: #1e3a8a;
+
+  --gradient-hero: linear-gradient(135deg, #020617 0%, #1e3a8a 100%);
+  --gradient-button: linear-gradient(90deg, #22d3ee, #67e8f9);
+
+  --codcompass-background: 222 84% 5%;
+  --codcompass-surface: 222 47% 11%;
+  --codcompass-surface-hover: 217 33% 17%;
+  --codcompass-text-primary: 204 94% 94%;
+  --codcompass-text-secondary: 199 89% 80%;
+  --codcompass-text-muted: 198 93% 60%;
+  --codcompass-border: 226 57% 21%;
+  --codcompass-border-hover: 224 64% 33%;
+  --codcompass-brand: 189 94% 43%;
+  --codcompass-brand-light: 186 94% 70%;
+  --codcompass-brand-dark: 192 91% 36%;
+  --codcompass-brand-glow: 186 94% 55%;
+  --codcompass-brand-bg: 192 80% 10%;
+  --codcompass-accent-purple: 186 94% 82%;
+  --codcompass-accent-purple-bg: 192 60% 10%;
+  --codcompass-accent-cyan: 186 94% 82%;
+  --codcompass-accent-cyan-bg: 192 60% 10%;
+  --codcompass-accent-green: 142 69% 58%;
+  --codcompass-accent-green-bg: 142 40% 10%;
+  --codcompass-accent-amber: 38 92% 55%;
+  --codcompass-accent-amber-bg: 38 50% 10%;
+  --codcompass-accent-red: 0 91% 71%;
+  --codcompass-accent-red-bg: 0 40% 12%;
+}
+
+/* ==================== Scheme 3: Emerald + neon cyan (matrix) ==================== */
+.theme-emerald-cyan {
+  --primary: #10b981;
+  --primary-hover: #34d399;
+  --accent: #22d3ee;
+  --accent-hover: #67e8f9;
+
+  --bg-primary: #0a0f0c;
+  --bg-secondary: #111827;
+  --bg-card: #1f2a22;
+  --bg-tertiary: #2a3f35;
+
+  --text-primary: #ecfdf5;
+  --text-secondary: #a7f3d0;
+  --text-muted: #6ee7b7;
+
+  --success: #4ade80;
+  --border: #14532d;
+
+  --gradient-hero: linear-gradient(135deg, #0a0f0c 0%, #14532d 50%, #1e3a8a 100%);
+  --gradient-button: linear-gradient(90deg, #10b981, #22d3ee);
+
+  --code-bg: #0f172a;
+  --matrix-glow: rgba(16, 185, 129, 0.15);
+
+  --codcompass-background: 144 33% 5%;
+  --codcompass-surface: 150 17% 15%;
+  --codcompass-surface-hover: 150 14% 20%;
+  --codcompass-text-primary: 152 81% 96%;
+  --codcompass-text-secondary: 156 72% 80%;
+  --codcompass-text-muted: 158 64% 52%;
+  --codcompass-border: 142 76% 14%;
+  --codcompass-border-hover: 142 50% 22%;
+  --codcompass-brand: 160 84% 39%;
+  --codcompass-brand-light: 158 64% 52%;
+  --codcompass-brand-dark: 163 94% 24%;
+  --codcompass-brand-glow: 160 84% 45%;
+  --codcompass-brand-bg: 160 60% 8%;
+  --codcompass-accent-purple: 187 92% 53%;
+  --codcompass-accent-purple-bg: 187 40% 10%;
+  --codcompass-accent-cyan: 187 92% 53%;
+  --codcompass-accent-cyan-bg: 187 40% 10%;
+  --codcompass-accent-green: 142 71% 45%;
+  --codcompass-accent-green-bg: 142 40% 8%;
+  --codcompass-accent-amber: 38 92% 50%;
+  --codcompass-accent-amber-bg: 38 50% 10%;
+  --codcompass-accent-red: 0 84% 60%;
+  --codcompass-accent-red-bg: 0 40% 10%;
+}
+
+/* Fallback when no theme class yet (SSR); inline script should add a class ASAP */
+:root {
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --accent: #a855f7;
+  --accent-hover: #9333ea;
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --success: #22c55e;
+  --border: #334155;
+  --gradient-hero: linear-gradient(135deg, #0f172a 0%, #4c1d95 100%);
+  --gradient-button: linear-gradient(90deg, #3b82f6, #a855f7);
+}
+
+.bg-palette-gradient-hero {
+  background: var(--gradient-hero);
+}
+.bg-palette-gradient-button {
+  background-image: var(--gradient-button);
+}

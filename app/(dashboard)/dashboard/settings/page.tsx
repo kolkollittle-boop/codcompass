@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ColorThemePicker from '@/components/ColorThemePicker';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -113,10 +114,10 @@ export default function SettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
+      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto" />
-          <p className="mt-4 text-zinc-400">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto" />
+          <p className="mt-4 text-palette-textMuted">Loading...</p>
         </div>
       </div>
     );
@@ -150,23 +151,23 @@ export default function SettingsPage() {
         : subscription?.status || '—';
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-white">Account Settings</h1>
-            <p className="text-zinc-400 mt-1">Manage your profile and preferences</p>
+            <h1 className="text-2xl font-bold text-palette-textPrimary">Account Settings</h1>
+            <p className="text-palette-textMuted mt-1">Manage your profile and preferences</p>
           </div>
 
           {success && (
-            <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm">
+            <div className="mb-6 p-4 border border-palette-success bg-palette-bgSecondary rounded-lg text-palette-success text-sm">
               {success}
             </div>
           )}
 
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 mb-6">
-            <h2 className="text-lg font-bold text-white mb-4">Profile Information</h2>
+          <div className="bg-palette-bgCard rounded-xl border border-palette-border p-6 mb-6">
+            <h2 className="text-lg font-bold text-palette-textPrimary mb-4">Profile Information</h2>
             <div className="flex items-center gap-4 mb-6">
               {displayImage && (
                 <img
@@ -176,9 +177,9 @@ export default function SettingsPage() {
                 />
               )}
               <div>
-                <p className="font-medium text-white">{displayName}</p>
-                <p className="text-sm text-zinc-400">{displayEmail}</p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mt-2">
+                <p className="font-medium text-palette-textPrimary">{displayName}</p>
+                <p className="text-sm text-palette-textMuted">{displayEmail}</p>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-palette-bgSecondary text-palette-primary border border-palette-primary mt-2">
                   {(nextAuthSession?.user as any)?.role ||
                     (supabaseSession?.user as any)?.role ||
                     'USER'}
@@ -188,18 +189,18 @@ export default function SettingsPage() {
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-zinc-300 mb-2">
+                <label htmlFor="name" className="block text-sm font-medium text-palette-textSecondary mb-2">
                   Display Name
                 </label>
                 <input
                   type="text"
                   id="name"
                   defaultValue={displayName === 'User' ? '' : displayName}
-                  className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
+                  className="w-full px-4 py-3 border border-palette-border rounded-lg focus:ring-2 focus:ring-palette-primary focus:border-palette-primary bg-palette-bgSecondary text-palette-textPrimary placeholder-palette-textMuted"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-palette-textSecondary mb-2">
                   Email
                 </label>
                 <input
@@ -207,33 +208,39 @@ export default function SettingsPage() {
                   id="email"
                   defaultValue={displayEmail || ''}
                   disabled
-                  className="w-full px-4 py-3 border border-zinc-700 rounded-lg bg-zinc-800/50 text-zinc-500"
+                  className="w-full px-4 py-3 border border-palette-border rounded-lg bg-palette-bgTertiary text-palette-textMuted"
                 />
-                <p className="text-xs text-zinc-500 mt-1">Email cannot be changed</p>
+                <p className="text-xs text-palette-textMuted mt-1">Email cannot be changed</p>
               </div>
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-3 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </form>
           </div>
 
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 mb-6">
-            <h2 className="text-lg font-bold text-white mb-4">Subscription</h2>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-zinc-800/50 rounded-lg">
+          <div className="bg-palette-bgCard rounded-xl border border-palette-border p-6 mb-6">
+            <h2 className="text-lg font-bold text-palette-textPrimary mb-2">Appearance</h2>
+            <p className="text-sm text-palette-textMuted mb-4">Color palette for supported screens (stored in this browser).</p>
+            <ColorThemePicker />
+          </div>
+
+          <div className="bg-palette-bgCard rounded-xl border border-palette-border p-6 mb-6">
+            <h2 className="text-lg font-bold text-palette-textPrimary mb-4">Subscription</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-palette-bgSecondary rounded-lg border border-palette-border">
               <div>
-                <p className="font-medium text-white text-lg">{planLabel}</p>
+                <p className="font-medium text-palette-textPrimary text-lg">{planLabel}</p>
                 {isPaid ? (
                   <>
-                    <p className="text-sm text-zinc-400 mt-1">
+                    <p className="text-sm text-palette-textMuted mt-1">
                       {billingLabel ? `${billingLabel} · ` : ''}
                       Status: {statusLabel}
                     </p>
                     {subscription?.subscription?.nextBilledAt && (
-                      <p className="text-xs text-zinc-500 mt-1">
+                      <p className="text-xs text-palette-textMuted mt-1">
                         Next billing:{' '}
                         {new Date(
                           subscription.subscription.nextBilledAt
@@ -242,7 +249,7 @@ export default function SettingsPage() {
                     )}
                   </>
                 ) : (
-                  <p className="text-sm text-zinc-400 mt-1">
+                  <p className="text-sm text-palette-textMuted mt-1">
                     Upgrade to unlock full articles and premium features.
                   </p>
                 )}
@@ -251,7 +258,7 @@ export default function SettingsPage() {
                 {!isPaid ? (
                   <a
                     href="/pricing"
-                    className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors text-sm text-center"
+                    className="px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors text-sm text-center"
                   >
                     View plans
                   </a>
@@ -259,13 +266,13 @@ export default function SettingsPage() {
                   <>
                     <a
                       href="/dashboard"
-                      className="px-4 py-2 border border-zinc-600 text-zinc-200 font-medium rounded-lg hover:bg-zinc-800 transition-colors text-sm text-center"
+                      className="px-4 py-2 border border-palette-border text-palette-textSecondary font-medium rounded-lg hover:bg-palette-bgTertiary transition-colors text-sm text-center"
                     >
                       Dashboard overview
                     </a>
                     <a
                       href="/refund"
-                      className="text-xs text-indigo-400 hover:text-indigo-300"
+                      className="text-xs text-palette-primary hover:text-palette-accent"
                     >
                       Refund policy
                     </a>
@@ -275,12 +282,12 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-xl border border-red-500/30 p-6">
+          <div className="bg-palette-bgCard rounded-xl border border-red-500/30 p-6">
             <h2 className="text-lg font-bold text-red-400 mb-4">Danger Zone</h2>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-white">Sign Out</p>
-                <p className="text-sm text-zinc-400">Sign out of your account</p>
+                <p className="font-medium text-palette-textPrimary">Sign Out</p>
+                <p className="text-sm text-palette-textMuted">Sign out of your account</p>
               </div>
               <button
                 type="button"

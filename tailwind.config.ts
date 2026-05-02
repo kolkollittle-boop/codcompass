@@ -42,6 +42,24 @@ export default {
             'red-bg': 'hsl(var(--codcompass-accent-red-bg) / <alpha-value>)',
           },
         },
+        /* CSS variable palettes (html.theme-*) — see app/themes.css */
+        palette: {
+          primary: 'var(--primary)',
+          'primary-hover': 'var(--primary-hover)',
+          accent: 'var(--accent)',
+          'accent-hover': 'var(--accent-hover)',
+          bgPrimary: 'var(--bg-primary)',
+          bgSecondary: 'var(--bg-secondary)',
+          bgCard: 'var(--bg-card)',
+          bgTertiary: 'var(--bg-tertiary)',
+          textPrimary: 'var(--text-primary)',
+          textSecondary: 'var(--text-secondary)',
+          textMuted: 'var(--text-muted)',
+          success: 'var(--success)',
+          border: 'var(--border)',
+          codeBg: 'var(--code-bg, var(--bg-secondary))',
+          matrixGlow: 'var(--matrix-glow, transparent)',
+        },
         // 保留原有的 primary 配色
         primary: {
           50: '#f0f5ff',
