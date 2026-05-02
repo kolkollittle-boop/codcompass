@@ -26,6 +26,53 @@ function subscriptionLooksPaidRow(r: {
   return false;
 }
 
+function isPaddleSubscriptionId(id: unknown): boolean {
+  return String(id ?? '').startsWith('sub_');
+}
+
+function isPaddleTxnRowId(id: unknown): boolean {
+  return String(id ?? '').startsWith('txn_');
+}
+
+/**
+ * Same customer can have both `sub_*` (subscription) and `txn_*` (transaction.completed mirror).
+ * If any `sub_*` row exists, only those determine access — ignore stale `txn_*` still marked active after cancel.
+ */
+function pickEffectivePaidSubscription(merged: PaddleSubRow[]): PaddleSubRow | null {
+  const byCtm = new Map<string, PaddleSubRow[]>();
+  for (const r of merged) {
+    const ctm = typeof r.paddle_customer_id === 'string' ? r.paddle_customer_id.trim() : '';
+    if (!ctm.startsWith('ctm_')) continue;
+    if (!byCtm.has(ctm)) byCtm.set(ctm, []);
+    byCtm.get(ctm)!.push(r);
+  }
+
+  const winners: PaddleSubRow[] = [];
+
+  for (const [, rows] of byCtm) {
+    const subRows = rows.filter((r) => isPaddleSubscriptionId(r.paddle_subscription_id));
+    const paidSub = subRows.find((r) => subscriptionLooksPaidRow(r));
+    if (paidSub) {
+      winners.push(paidSub);
+      continue;
+    }
+    if (subRows.length > 0) {
+      continue;
+    }
+    const txnRows = rows.filter((r) => isPaddleTxnRowId(r.paddle_subscription_id));
+    const paidTxn = txnRows.find((r) => subscriptionLooksPaidRow(r));
+    if (paidTxn) winners.push(paidTxn);
+  }
+
+  if (!winners.length) return null;
+  winners.sort(
+    (a, b) =>
+      new Date(b.created_at as string).getTime() -
+      new Date(a.created_at as string).getTime()
+  );
+  return winners[0];
+}
+
 /** When custom_data.customer_email is missing (e.g. replayed webhooks), match via Paddle customer API. */
 async function findPaidSubByPaddleCustomerForEmail(
   email: string,
@@ -41,9 +88,7 @@ async function findPaidSubByPaddleCustomerForEmail(
       .eq('paddle_customer_id', ctm)
       .order('updated_at', { ascending: false })
       .limit(50);
-    const hit = (rows as PaddleSubRow[] | null)?.find((r) =>
-      subscriptionLooksPaidRow(r)
-    );
+    const hit = pickEffectivePaidSubscription((rows as PaddleSubRow[]) ?? []);
     if (hit) return hit;
   }
 
@@ -66,9 +111,7 @@ async function findPaidSubByPaddleCustomerForEmail(
       .eq('paddle_customer_id', ctm)
       .order('updated_at', { ascending: false })
       .limit(50);
-    const hit = (rows as PaddleSubRow[] | null)?.find((r) =>
-      subscriptionLooksPaidRow(r)
-    );
+    const hit = pickEffectivePaidSubscription((rows as PaddleSubRow[]) ?? []);
     if (hit) return hit;
   }
   return null;
@@ -189,8 +232,7 @@ export async function GET(req: NextRequest) {
       console.error('[Subscription API] paddle_subscriptions by user_id:', subError);
     }
 
-    let subscription =
-      merged.find((r) => subscriptionLooksPaidRow(r)) ?? null;
+    let subscription = pickEffectivePaidSubscription(merged);
 
     if (!subscription) {
       subscription = await findPaidSubByPaddleCustomerForEmail(email, supabaseAdmin);

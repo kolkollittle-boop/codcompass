@@ -17,6 +17,13 @@ const supabaseAdmin = createClient(
 // Paddle webhook secret for signature verification
 const PADDLE_WEBHOOK_SECRET = process.env.PADDLE_WEBHOOK_SECRET || '';
 
+/** Stable primary key for a `transaction.completed` row (avoid `txn_txn_...` if Paddle sends id with prefix). */
+function paddleTxnSubscriptionId(transactionId: string | undefined | null): string {
+  const raw = String(transactionId ?? '').trim();
+  if (!raw) return 'txn_unknown';
+  return raw.startsWith('txn_') ? raw : `txn_${raw}`;
+}
+
 /** Paddle Billing v2 line items use `price.id`, not top-level `price_id`. */
 function lineItemPriceId(item: any): string | undefined {
   if (!item || typeof item !== 'object') return undefined;
@@ -252,7 +259,7 @@ async function handleTransactionCompleted(data: any) {
   const { error } = await supabaseAdmin
     .from('paddle_subscriptions')
     .insert({
-      paddle_subscription_id: `txn_${transactionId}`,
+      paddle_subscription_id: paddleTxnSubscriptionId(transactionId),
       paddle_customer_id: customerId || 'unknown',
       user_id: userId,
       status: 'active',
@@ -503,7 +510,7 @@ async function handleAdjustmentRefund(data: any) {
   }
 
   if (transactionId) {
-    const txnKey = `txn_${transactionId}`;
+    const txnKey = paddleTxnSubscriptionId(transactionId);
     const { error } = await supabaseAdmin
       .from('paddle_subscriptions')
       .update({
