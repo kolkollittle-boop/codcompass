@@ -1,8 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { auth } from '@/lib/auth';
+import { fetchPaddleCustomerEmail } from '@/lib/paddle-customer-api';
 
 type PaddleSubRow = Record<string, unknown>;
+
+function subscriptionLooksPaidRow(r: {
+  status?: string | null;
+  expires_at?: string | null;
+}): boolean {
+  const s = r.status || '';
+  if (s === 'active' || s === 'trialing' || s === 'past_due') return true;
+  if ((s === 'canceled' || s === 'cancelled') && r.expires_at) {
+    return new Date(r.expires_at).getTime() > Date.now();
+  }
+  return false;
+}
+
+/** When custom_data.customer_email is missing (e.g. replayed webhooks), match via Paddle customer API. */
+async function findPaidSubByPaddleCustomerForEmail(
+  email: string,
+  supabaseAdmin: SupabaseClient
+): Promise<PaddleSubRow | null> {
+  const emailLower = email.trim().toLowerCase();
+  const { data: idRows } = await supabaseAdmin
+    .from('paddle_subscriptions')
+    .select('paddle_customer_id')
+    .order('created_at', { ascending: false })
+    .limit(80);
+
+  const seen = new Set<string>();
+  for (const row of idRows ?? []) {
+    const ctm = row.paddle_customer_id as string | undefined;
+    if (!ctm?.startsWith('ctm_') || seen.has(ctm)) continue;
+    seen.add(ctm);
+    const resolved = await fetchPaddleCustomerEmail(ctm);
+    if (resolved?.trim().toLowerCase() !== emailLower) continue;
+    const { data: rows } = await supabaseAdmin
+      .from('paddle_subscriptions')
+      .select('*')
+      .eq('paddle_customer_id', ctm)
+      .order('created_at', { ascending: false });
+    const hit = (rows as PaddleSubRow[] | null)?.find((r) => subscriptionLooksPaidRow(r));
+    if (hit) return hit;
+  }
+  return null;
+}
 
 /**
  * GET /api/user/subscription
@@ -46,18 +90,6 @@ export async function GET(req: NextRequest) {
 
     const userId = user?.id ?? null;
     const emailLower = email.toLowerCase();
-
-    function subscriptionLooksPaid(r: {
-      status?: string | null;
-      expires_at?: string | null;
-    }): boolean {
-      const s = r.status || '';
-      if (s === 'active' || s === 'trialing' || s === 'past_due') return true;
-      if ((s === 'canceled' || s === 'cancelled') && r.expires_at) {
-        return new Date(r.expires_at).getTime() > Date.now();
-      }
-      return false;
-    }
 
     let rowsOwn: PaddleSubRow[] | null = null;
     let subError: unknown = null;
@@ -107,7 +139,16 @@ export async function GET(req: NextRequest) {
         new Date(a.created_at as string).getTime()
     );
 
-    const subscription = merged.find((r) => subscriptionLooksPaid(r)) ?? null;
+    if (userId && subError) {
+      console.error('[Subscription API] paddle_subscriptions by user_id:', subError);
+    }
+
+    let subscription =
+      merged.find((r) => subscriptionLooksPaidRow(r)) ?? null;
+
+    if (!subscription) {
+      subscription = await findPaidSubByPaddleCustomerForEmail(email, supabaseAdmin);
+    }
 
     if (subscription && !subscription.user_id && userId) {
       await supabaseAdmin
@@ -116,7 +157,7 @@ export async function GET(req: NextRequest) {
         .eq('id', subscription.id as string);
     }
 
-    if (subError || !subscription) {
+    if (!subscription) {
       return NextResponse.json({
         plan: 'FREE',
         status: 'inactive',

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { inferPlanFromPriceId } from '@/lib/paddle-plans';
+import { fetchPaddleCustomerEmail } from '@/lib/paddle-customer-api';
 
 /**
  * Paddle Webhook Handler
@@ -210,11 +211,14 @@ async function handleTransactionCompleted(data: any) {
   const planType = customData.plan_id || inferred?.planType || 'builder';
   const billingCycle = customData.billing_cycle || inferred?.billingCycle || 'yearly';
 
-  const customerEmail =
+  let customerEmail =
     data.customer?.email ||
     data.email ||
     (typeof customData.customer_email === 'string' ? customData.customer_email : null) ||
     null;
+  if (!customerEmail) {
+    customerEmail = await fetchPaddleCustomerEmail(customerId);
+  }
 
   const userId = await findUserIdByCustomerId(customerId, customerEmail);
 
@@ -258,11 +262,14 @@ async function handleSubscriptionCreated(data: any) {
   const status = data.status;
   const customData = data.custom_data || {};
   
-  const customerEmail =
+  let customerEmail =
     data.customer?.email ||
     data.email ||
     (typeof customData.customer_email === 'string' ? customData.customer_email : null) ||
     null;
+  if (!customerEmail) {
+    customerEmail = await fetchPaddleCustomerEmail(customerId);
+  }
 
   const enrichedCustomData = {
     ...customData,
