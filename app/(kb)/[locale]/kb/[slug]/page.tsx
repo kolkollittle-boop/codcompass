@@ -188,9 +188,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <div
               className="prose prose-lg prose-invert max-w-none
                 prose-headings:font-bold prose-headings:text-palette-textPrimary
-                prose-p:text-palette-textSecondary prose-p:leading-relaxed
-                prose-code:bg-palette-bgSecondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary prose-pre:rounded-lg
+                prose-p:text-palette-textSecondary prose-p:leading-relaxed prose-p:break-words
+                prose-code:bg-palette-bgSecondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:break-all
+                prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary prose-pre:rounded-lg prose-pre:whitespace-pre-wrap prose-pre:break-words
                 prose-a:text-palette-accent prose-a:no-underline"
             >
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{freeContent}</ReactMarkdown>
@@ -212,9 +212,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   <div
                     className="prose prose-lg prose-invert max-w-none mt-8
                       prose-headings:font-bold prose-headings:text-palette-textPrimary
-                      prose-p:text-palette-textSecondary prose-p:leading-relaxed
-                      prose-code:bg-palette-bgSecondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                      prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary prose-pre:rounded-lg
+                      prose-p:text-palette-textSecondary prose-p:leading-relaxed prose-p:break-words
+                      prose-code:bg-palette-bgSecondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:break-all
+                      prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary prose-pre:rounded-lg prose-pre:whitespace-pre-wrap prose-pre:break-words
                       prose-a:text-palette-accent prose-a:no-underline"
                   >
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
