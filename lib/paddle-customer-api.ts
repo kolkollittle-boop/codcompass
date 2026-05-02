@@ -21,6 +21,52 @@ export function getPaddleApiBase(): string {
   return 'https://sandbox-api.paddle.com';
 }
 
+/** List Paddle customer IDs for an exact email (Billing API). */
+export async function fetchPaddleCustomerIdsByEmail(
+  email: string | null | undefined
+): Promise<string[]> {
+  const trimmed = email?.trim();
+  if (!trimmed) return [];
+  const apiKey = process.env.PADDLE_API_KEY;
+  if (!apiKey) {
+    console.warn('[Paddle API] PADDLE_API_KEY not set; cannot list customers by email');
+    return [];
+  }
+  const base = getPaddleApiBase();
+  try {
+    const url = new URL(`${base}/customers`);
+    url.searchParams.append('email[]', trimmed);
+    url.searchParams.append('per_page', '50');
+    const res = await fetch(url.toString(), {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Paddle-Version': '1',
+      },
+    });
+    if (!res.ok) {
+      console.warn('[Paddle API] list customers by email failed', res.status, trimmed);
+      return [];
+    }
+    const json = (await res.json()) as {
+      data?: Array<{ id?: string; email?: string }>;
+    };
+    const want = trimmed.toLowerCase();
+    const ids = (json.data ?? [])
+      .filter(
+        (c) =>
+          typeof c.email === 'string' && c.email.trim().toLowerCase() === want
+      )
+      .map((c) => c.id)
+      .filter((id): id is string => typeof id === 'string' && id.startsWith('ctm_'));
+    return [...new Set(ids)];
+  } catch (e) {
+    console.warn('[Paddle API] list customers by email error', e);
+    return [];
+  }
+}
+
 export async function fetchPaddleCustomerEmail(
   customerId: string | null | undefined
 ): Promise<string | null> {

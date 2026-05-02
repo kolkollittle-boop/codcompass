@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { auth } from '@/lib/auth';
-import { fetchPaddleCustomerEmail } from '@/lib/paddle-customer-api';
+import {
+  fetchPaddleCustomerEmail,
+  fetchPaddleCustomerIdsByEmail,
+} from '@/lib/paddle-customer-api';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,13 +32,28 @@ async function findPaidSubByPaddleCustomerForEmail(
   supabaseAdmin: SupabaseClient
 ): Promise<PaddleSubRow | null> {
   const emailLower = email.trim().toLowerCase();
+
+  const ctmsFromApi = await fetchPaddleCustomerIdsByEmail(email);
+  for (const ctm of ctmsFromApi) {
+    const { data: rows } = await supabaseAdmin
+      .from('paddle_subscriptions')
+      .select('*')
+      .eq('paddle_customer_id', ctm)
+      .order('updated_at', { ascending: false })
+      .limit(50);
+    const hit = (rows as PaddleSubRow[] | null)?.find((r) =>
+      subscriptionLooksPaidRow(r)
+    );
+    if (hit) return hit;
+  }
+
   const { data: idRows } = await supabaseAdmin
     .from('paddle_subscriptions')
     .select('paddle_customer_id')
-    .order('created_at', { ascending: false })
-    .limit(80);
+    .order('updated_at', { ascending: false })
+    .limit(400);
 
-  const seen = new Set<string>();
+  const seen = new Set<string>(ctmsFromApi);
   for (const row of idRows ?? []) {
     const ctm = row.paddle_customer_id as string | undefined;
     if (!ctm?.startsWith('ctm_') || seen.has(ctm)) continue;
@@ -46,8 +64,11 @@ async function findPaidSubByPaddleCustomerForEmail(
       .from('paddle_subscriptions')
       .select('*')
       .eq('paddle_customer_id', ctm)
-      .order('created_at', { ascending: false });
-    const hit = (rows as PaddleSubRow[] | null)?.find((r) => subscriptionLooksPaidRow(r));
+      .order('updated_at', { ascending: false })
+      .limit(50);
+    const hit = (rows as PaddleSubRow[] | null)?.find((r) =>
+      subscriptionLooksPaidRow(r)
+    );
     if (hit) return hit;
   }
   return null;
@@ -132,9 +153,26 @@ export async function GET(req: NextRequest) {
         return typeof ce === 'string' && ce.trim().toLowerCase() === emailLower;
       }) ?? [];
 
+    const ctmsFromPaddle = await fetchPaddleCustomerIdsByEmail(email);
+    const rowsByPaddleCustomer: PaddleSubRow[] = [];
+    for (const ctm of ctmsFromPaddle) {
+      const { data: rbc } = await supabaseAdmin
+        .from('paddle_subscriptions')
+        .select('*')
+        .eq('paddle_customer_id', ctm)
+        .order('updated_at', { ascending: false })
+        .limit(40);
+      rowsByPaddleCustomer.push(...((rbc as PaddleSubRow[] | null) ?? []));
+    }
+
     const bySubId = new Map<string, PaddleSubRow>();
     const emailRows = (rowsByJsonEmail as PaddleSubRow[] | null) ?? [];
-    for (const r of [...(rowsOwn ?? []), ...rowsOrphan, ...emailRows]) {
+    for (const r of [
+      ...(rowsOwn ?? []),
+      ...rowsOrphan,
+      ...emailRows,
+      ...rowsByPaddleCustomer,
+    ]) {
       const key = r.paddle_subscription_id as string;
       const prev = bySubId.get(key);
       if (!prev || (!prev.user_id && r.user_id)) {
