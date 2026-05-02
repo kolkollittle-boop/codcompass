@@ -238,6 +238,12 @@ async function handleSubscriptionCreated(data: any) {
   // Extract customer email from Paddle webhook data
   const customerEmail = data.customer?.email || data.email || null;
   
+  // Add customer email to custom_data for future lookups
+  const enrichedCustomData = {
+    ...customData,
+    customer_email: customerEmail,
+  };
+  
   console.log(`[Paddle] Subscription created: ${subscriptionId}, Status: ${status}, Customer: ${customerId}, Email: ${customerEmail}`);
 
   // Extract plan info
@@ -264,7 +270,7 @@ async function handleSubscriptionCreated(data: any) {
       billing_cycle: billingCycle,
       started_at: data.started_at,
       next_billed_at: data.next_billed_at,
-      custom_data: customData,
+      custom_data: enrichedCustomData,
       created_at: new Date().toISOString(),
     });
 
