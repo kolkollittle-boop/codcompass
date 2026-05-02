@@ -33,7 +33,7 @@ interface ArticleLayoutV2Props {
   // Checklist
   checklist?: Array<{ id: string; text: string; icon?: 'warning' | 'info' | 'shield' }>;
   // Paywall
-  isPremium?: boolean;
+  accessLevel?: 'free' | 'builder' | 'pro';
   isUserPro?: boolean;
   freeContent: React.ReactNode;
   premiumContent: React.ReactNode;
@@ -53,7 +53,7 @@ export default function ArticleLayoutV2({
   blueprintUrl,
   blueprintName,
   checklist = [],
-  isPremium = false,
+  accessLevel = 'free',
   isUserPro = false,
   freeContent,
   premiumContent,
@@ -84,12 +84,12 @@ export default function ArticleLayoutV2({
             </article>
 
             {/* 付费墙 */}
-            {isPremium && !isUserPro && (
+            {(accessLevel === 'builder' || accessLevel === 'pro') && !isUserPro && (
               <PaywallV2 variant="overlay" locale={locale} copyVersion="C" />
             )}
 
             {/* Pro 用户或免费文章显示剩余内容 */}
-            {(!isPremium || isUserPro) && (
+            {(accessLevel === 'free' || isUserPro) && (
               <article className="prose prose-lg prose-invert max-w-none mt-8">
                 {premiumContent}
               </article>

@@ -146,11 +146,13 @@ export default function ArticlesAdminPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        article.isPremium 
-                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' 
+                        article.accessLevel === 'pro'
+                          ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                          : article.accessLevel === 'builder'
+                          ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
                           : 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20'
                       }`}>
-                        {article.isPremium ? '付费' : '免费'}
+                        {article.accessLevel === 'pro' ? 'Pro' : article.accessLevel === 'builder' ? 'Builder' : '免费'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-zinc-300">

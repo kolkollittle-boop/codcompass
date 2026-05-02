@@ -90,6 +90,7 @@ model Article {
   status         ArticleStatus        @default(DRAFT)
   isPublished    Boolean              @default(false)
   isPremium      Boolean              @default(true)
+  accessLevel    String               @default("free")
   publishedAt    DateTime?
   viewCount      Int                  @default(0)
   likeCount      Int                  @default(0)

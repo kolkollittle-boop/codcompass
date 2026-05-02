@@ -34,6 +34,7 @@ export type Article = {
   descriptionEn: string | null;
   excerptEn: string | null;
   isPremium: boolean;
+  accessLevel: 'free' | 'builder' | 'pro';  // 新增：访问级别
   isPublished: boolean;
   sourceSite: string | null;
   sourceAuthor: string | null;

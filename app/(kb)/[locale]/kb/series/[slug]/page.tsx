@@ -38,7 +38,8 @@ const translations = {
     startLearning: 'Start Learning',
     article: 'Article',
     free: 'Free',
-    premium: 'Premium',
+    builder: 'Builder',
+    pro: 'Pro',
     readArticle: 'Read Article',
     unlockWithPro: 'Unlock with Pro',
   },
@@ -98,7 +99,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
           {articles.map((article: any, index: number) => {
             const articleTitle = article.translations?.[0]?.title || article.titleEn;
             const articleExcerpt = article.translations?.[0]?.excerpt || article.excerptEn;
-            const isPremium = article.isPremium;
+            const accessLevel = article.accessLevel || (article.isPremium ? 'pro' : 'free');
             const difficulty = article.difficultyLevel || 'L2';
             const readTime = article.readingTime || Math.max(3, Math.ceil((articleTitle?.length || 100) / 200));
 
@@ -106,9 +107,9 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
               <article
                 key={article.id}
                 className={`p-6 rounded-2xl border transition-all duration-200 ${
-                  isPremium
-                    ? 'bg-zinc-900/50 border-white/[0.08] hover:border-indigo-500/30'
-                    : 'bg-zinc-900 border-white/[0.08] hover:border-green-500/30'
+                  accessLevel === 'free'
+                    ? 'bg-zinc-900 border-white/[0.08] hover:border-green-500/30'
+                    : 'bg-zinc-900/50 border-white/[0.08] hover:border-indigo-500/30'
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -117,12 +118,14 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                       <span className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-sm font-semibold">
                         {index + 1}
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        isPremium
-                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                          : 'bg-green-500/10 text-green-400 border border-green-500/20'
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
+                        accessLevel === 'pro'
+                          ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                          : accessLevel === 'builder'
+                          ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                          : 'bg-green-500/10 text-green-400 border-green-500/20'
                       }`}>
-                        {isPremium ? t.premium : t.free}
+                        {accessLevel === 'pro' ? t.pro : accessLevel === 'builder' ? t.builder : t.free}
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-zinc-800 text-zinc-400 border border-zinc-700">
                         {difficulty}
@@ -144,12 +147,12 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                   <Link
                     href={`/${locale}/kb/${article.slug}`}
                     className={`flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      isPremium
-                        ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700'
-                        : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      accessLevel === 'free'
+                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700'
                     }`}
                   >
-                    {isPremium ? t.unlockWithPro : t.readArticle}
+                    {accessLevel === 'free' ? t.readArticle : t.unlockWithPro}
                     <Icon name="arrow-right" size={14} />
                   </Link>
                 </div>

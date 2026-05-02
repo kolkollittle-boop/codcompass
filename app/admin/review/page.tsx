@@ -20,6 +20,7 @@ type Article = {
   qualityScore: number;
   status: string;
   isPremium: boolean;
+  accessLevel?: string;
   createdAt?: string;
   crawledAt?: string;
   qualityDetails?: any;
@@ -324,7 +325,10 @@ export default function AdminReviewDashboard() {
                           <Badge variant={score > 80 ? 'default' : 'secondary'} className="text-[10px]">{score}</Badge>
                         </div>
                         <div className="flex gap-2 text-[10px] text-zinc-500">
-                          <span>{difficulty}</span> • <span>{art.isPremium ? '💎 Pro' : 'Free'}</span>
+                          <span>{difficulty}</span> • <span>{
+                            art.accessLevel === 'pro' ? '💎 Pro' :
+                            art.accessLevel === 'builder' ? '🔧 Builder' : 'Free'
+                          }</span>
                         </div>
                         <div className="flex gap-3 text-[10px] text-zinc-600 mt-1">
                           {publishedStr && <span>📅 {publishedStr}</span>}
@@ -392,12 +396,16 @@ export default function AdminReviewDashboard() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs text-zinc-400">Monetization</Label>
-                    <Select defaultValue={selected.isPremium ? 'premium' : 'free'}>
+                    <Label className="text-xs text-zinc-400">Access Level</Label>
+                    <Select defaultValue={
+                      selected.accessLevel === 'pro' ? 'pro' :
+                      selected.accessLevel === 'builder' ? 'builder' : 'free'
+                    }>
                       <SelectTrigger className="bg-zinc-900 border-zinc-700 text-zinc-200 h-8"><SelectValue /></SelectTrigger>
                       <SelectContent className="bg-white text-zinc-900 border-zinc-200">
                         <SelectItem value="free" className="text-zinc-900 focus:bg-zinc-100 focus:text-zinc-900">Free Access</SelectItem>
-                        <SelectItem value="premium" className="text-zinc-900 focus:bg-zinc-100 focus:text-zinc-900">💎 Member Exclusive</SelectItem>
+                        <SelectItem value="builder" className="text-zinc-900 focus:bg-zinc-100 focus:text-zinc-900">🔧 Builder Level</SelectItem>
+                        <SelectItem value="pro" className="text-zinc-900 focus:bg-zinc-100 focus:text-zinc-900">💎 Pro Level</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

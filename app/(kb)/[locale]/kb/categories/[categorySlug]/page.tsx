@@ -88,9 +88,13 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
                         <span className="flex items-center gap-1">
                           👁️ {article.viewCount}
                         </span>
-                        {article.isPremium && (
-                          <span className="bg-yellow-500/10 text-yellow-400 px-2 py-0.5 rounded-full text-xs font-medium border border-yellow-500/20">
-                            Premium
+                        {(article.accessLevel === 'builder' || article.accessLevel === 'pro') && (
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
+                            article.accessLevel === 'pro'
+                              ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                              : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                          }`}>
+                            {article.accessLevel === 'pro' ? 'Pro' : 'Builder'}
                           </span>
                         )}
                       </div>

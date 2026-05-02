@@ -115,7 +115,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
           categorySlug: catSlug,
           date: a.publishedAt ? new Date(a.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
           readTime: `${Math.max(3, Math.ceil((a.contentEn?.length || 1000) / 2000))} ${t.read}`,
-          isPremium: a.isPremium,
+          accessLevel: a.accessLevel || (a.isPremium ? 'pro' : 'free'),
           isTrending: a.viewCount > 100,
         };
       })
@@ -215,10 +215,14 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                           {article.category}
                         </span>
-                        {article.isPremium && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        {(article.accessLevel === 'builder' || article.accessLevel === 'pro') && (
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                            article.accessLevel === 'pro'
+                              ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                              : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                          }`}>
                             <Icon name="lock" size={12} />
-                            {t.premium}
+                            {article.accessLevel === 'pro' ? 'Pro' : 'Builder'}
                           </span>
                         )}
                         {article.isTrending && (

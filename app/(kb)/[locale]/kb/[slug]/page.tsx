@@ -70,10 +70,11 @@ function difficultyColor(d: string) {
 const translations = {
   en: {
     backToKB: 'Back to KB',
-    premium: '🔒 Premium',
+    builder: '🔒 Builder',
+    pro: '🔒 Pro',
     unlockArticle: 'Unlock Full Article',
     subscribeText: 'Get unlimited access to all premium tutorials, code examples, and expert insights.',
-    subscribeBtn: 'Subscribe from $15/mo',
+    subscribeBtn: 'Subscribe from $9.99/mo',
     cancelText: 'Cancel anytime · 30-day money-back guarantee',
     sources: 'Sources',
     readTime: (minutes: number) => `${minutes} min read`,
@@ -196,37 +197,50 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </div>
 
             {/* Premium Content */}
-            {dbArticle.isPremium ? (
-              <>
-                {/* Paywall V2 */}
-                <PaywallV2 variant="overlay" locale={locale} copyVersion="C" />
-                
-                {/* Blurred preview */}
-                <div className="relative mt-10">
-                  <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
-                    <div
-                      className="prose prose-lg prose-invert max-w-none
-                        prose-headings:font-bold prose-p:text-zinc-300
-                        prose-pre:bg-zinc-900 prose-pre:text-zinc-100"
-                    >
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
+            {(() => {
+              const articleAccessLevel = dbArticle.accessLevel || (dbArticle.isPremium ? 'pro' : 'free');
+              // TODO: Get user's actual subscription level from session
+              const userAccessLevel: 'free' | 'builder' | 'pro' = 'free'; // This should come from user session
+              
+              const hasAccess = articleAccessLevel === 'free' ||
+                (articleAccessLevel === 'builder' && (userAccessLevel === 'builder' || userAccessLevel === 'pro')) ||
+                (articleAccessLevel === 'pro' && userAccessLevel === 'pro');
+              
+              if (hasAccess) {
+                return (
+                  <div
+                    className="prose prose-lg prose-invert max-w-none mt-8
+                      prose-headings:font-bold prose-headings:text-zinc-100
+                      prose-p:text-zinc-300 prose-p:leading-relaxed
+                      prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                      prose-pre:bg-zinc-900 prose-pre:text-zinc-100 prose-pre:rounded-lg
+                      prose-a:text-cyan-400 prose-a:no-underline"
+                  >
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
+                  </div>
+                );
+              }
+              
+              return (
+                <>
+                  {/* Paywall V2 */}
+                  <PaywallV2 variant="overlay" locale={locale} copyVersion="C" />
+                  
+                  {/* Blurred preview */}
+                  <div className="relative mt-10">
+                    <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
+                      <div
+                        className="prose prose-lg prose-invert max-w-none
+                          prose-headings:font-bold prose-p:text-zinc-300
+                          prose-pre:bg-zinc-900 prose-pre:text-zinc-100"
+                      >
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </>
-            ) : (
-              /* Free article - show premium content directly */
-              <div
-                className="prose prose-lg prose-invert max-w-none mt-8
-                  prose-headings:font-bold prose-headings:text-zinc-100
-                  prose-p:text-zinc-300 prose-p:leading-relaxed
-                  prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                  prose-pre:bg-zinc-900 prose-pre:text-zinc-100 prose-pre:rounded-lg
-                  prose-a:text-cyan-400 prose-a:no-underline"
-              >
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
-              </div>
-            )}
+                </>
+              );
+            })()}
 
             {/* Production Bundle */}
             <ProductionBundle

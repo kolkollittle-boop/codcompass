@@ -13,10 +13,25 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+interface SubscriptionData {
+  plan: string;
+  status: string;
+  subscription: {
+    planType: string;
+    billingCycle: string;
+    status: string;
+    startedAt: string | null;
+    nextBilledAt: string | null;
+    canceledAt: string | null;
+    customData: any;
+  } | null;
+}
+
 export default function DashboardPage() {
   const { data: nextAuthSession, status: nextAuthStatus } = useSession();
   const [supabaseSession, setSupabaseSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const router = useRouter();
 
   // Check session from both auth systems
@@ -40,7 +55,7 @@ export default function DashboardPage() {
     checkAuth();
 
     // Listen for Supabase auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!cancelled) {
         setSupabaseSession(session);
         setLoading(false);
@@ -49,9 +64,30 @@ export default function DashboardPage() {
 
     return () => {
       cancelled = true;
-      subscription.unsubscribe();
+      authSubscription.unsubscribe();
     };
   }, [nextAuthStatus, router]);
+
+  // Fetch subscription data
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      if (!nextAuthSession?.user?.email && !supabaseSession?.user?.email) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/user/subscription');
+        if (res.ok) {
+          const data = await res.json();
+          setSubscription(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch subscription:', error);
+      }
+    };
+
+    fetchSubscription();
+  }, [nextAuthSession, supabaseSession]);
 
   // Merge session data from both systems
   const session = supabaseSession?.user || nextAuthSession?.user;
@@ -113,10 +149,33 @@ export default function DashboardPage() {
             </div>
             <div className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6">
               <div className="text-sm font-medium text-zinc-400 mb-1">Subscription</div>
-              <div className="text-3xl font-bold text-white">Free</div>
-              <a href="/pricing" className="text-sm text-indigo-400 hover:text-indigo-300 mt-2 font-medium">
-                Upgrade →
-              </a>
+              <div className="text-3xl font-bold text-white">
+                {subscription?.plan === 'BUILDER' ? 'Builder' :
+                 subscription?.plan === 'PRO' ? 'Pro' :
+                 subscription?.plan === 'ENTERPRISE' ? 'Enterprise' : 'Free'}
+              </div>
+              {subscription?.status === 'active' && (
+                <div className="text-sm text-green-400 mt-1">
+                  {subscription.subscription?.billingCycle === 'yearly' ? 'Billed yearly' : 'Billed monthly'}
+                </div>
+              )}
+              {subscription?.status === 'active' ? (
+                <div className="mt-3 space-y-2">
+                  <a href="/dashboard/settings" className="text-sm text-indigo-400 hover:text-indigo-300 font-medium block">
+                    Manage →
+                  </a>
+                  <div className="pt-2 border-t border-zinc-800">
+                    <div className="text-xs text-zinc-500">
+                      <span className="text-emerald-400">✓ 7-Day Refund Policy</span>
+                      <p className="mt-1">Full refund within 7 days of purchase</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <a href="/pricing" className="text-sm text-indigo-400 hover:text-indigo-300 mt-2 font-medium">
+                  Upgrade →
+                </a>
+              )}
             </div>
             <div className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6">
               <div className="text-sm font-medium text-zinc-400 mb-1">Member Since</div>

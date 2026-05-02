@@ -81,6 +81,81 @@ function verifyWebhookSignature(payload: string, signature: string): boolean {
 }
 
 /**
+ * Find user ID by Paddle customer ID
+ * Assumes customer_id is either the user's email or Supabase user ID
+ */
+async function findUserIdByCustomerId(customerId: string): Promise<string | null> {
+  try {
+    // First, try to find user by email (if customerId is an email)
+    if (customerId.includes('@')) {
+      const { data, error } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('email', customerId)
+        .single();
+      
+      if (data && !error) {
+        return data.id;
+      }
+    }
+    
+    // If customerId looks like a UUID, try to find user directly
+    if (customerId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+      const { data, error } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('id', customerId)
+        .single();
+      
+      if (data && !error) {
+        return data.id;
+      }
+    }
+    
+    // Fallback: try to find by paddle_customer_id in existing subscriptions
+    const { data } = await supabaseAdmin
+      .from('paddle_subscriptions')
+      .select('user_id')
+      .eq('paddle_customer_id', customerId)
+      .not('user_id', 'is', null)
+      .limit(1)
+      .single();
+    
+    return data?.user_id || null;
+  } catch (error) {
+    console.error('[Paddle] Error finding user by customer ID:', error);
+    return null;
+  }
+}
+
+/**
+ * Sync user plan type based on subscription status
+ */
+async function syncUserPlan(userId: string, planType: string): Promise<void> {
+  const normalizedPlan = planType.toUpperCase();
+  const validPlans = ['FREE', 'BUILDER', 'PRO', 'ENTERPRISE'];
+  const finalPlan = validPlans.includes(normalizedPlan) ? normalizedPlan : 'FREE';
+  
+  try {
+    const { error } = await supabaseAdmin
+      .from('users')
+      .update({
+        plan_type: finalPlan,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', userId);
+    
+    if (error) {
+      console.error('[Paddle] Error syncing user plan:', error);
+    } else {
+      console.log(`[Paddle] User ${userId} plan synced to ${finalPlan}`);
+    }
+  } catch (error) {
+    console.error('[Paddle] Error syncing user plan:', error);
+  }
+}
+
+/**
  * Handle completed transaction (one-time payment or first subscription payment)
  */
 async function handleTransactionCompleted(data: any) {
@@ -101,12 +176,16 @@ async function handleTransactionCompleted(data: any) {
   const planType = customData.plan_id || 'builder';
   const billingCycle = customData.billing_cycle || 'yearly';
 
+  // Find user by customer_id
+  const userId = await findUserIdByCustomerId(customerId);
+
   // Store transaction record
   const { error } = await supabaseAdmin
     .from('paddle_subscriptions')
     .insert({
       paddle_subscription_id: `txn_${transactionId}`,
       paddle_customer_id: customerId,
+      user_id: userId,
       status: 'active',
       plan_id: productId,
       price_id: priceId,
@@ -121,6 +200,11 @@ async function handleTransactionCompleted(data: any) {
     console.error('[Paddle] Error storing transaction:', error);
   } else {
     console.log(`[Paddle] Transaction stored: ${transactionId}`);
+    
+    // Sync user plan if we found the user
+    if (userId) {
+      await syncUserPlan(userId, planType);
+    }
   }
 }
 
@@ -142,12 +226,16 @@ async function handleSubscriptionCreated(data: any) {
   const planType = customData.plan_id || 'builder';
   const billingCycle = customData.billing_cycle || 'yearly';
 
+  // Find user by customer_id (assuming customer_id is the user's email or Supabase ID)
+  const userId = await findUserIdByCustomerId(customerId);
+
   // Store subscription in database
   const { error } = await supabaseAdmin
     .from('paddle_subscriptions')
     .insert({
       paddle_subscription_id: subscriptionId,
       paddle_customer_id: customerId,
+      user_id: userId,
       status: status,
       plan_id: productId,
       price_id: priceId,
@@ -163,6 +251,11 @@ async function handleSubscriptionCreated(data: any) {
     console.error('[Paddle] Error storing subscription:', error);
   } else {
     console.log(`[Paddle] Subscription stored: ${subscriptionId}`);
+    
+    // Sync user plan if subscription is active
+    if (status === 'active' && userId) {
+      await syncUserPlan(userId, planType);
+    }
   }
 }
 
@@ -172,10 +265,20 @@ async function handleSubscriptionCreated(data: any) {
 async function handleSubscriptionUpdated(data: any) {
   const subscriptionId = data.id;
   const status = data.status;
+  const customData = data.custom_data || {};
 
   console.log(`[Paddle] Subscription updated: ${subscriptionId}, New status: ${status}`);
 
+  // Extract plan type if available
+  const planType = customData.plan_id;
+
   // Update subscription in database
+  const { data: existingSub, error: fetchError } = await supabaseAdmin
+    .from('paddle_subscriptions')
+    .select('user_id, plan_type')
+    .eq('paddle_subscription_id', subscriptionId)
+    .single();
+
   const { error } = await supabaseAdmin
     .from('paddle_subscriptions')
     .update({
@@ -188,6 +291,14 @@ async function handleSubscriptionUpdated(data: any) {
 
   if (error) {
     console.error('[Paddle] Error updating subscription:', error);
+  } else if (existingSub?.user_id) {
+    // Sync user plan based on subscription status
+    const newPlanType = planType || existingSub.plan_type;
+    if (status === 'active' && newPlanType) {
+      await syncUserPlan(existingSub.user_id, newPlanType);
+    } else if (status === 'canceled' || status === 'expired') {
+      await syncUserPlan(existingSub.user_id, 'free');
+    }
   }
 }
 
