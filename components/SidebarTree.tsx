@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   BookOpen,
   ChevronRight,
@@ -28,6 +28,7 @@ interface TreeNodeProps {
   icon?: React.ReactNode;
   children: React.ReactNode;
   defaultOpen?: boolean;
+  hrefs?: string[]; // 子项的链接列表，用于检测是否包含当前活跃页面
 }
 
 const TreeItem = ({ href, label, isNew = false }: TreeItemProps) => {
@@ -54,8 +55,19 @@ const TreeItem = ({ href, label, isNew = false }: TreeItemProps) => {
   );
 };
 
-const TreeNode = ({ label, icon, children, defaultOpen = false }: TreeNodeProps) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+const TreeNode = ({ label, icon, children, defaultOpen = false, hrefs = [] }: TreeNodeProps) => {
+  const pathname = usePathname();
+  // 检查当前路径是否在该节点的子项中
+  const hasActiveChild = hrefs.some(href => pathname === href);
+  // 如果有活跃子项或默认打开，则展开
+  const [isOpen, setIsOpen] = useState(defaultOpen || hasActiveChild);
+
+  // 当路径改变时，检查是否需要展开
+  useEffect(() => {
+    if (hasActiveChild) {
+      setIsOpen(true);
+    }
+  }, [hasActiveChild]);
 
   return (
     <div className="mb-2">
@@ -92,6 +104,15 @@ export function SidebarTree() {
             label="RAG 生产实战路径"
             icon={<Zap className="w-4 h-4 text-palette-primary" />}
             defaultOpen={true}
+            hrefs={[
+              "/en/kb/rag-intro",
+              "/en/kb/rag-architecture",
+              "/en/kb/rag-indexing",
+              "/en/kb/rag-retrieval",
+              "/en/kb/rag-evaluation",
+              "/en/kb/rag-production",
+              "/en/kb/rag-pitfalls",
+            ]}
           >
             <TreeItem href="/en/kb/rag-intro" label="RAG 基础概念" />
             <TreeItem href="/en/kb/rag-architecture" label="RAG 架构设计" />
@@ -102,31 +123,71 @@ export function SidebarTree() {
             <TreeItem href="/en/kb/rag-pitfalls" label="7 个常见陷阱" />
           </TreeNode>
 
-          <TreeNode label="AI Agent 开发" icon={<Code className="w-4 h-4 text-emerald-400" />}>
+          <TreeNode
+            label="AI Agent 开发"
+            icon={<Code className="w-4 h-4 text-emerald-400" />}
+            hrefs={[
+              "/en/kb/agent-basics",
+              "/en/kb/agent-tools",
+              "/en/kb/agent-planning",
+            ]}
+          >
             <TreeItem href="/en/kb/agent-basics" label="Agent 基础" />
             <TreeItem href="/en/kb/agent-tools" label="工具调用" />
             <TreeItem href="/en/kb/agent-planning" label="规划与执行" />
           </TreeNode>
 
-          <TreeNode label="数据库与向量" icon={<Database className="w-4 h-4 text-blue-400" />}>
+          <TreeNode
+            label="数据库与向量"
+            icon={<Database className="w-4 h-4 text-blue-400" />}
+            hrefs={[
+              "/en/kb/vector-db",
+              "/en/kb/embeddings",
+              "/en/kb/hybrid-search",
+            ]}
+          >
             <TreeItem href="/en/kb/vector-db" label="向量数据库" />
             <TreeItem href="/en/kb/embeddings" label="Embedding 模型" />
             <TreeItem href="/en/kb/hybrid-search" label="混合搜索" />
           </TreeNode>
 
-          <TreeNode label="系统架构" icon={<Layers className="w-4 h-4 text-purple-400" />}>
+          <TreeNode
+            label="系统架构"
+            icon={<Layers className="w-4 h-4 text-purple-400" />}
+            hrefs={[
+              "/en/kb/microservices",
+              "/en/kb/api-design",
+              "/en/kb/caching",
+            ]}
+          >
             <TreeItem href="/en/kb/microservices" label="微服务设计" />
             <TreeItem href="/en/kb/api-design" label="API 设计" />
             <TreeItem href="/en/kb/caching" label="缓存策略" />
           </TreeNode>
 
-          <TreeNode label="安全与合规" icon={<Shield className="w-4 h-4 text-red-400" />}>
+          <TreeNode
+            label="安全与合规"
+            icon={<Shield className="w-4 h-4 text-red-400" />}
+            hrefs={[
+              "/en/kb/auth",
+              "/en/kb/data-privacy",
+              "/en/kb/rate-limiting",
+            ]}
+          >
             <TreeItem href="/en/kb/auth" label="认证与授权" />
             <TreeItem href="/en/kb/data-privacy" label="数据隐私" />
             <TreeItem href="/en/kb/rate-limiting" label="速率限制" />
           </TreeNode>
 
-          <TreeNode label="运维与配置" icon={<Settings className="w-4 h-4 text-orange-400" />}>
+          <TreeNode
+            label="运维与配置"
+            icon={<Settings className="w-4 h-4 text-orange-400" />}
+            hrefs={[
+              "/en/kb/monitoring",
+              "/en/kb/ci-cd",
+              "/en/kb/config-mgmt",
+            ]}
+          >
             <TreeItem href="/en/kb/monitoring" label="监控与告警" />
             <TreeItem href="/en/kb/ci-cd" label="CI/CD 流水线" />
             <TreeItem href="/en/kb/config-mgmt" label="配置管理" />
