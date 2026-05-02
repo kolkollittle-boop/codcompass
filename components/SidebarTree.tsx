@@ -28,28 +28,29 @@ interface TreeNodeProps {
   icon?: React.ReactNode;
   children: React.ReactNode;
   defaultOpen?: boolean;
-  hrefs?: string[]; // 子项的链接列表，用于检测是否包含当前活跃页面
+  hrefs?: string[];
 }
 
 const TreeItem = ({ href, label, isNew = false }: TreeItemProps) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  // Handle both with and without locale prefix
+  const isActive = pathname === href || pathname.endsWith(href);
 
   return (
     <Link
       href={href as any}
       className={`
-        flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+        flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-all duration-150
         ${isActive
-          ? 'bg-palette-primary/10 text-palette-primary font-medium'
-          : 'text-palette-textSecondary hover:bg-palette-bgSecondary hover:text-palette-textPrimary'
+          ? 'bg-[hsl(var(--codcompass-brand-bg))] text-[hsl(var(--codcompass-brand-glow))] font-medium border-l-2 border-[hsl(var(--codcompass-brand))]'
+          : 'text-[hsl(var(--codcompass-text-muted))] hover:bg-[hsl(var(--codcompass-surface-hover))] hover:text-[hsl(var(--codcompass-text-secondary))]'
         }
       `}
     >
-      <BookOpen className="w-4 h-4 opacity-70" />
-      <span className="flex-1 truncate">{label}</span>
+      <BookOpen className="w-3.5 h-3.5 opacity-60" />
+      <span className="flex-1 truncate leading-tight">{label}</span>
       {isNew && (
-        <Sparkles className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+        <Sparkles className="w-3 h-3 text-amber-400 flex-shrink-0" />
       )}
     </Link>
   );
@@ -57,12 +58,9 @@ const TreeItem = ({ href, label, isNew = false }: TreeItemProps) => {
 
 const TreeNode = ({ label, icon, children, defaultOpen = false, hrefs = [] }: TreeNodeProps) => {
   const pathname = usePathname();
-  // 检查当前路径是否在该节点的子项中
-  const hasActiveChild = hrefs.some(href => pathname === href);
-  // 如果有活跃子项或默认打开，则展开
+  const hasActiveChild = hrefs.some(href => pathname === href || pathname.endsWith(href));
   const [isOpen, setIsOpen] = useState(defaultOpen || hasActiveChild);
 
-  // 当路径改变时，检查是否需要展开
   useEffect(() => {
     if (hasActiveChild) {
       setIsOpen(true);
@@ -70,21 +68,25 @@ const TreeNode = ({ label, icon, children, defaultOpen = false, hrefs = [] }: Tr
   }, [hasActiveChild]);
 
   return (
-    <div className="mb-2">
+    <div className="mb-1">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-palette-textPrimary hover:bg-palette-bgSecondary transition-colors"
+        className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-md text-xs transition-colors
+          ${hasActiveChild 
+            ? 'text-[hsl(var(--codcompass-text-secondary))] font-medium' 
+            : 'text-[hsl(var(--codcompass-text-muted))] hover:text-[hsl(var(--codcompass-text-secondary))]'
+          }`}
       >
-        {icon || <FileText className="w-4 h-4 opacity-70" />}
-        <span className="flex-1 text-left font-medium">{label}</span>
+        {icon}
+        <span className="flex-1 text-left truncate">{label}</span>
         {isOpen ? (
-          <ChevronDown className="w-4 h-4 opacity-50" />
+          <ChevronDown className="w-3.5 h-3.5 opacity-50" />
         ) : (
-          <ChevronRight className="w-4 h-4 opacity-50" />
+          <ChevronRight className="w-3.5 h-3.5 opacity-50" />
         )}
       </button>
       {isOpen && (
-        <div className="pl-6 mt-1 space-y-0.5 border-l border-palette-border ml-6">
+        <div className="pl-4 mt-0.5 space-y-0 border-l border-[hsl(var(--codcompass-border))] ml-3">
           {children}
         </div>
       )}
@@ -94,103 +96,106 @@ const TreeNode = ({ label, icon, children, defaultOpen = false, hrefs = [] }: Tr
 
 export function SidebarTree() {
   return (
-    <aside className="w-64 h-full bg-palette-bgPrimary border-r border-palette-border overflow-y-auto">
-      <div className="p-4">
-        <h2 className="text-lg font-semibold text-palette-textPrimary mb-4 px-3">
-          Knowledge Base
-        </h2>
-        <nav className="space-y-1">
+    <aside className="w-60 h-full bg-[hsl(var(--codcompass-background))] border-r border-[hsl(var(--codcompass-border))] overflow-y-auto flex-shrink-0">
+      <div className="p-3">
+        <div className="flex items-center gap-2 px-2 py-2 mb-2">
+          <Zap className="w-4 h-4 text-[hsl(var(--codcompass-brand))]" />
+          <h2 className="text-sm font-semibold text-[hsl(var(--codcompass-text-primary))]">
+            Knowledge Base
+          </h2>
+        </div>
+        <nav className="space-y-0.5">
           <TreeNode
-            label="RAG 生产实战路径"
-            icon={<Zap className="w-4 h-4 text-palette-primary" />}
+            label="RAG 生产实战"
+            icon={<Zap className="w-3.5 h-3.5 text-[hsl(var(--codcompass-brand))]" />}
             defaultOpen={true}
             hrefs={[
-              "/en/kb/rag-intro",
-              "/en/kb/rag-architecture",
-              "/en/kb/rag-indexing",
-              "/en/kb/rag-retrieval",
-              "/en/kb/rag-evaluation",
-              "/en/kb/rag-production",
-              "/en/kb/rag-pitfalls",
+              "/kb/rag-intro",
+              "/kb/rag-architecture",
+              "/kb/rag-indexing",
+              "/kb/rag-retrieval",
+              "/kb/rag-evaluation",
+              "/kb/rag-production",
+              "/kb/rag-pitfalls",
             ]}
           >
-            <TreeItem href="/en/kb/rag-intro" label="RAG 基础概念" />
-            <TreeItem href="/en/kb/rag-architecture" label="RAG 架构设计" />
-            <TreeItem href="/en/kb/rag-indexing" label="索引策略" />
-            <TreeItem href="/en/kb/rag-retrieval" label="检索优化" />
-            <TreeItem href="/en/kb/rag-evaluation" label="评估与监控" />
-            <TreeItem href="/en/kb/rag-production" label="生产部署" isNew />
-            <TreeItem href="/en/kb/rag-pitfalls" label="7 个常见陷阱" />
+            <TreeItem href="/kb/rag-intro" label="RAG 基础概念" />
+            <TreeItem href="/kb/rag-architecture" label="RAG 架构设计" />
+            <TreeItem href="/kb/rag-indexing" label="索引策略" />
+            <TreeItem href="/kb/rag-retrieval" label="检索优化" />
+            <TreeItem href="/kb/rag-evaluation" label="评估与监控" />
+            <TreeItem href="/kb/rag-production" label="生产部署" isNew />
+            <TreeItem href="/kb/rag-pitfalls" label="7 个常见陷阱" />
           </TreeNode>
 
           <TreeNode
             label="AI Agent 开发"
-            icon={<Code className="w-4 h-4 text-emerald-400" />}
+            icon={<Code className="w-3.5 h-3.5 text-emerald-400" />}
             hrefs={[
-              "/en/kb/agent-basics",
-              "/en/kb/agent-tools",
-              "/en/kb/agent-planning",
+              "/kb/agent-basics",
+              "/kb/agent-tools",
+              "/kb/agent-planning",
             ]}
           >
-            <TreeItem href="/en/kb/agent-basics" label="Agent 基础" />
-            <TreeItem href="/en/kb/agent-tools" label="工具调用" />
-            <TreeItem href="/en/kb/agent-planning" label="规划与执行" />
+            <TreeItem href="/kb/agent-basics" label="Agent 基础" />
+            <TreeItem href="/kb/agent-tools" label="工具调用" />
+            <TreeItem href="/kb/agent-planning" label="规划与执行" />
           </TreeNode>
 
           <TreeNode
             label="数据库与向量"
-            icon={<Database className="w-4 h-4 text-blue-400" />}
+            icon={<Database className="w-3.5 h-3.5 text-cyan-400" />}
             hrefs={[
-              "/en/kb/vector-db",
-              "/en/kb/embeddings",
-              "/en/kb/hybrid-search",
+              "/kb/vector-db",
+              "/kb/embeddings",
+              "/kb/hybrid-search",
             ]}
           >
-            <TreeItem href="/en/kb/vector-db" label="向量数据库" />
-            <TreeItem href="/en/kb/embeddings" label="Embedding 模型" />
-            <TreeItem href="/en/kb/hybrid-search" label="混合搜索" />
+            <TreeItem href="/kb/vector-db" label="向量数据库" />
+            <TreeItem href="/kb/embeddings" label="Embedding 模型" />
+            <TreeItem href="/kb/hybrid-search" label="混合搜索" />
           </TreeNode>
 
           <TreeNode
             label="系统架构"
-            icon={<Layers className="w-4 h-4 text-purple-400" />}
+            icon={<Layers className="w-3.5 h-3.5 text-purple-400" />}
             hrefs={[
-              "/en/kb/microservices",
-              "/en/kb/api-design",
-              "/en/kb/caching",
+              "/kb/microservices",
+              "/kb/api-design",
+              "/kb/caching",
             ]}
           >
-            <TreeItem href="/en/kb/microservices" label="微服务设计" />
-            <TreeItem href="/en/kb/api-design" label="API 设计" />
-            <TreeItem href="/en/kb/caching" label="缓存策略" />
+            <TreeItem href="/kb/microservices" label="微服务设计" />
+            <TreeItem href="/kb/api-design" label="API 设计" />
+            <TreeItem href="/kb/caching" label="缓存策略" />
           </TreeNode>
 
           <TreeNode
             label="安全与合规"
-            icon={<Shield className="w-4 h-4 text-red-400" />}
+            icon={<Shield className="w-3.5 h-3.5 text-red-400" />}
             hrefs={[
-              "/en/kb/auth",
-              "/en/kb/data-privacy",
-              "/en/kb/rate-limiting",
+              "/kb/auth",
+              "/kb/data-privacy",
+              "/kb/rate-limiting",
             ]}
           >
-            <TreeItem href="/en/kb/auth" label="认证与授权" />
-            <TreeItem href="/en/kb/data-privacy" label="数据隐私" />
-            <TreeItem href="/en/kb/rate-limiting" label="速率限制" />
+            <TreeItem href="/kb/auth" label="认证与授权" />
+            <TreeItem href="/kb/data-privacy" label="数据隐私" />
+            <TreeItem href="/kb/rate-limiting" label="速率限制" />
           </TreeNode>
 
           <TreeNode
             label="运维与配置"
-            icon={<Settings className="w-4 h-4 text-orange-400" />}
+            icon={<Settings className="w-3.5 h-3.5 text-orange-400" />}
             hrefs={[
-              "/en/kb/monitoring",
-              "/en/kb/ci-cd",
-              "/en/kb/config-mgmt",
+              "/kb/monitoring",
+              "/kb/ci-cd",
+              "/kb/config-mgmt",
             ]}
           >
-            <TreeItem href="/en/kb/monitoring" label="监控与告警" />
-            <TreeItem href="/en/kb/ci-cd" label="CI/CD 流水线" />
-            <TreeItem href="/en/kb/config-mgmt" label="配置管理" />
+            <TreeItem href="/kb/monitoring" label="监控与告警" />
+            <TreeItem href="/kb/ci-cd" label="CI/CD 流水线" />
+            <TreeItem href="/kb/config-mgmt" label="配置管理" />
           </TreeNode>
         </nav>
       </div>
