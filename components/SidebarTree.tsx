@@ -96,7 +96,7 @@ const TreeNode = ({ label, icon, children, defaultOpen = false, hrefs = [] }: Tr
 
 export function SidebarTree() {
   return (
-    <aside className="w-60 h-full bg-[hsl(var(--codcompass-background))] border-r border-[hsl(var(--codcompass-border))] overflow-y-auto flex-shrink-0">
+    <aside className="w-60 min-h-screen bg-[hsl(var(--codcompass-background))] border-r border-[hsl(var(--codcompass-border))] overflow-y-auto flex-shrink-0">
       <div className="p-3">
         <div className="flex items-center gap-2 px-2 py-2 mb-2">
           <Zap className="w-4 h-4 text-[hsl(var(--codcompass-brand))]" />
