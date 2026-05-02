@@ -21,14 +21,15 @@ WHERE email = 'kolkollittle@gmail.com';
 
 -- Step 3: Update paddle_subscriptions with user_id based on email in custom_data
 -- This matches customer_email from custom_data to "User".email
+-- Cast u.id to UUID since paddle_subscriptions.user_id is UUID but User.id is TEXT
 UPDATE paddle_subscriptions
-SET user_id = u.id
+SET user_id = u.id::uuid
 FROM "User" u
 WHERE paddle_subscriptions.user_id IS NULL
   AND paddle_subscriptions.custom_data->>'customer_email' = u.email;
 
 -- Step 4: Verify the update
-SELECT 
+SELECT
   ps.id,
   ps.paddle_customer_id,
   ps.user_id,
@@ -38,7 +39,7 @@ SELECT
   ps.started_at,
   ps.created_at
 FROM paddle_subscriptions ps
-LEFT JOIN "User" u ON ps.user_id = u.id
+LEFT JOIN "User" u ON ps.user_id = u.id::uuid
 ORDER BY ps.created_at DESC;
 
 -- Step 5: If you need to manually add a subscription for a user, use this template:
