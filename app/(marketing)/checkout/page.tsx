@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Script from 'next/script';
@@ -49,6 +49,7 @@ const plans = [
 
 export function CheckoutContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const selectedPlan = searchParams?.get('plan') || 'builder';
   const selectedBilling = searchParams?.get('billing') || 'yearly';
   
@@ -96,6 +97,10 @@ export function CheckoutContent() {
             displayMode: 'overlay',
             theme: 'dark',
             locale: 'en',
+          },
+          onComplete: () => {
+            console.log('[Paddle] Checkout completed, redirecting to login...');
+            router.push('/login?redirect=/dashboard');
           },
         });
       } else {
