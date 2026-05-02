@@ -164,12 +164,33 @@ export default function DashboardPage() {
                   <a href="/dashboard/settings" className="text-sm text-indigo-400 hover:text-indigo-300 font-medium block">
                     Manage →
                   </a>
-                  <div className="pt-2 border-t border-zinc-800">
-                    <div className="text-xs text-zinc-500">
-                      <span className="text-emerald-400">✓ 7-Day Refund Policy</span>
-                      <p className="mt-1">Full refund within 7 days of purchase</p>
-                    </div>
-                  </div>
+                  {(() => {
+                    // Check if subscription started within last 7 days
+                    const startedAt = subscription.subscription?.startedAt;
+                    if (!startedAt) return null;
+                    
+                    const startDate = new Date(startedAt);
+                    const now = new Date();
+                    const daysSinceStart = (now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+                    
+                    // Only show refund policy for first-time buyers (within 7 days)
+                    if (daysSinceStart > 7) return null;
+                    
+                    const daysLeft = Math.ceil(7 - daysSinceStart);
+                    
+                    return (
+                      <div className="pt-2 border-t border-zinc-800">
+                        <div className="text-xs text-zinc-500">
+                          <span className="text-emerald-400">✓ 7-Day Refund Policy</span>
+                          <p className="mt-1">
+                            {daysLeft > 0
+                              ? `${daysLeft} day${daysLeft !== 1 ? 's' : ''} remaining for full refund`
+                              : 'Full refund within 7 days of purchase'}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               ) : (
                 <a href="/pricing" className="text-sm text-indigo-400 hover:text-indigo-300 mt-2 font-medium">
