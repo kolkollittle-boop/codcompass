@@ -87,11 +87,11 @@ function verifyWebhookSignature(payload: string, signature: string): boolean {
 async function findUserIdByCustomerId(customerId: string, customerEmail?: string): Promise<string | null> {
   try {
     // First, try to find user by email (from Paddle customer data)
-    // Note: Supabase auth users are in auth.users schema
+    // Note: Prisma creates "User" table (capital U)
     if (customerEmail) {
       console.log(`[Paddle] Looking up user by email: ${customerEmail}`);
       const { data, error } = await supabaseAdmin
-        .from('auth.users')
+        .from('User')
         .select('id')
         .eq('email', customerEmail)
         .single();
@@ -105,7 +105,7 @@ async function findUserIdByCustomerId(customerId: string, customerEmail?: string
     // Try to find user by customerId if it looks like an email
     if (customerId.includes('@')) {
       const { data, error } = await supabaseAdmin
-        .from('auth.users')
+        .from('User')
         .select('id')
         .eq('email', customerId)
         .single();
@@ -118,7 +118,7 @@ async function findUserIdByCustomerId(customerId: string, customerEmail?: string
     // If customerId looks like a UUID, try to find user directly
     if (customerId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
       const { data, error } = await supabaseAdmin
-        .from('auth.users')
+        .from('User')
         .select('id')
         .eq('id', customerId)
         .single();
@@ -153,13 +153,13 @@ async function syncUserPlan(userId: string, planType: string): Promise<void> {
   const finalPlan = validPlans.includes(normalizedPlan) ? normalizedPlan : 'FREE';
   
   try {
-    // Try to update users table if it exists (Prisma-managed)
+    // Try to update User table if it exists (Prisma-managed)
     // If the table doesn't exist, this will fail gracefully
     const { error } = await supabaseAdmin
-      .from('users')
+      .from('User')
       .update({
-        plan_type: finalPlan,
-        updated_at: new Date().toISOString()
+        planType: finalPlan,
+        updatedAt: new Date().toISOString()
       })
       .eq('id', userId);
     
