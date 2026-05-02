@@ -62,9 +62,9 @@ export async function GET(req: NextRequest) {
         planType: subscription.plan_type,
         billingCycle: subscription.billing_cycle,
         status: subscription.status,
-        startedAt: subscription.started_at,
-        nextBilledAt: subscription.next_billed_at,
-        canceledAt: subscription.canceled_at,
+        startedAt: subscription.started_at || null,
+        nextBilledAt: subscription.next_billed_at || null,
+        canceledAt: subscription.canceled_at || null,
         customData: subscription.custom_data
       }
     });
