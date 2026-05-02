@@ -76,7 +76,15 @@ export default function DashboardPage() {
       }
 
       try {
-        const res = await fetch('/api/user/subscription');
+        const { data: sb } = await supabase.auth.getSession();
+        const headers: HeadersInit = {};
+        if (sb?.session?.access_token) {
+          headers.Authorization = `Bearer ${sb.session.access_token}`;
+        }
+        const res = await fetch('/api/user/subscription', {
+          credentials: 'include',
+          headers,
+        });
         if (res.ok) {
           const data = await res.json();
           setSubscription(data);

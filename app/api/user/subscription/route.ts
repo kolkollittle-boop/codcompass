@@ -2,43 +2,50 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { auth } from '@/lib/auth';
 
+type PaddleSubRow = Record<string, unknown>;
+
 /**
  * GET /api/user/subscription
  * Returns the current user's subscription status from paddle_subscriptions table
  */
 export async function GET(req: NextRequest) {
   try {
-    // Get session from NextAuth
     const session = await auth();
-    
-    if (!session?.user?.email) {
+    let email: string | null = session?.user?.email?.trim() || null;
+
+    if (!email) {
+      const authHeader = req.headers.get('authorization');
+      const token =
+        authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      if (token && url && anon) {
+        const supabaseAuth = createClient(url, anon);
+        const { data: udata, error: uerr } = await supabaseAuth.auth.getUser(token);
+        if (!uerr && udata.user?.email) {
+          email = udata.user.email.trim();
+        }
+      }
+    }
+
+    if (!email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Create Supabase admin client
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // First, get the user's Supabase ID from their email
-    // Note: Prisma creates "User" table (capital U) with TEXT id
-    const { data: user, error: userError } = await supabaseAdmin
+    // Prisma "User" row may not exist for pure NextAuth Google sign-in — still resolve Paddle by email
+    const { data: user } = await supabaseAdmin
       .from('User')
       .select('id')
-      .eq('email', session.user.email)
-      .single();
+      .eq('email', email)
+      .maybeSingle();
 
-    if (userError || !user) {
-      // User might not be in the users table yet, return default
-      return NextResponse.json({
-        plan: 'FREE',
-        status: 'inactive',
-        subscription: null
-      });
-    }
-
-    const emailLower = session.user.email.trim().toLowerCase();
+    const userId = user?.id ?? null;
+    const emailLower = email.toLowerCase();
 
     function subscriptionLooksPaid(r: {
       status?: string | null;
@@ -52,18 +59,32 @@ export async function GET(req: NextRequest) {
       return false;
     }
 
-    const { data: rowsOwn, error: subError } = await supabaseAdmin
+    let rowsOwn: PaddleSubRow[] | null = null;
+    let subError: unknown = null;
+
+    if (userId) {
+      const res = await supabaseAdmin
+        .from('paddle_subscriptions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      rowsOwn = (res.data as PaddleSubRow[] | null) ?? null;
+      subError = res.error;
+    }
+
+    const { data: rowsByJsonEmail } = await supabaseAdmin
       .from('paddle_subscriptions')
       .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+      .filter('custom_data->>customer_email', 'ilike', email)
+      .order('created_at', { ascending: false })
+      .limit(50);
 
     const { data: orphanPool } = await supabaseAdmin
       .from('paddle_subscriptions')
       .select('*')
       .is('user_id', null)
       .order('created_at', { ascending: false })
-      .limit(100);
+      .limit(500);
 
     const rowsOrphan =
       orphanPool?.filter((r) => {
@@ -71,9 +92,9 @@ export async function GET(req: NextRequest) {
         return typeof ce === 'string' && ce.trim().toLowerCase() === emailLower;
       }) ?? [];
 
-    type PaddleSubRow = NonNullable<typeof rowsOwn>[number];
     const bySubId = new Map<string, PaddleSubRow>();
-    for (const r of [...(rowsOwn ?? []), ...rowsOrphan]) {
+    const emailRows = (rowsByJsonEmail as PaddleSubRow[] | null) ?? [];
+    for (const r of [...(rowsOwn ?? []), ...rowsOrphan, ...emailRows]) {
       const key = r.paddle_subscription_id as string;
       const prev = bySubId.get(key);
       if (!prev || (!prev.user_id && r.user_id)) {
@@ -88,10 +109,10 @@ export async function GET(req: NextRequest) {
 
     const subscription = merged.find((r) => subscriptionLooksPaid(r)) ?? null;
 
-    if (subscription && !subscription.user_id && user.id) {
+    if (subscription && !subscription.user_id && userId) {
       await supabaseAdmin
         .from('paddle_subscriptions')
-        .update({ user_id: user.id, updated_at: new Date().toISOString() })
+        .update({ user_id: userId, updated_at: new Date().toISOString() })
         .eq('id', subscription.id as string);
     }
 
@@ -103,13 +124,16 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    const planType = typeof subscription.plan_type === 'string' ? subscription.plan_type : '';
+    const statusStr = typeof subscription.status === 'string' ? subscription.status : '';
+
     return NextResponse.json({
-      plan: subscription.plan_type?.toUpperCase() || 'FREE',
-      status: subscription.status,
+      plan: planType ? planType.toUpperCase() : 'FREE',
+      status: statusStr,
       subscription: {
-        planType: subscription.plan_type,
+        planType,
         billingCycle: subscription.billing_cycle,
-        status: subscription.status,
+        status: statusStr,
         startedAt: subscription.started_at || null,
         nextBilledAt: subscription.next_billed_at || null,
         canceledAt: subscription.canceled_at || null,
