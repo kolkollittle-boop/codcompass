@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS paddle_subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   paddle_subscription_id TEXT UNIQUE NOT NULL,
   paddle_customer_id TEXT NOT NULL,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT, -- References "User".id (TEXT type from Prisma)
   status TEXT NOT NULL DEFAULT 'trialing',
   plan_id TEXT,
   price_id TEXT NOT NULL,
@@ -37,7 +37,7 @@ ALTER TABLE paddle_subscriptions ENABLE ROW LEVEL SECURITY;
 -- Allow users to read their own subscriptions
 CREATE POLICY "Users can view their own subscriptions"
   ON paddle_subscriptions FOR SELECT
-  USING (auth.uid() = user_id);
+  USING (auth.uid()::text = user_id);
 
 -- Allow service role to manage all subscriptions (for webhook handler)
 -- This is handled by using SUPABASE_SERVICE_ROLE_KEY in the webhook
