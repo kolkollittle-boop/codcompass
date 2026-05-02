@@ -10,7 +10,7 @@ export default function AboutPage() {
       <main className="flex-grow">
         {/* Hero Section */}
         <div className="bg-gradient-to-br from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-palette-bgPrimary to-[color-mix(in_srgb,var(--accent)_22%,transparent)]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
                 About Codcompass
@@ -23,7 +23,7 @@ export default function AboutPage() {
         </div>
 
         {/* Mission Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-white mb-6">Our Mission</h2>
@@ -72,7 +72,7 @@ export default function AboutPage() {
 
         {/* Stats Section */}
         <div className="bg-palette-bgSecondary py-16 border-y border-palette-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div>
                 <div className="text-4xl font-bold text-palette-primary mb-2">50+</div>
@@ -95,7 +95,7 @@ export default function AboutPage() {
         </div>
 
         {/* Team Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-4">Core Team</h2>
             <p className="text-lg text-palette-textMuted">Built by developers, for developers</p>
@@ -127,7 +127,7 @@ export default function AboutPage() {
 
         {/* CTA Section */}
         <div className="bg-palette-primary py-16">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">
               Ready to level up your technical skills?
             </h2>

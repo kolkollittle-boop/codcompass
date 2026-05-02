@@ -42,7 +42,7 @@ export default function BookmarksPage() {
     <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-white">🔖 My Bookmarks</h1>

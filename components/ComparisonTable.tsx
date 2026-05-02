@@ -29,7 +29,7 @@ const comparisons: ComparisonItem[] = [
 export default function ComparisonTable() {
   return (
     <section className="py-24 px-4 bg-palette-bgSecondary">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-site mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-palette-textMuted">
             Why Developers Choose Codcompass 2.0

@@ -49,7 +49,7 @@ export default function BrandBanner({ variant = 'topbar', onClose }: BrandBanner
   if (variant === 'topbar') {
     return (
       <div className="relative bg-gradient-to-r from-[var(--primary)] via-[var(--accent)] to-[var(--primary)] text-white">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-site mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1 justify-center">
             <Sparkles className="w-4 h-4 flex-shrink-0" />
             <span className="text-sm font-medium">{t.badge}</span>
@@ -82,7 +82,7 @@ export default function BrandBanner({ variant = 'topbar', onClose }: BrandBanner
     return (
       <div className="relative overflow-hidden bg-gradient-to-br from-[var(--primary)] via-[var(--accent)] to-[color-mix(in_srgb,var(--primary)_72%,black)] text-white">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="relative max-w-7xl mx-auto px-4 py-24 sm:py-32">
+        <div className="relative max-w-site mx-auto px-4 py-24 sm:py-32">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-white/10 border border-white/20 mb-8">
               <Sparkles className="w-4 h-4" />

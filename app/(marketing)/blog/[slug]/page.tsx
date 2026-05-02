@@ -7,7 +7,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
     <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
-        <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <article className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Back Link */}
           <Link href="/blog" className="text-palette-primary hover:text-palette-accent text-sm font-medium mb-8 inline-block">
             ← Back to Blog

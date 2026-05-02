@@ -12,7 +12,7 @@ export default function PrivacyPage() {
     <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-white mb-8">Privacy Policy</h1>
           <p className="text-palette-textMuted mb-8">Last updated: April 25, 2026</p>
 

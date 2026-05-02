@@ -121,7 +121,7 @@ export default function DashboardPage() {
     <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Welcome Section */}
           <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 mb-8">
             <div className="flex items-center gap-4">

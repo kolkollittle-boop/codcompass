@@ -60,7 +60,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       {/* Header */}
       <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold mb-4">{t.title}</h1>
           <p className="text-xl text-palette-textSecondary max-w-2xl mx-auto">
             {t.subtitle}
@@ -69,7 +69,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </div>
 
       {/* Categories Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {categoryData.map((category) => (
             <Link
@@ -124,7 +124,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </div>
 
       {/* Quick Stats */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <div className="bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_14%,transparent)] to-[color-mix(in_srgb,var(--accent)_14%,transparent)] rounded-2xl p-8 border border-palette-primary">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>

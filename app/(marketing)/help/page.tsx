@@ -49,7 +49,7 @@ export default function HelpPage() {
       <main className="flex-grow">
         {/* Hero */}
         <div className="bg-gradient-to-br from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-palette-bgPrimary to-[color-mix(in_srgb,var(--accent)_22%,transparent)]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
                 Help Center
@@ -61,7 +61,7 @@ export default function HelpPage() {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Quick Links */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             <Link href="/contact" className="bg-palette-bgCard border border-palette-border rounded-xl p-6 hover:border-palette-border transition-shadow text-center">

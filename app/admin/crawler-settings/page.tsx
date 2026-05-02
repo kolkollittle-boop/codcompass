@@ -271,7 +271,7 @@ export default function CrawlerSettingsPage() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto p-6 space-y-8">
+      <main className="max-w-site mx-auto p-6 space-y-8">
         {/* Schedule Settings */}
         <section className="bg-palette-bgSecondary border border-palette-border rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
@@ -506,7 +506,7 @@ export default function CrawlerSettingsPage() {
       {/* 日志弹窗 */}
       {showLogModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-3xl bg-palette-bgCard border border-palette-border rounded-lg shadow-2xl">
+          <div className="w-full max-w-site bg-palette-bgCard border border-palette-border rounded-lg shadow-2xl">
             {/* 弹窗头部 */}
             <div className="flex items-center justify-between p-4 border-b border-palette-border">
               <h3 className="font-mono font-bold text-palette-accent tracking-wider">

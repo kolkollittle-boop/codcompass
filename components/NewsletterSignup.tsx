@@ -53,7 +53,7 @@ export default function NewsletterSignup({ variant = 'default' }: NewsletterSign
         ? 'bg-gradient-to-br from-palette-bgCard to-palette-bgSecondary border border-white/[0.08]'
         : 'bg-gradient-to-br from-palette-bgCard to-palette-bgSecondary border border-palette-border'
     }`}>
-      <div className="max-w-2xl mx-auto text-center">
+      <div className="max-w-site mx-auto text-center">
         <h2 className={`text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-palette-textPrimary'}`}>
           Stay Ahead of the Curve
         </h2>

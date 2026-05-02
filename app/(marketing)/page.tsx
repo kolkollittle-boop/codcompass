@@ -40,7 +40,7 @@ export default function HomePage() {
         <BrandBanner variant="topbar" />
 
         {/* ===== Hero Section ===== */}
-        <section className="relative flex flex-col lg:flex-row items-center justify-between py-24 lg:py-32 px-4 max-w-7xl mx-auto">
+        <section className="relative flex flex-col lg:flex-row items-center justify-between py-24 lg:py-32 px-4 max-w-site mx-auto">
           {/* Left: Text */}
           <div className="relative z-10 flex flex-col items-start text-left max-w-2xl mb-12 lg:mb-0">
             <Spotlight className="-top-40 left-0 md:left-20 md:-top-20" fill="var(--primary)" />
@@ -111,14 +111,14 @@ export default function HomePage() {
 
         {/* ===== Newsletter ===== */}
         <section className="py-24 px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-site mx-auto">
             <NewsletterSignup />
           </div>
         </section>
 
         {/* ===== Discord Community ===== */}
         <section className="py-24 px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-site mx-auto">
             <DiscordCommunityCard locale="en" />
           </div>
         </section>
@@ -126,7 +126,7 @@ export default function HomePage() {
         {/* ===== Bottom CTA ===== */}
         <section className="py-24 px-4 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-[color-mix(in_srgb,var(--accent)_22%,transparent)] to-[color-mix(in_srgb,var(--primary)_22%,transparent)] blur-3xl opacity-30" />
-          <div className="relative z-10 max-w-3xl mx-auto">
+          <div className="relative z-10 max-w-site mx-auto">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Ready to Turn AI Knowledge Into Real Production?
             </h2>
@@ -171,7 +171,7 @@ async function LearningPathsSection() {
   
   return (
     <section className="py-24 px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-site mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary mb-4">
             <Icon name="graduation-cap" size={14} />
@@ -209,7 +209,7 @@ async function LearningPathsSection() {
 async function ShowcaseSection() {
   return (
     <section className="py-24 px-4 bg-palette-bgTertiary">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-site mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-palette-textMuted">
             First Showcase Ready: RAG Architecture Advanced

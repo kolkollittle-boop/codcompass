@@ -116,7 +116,7 @@ export default function PricingPage() {
         {/* Hero Section */}
         <section className="py-24 px-4 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_12%,transparent)] via-[color-mix(in_srgb,var(--accent)_12%,transparent)] to-[color-mix(in_srgb,var(--primary)_12%,transparent)] blur-3xl opacity-30" />
-          <div className="relative z-10 max-w-4xl mx-auto">
+          <div className="relative z-10 max-w-site mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20 mb-6">
               <Clock className="w-4 h-4" />
               Limited: 7-Day Free Trial on All Plans
@@ -147,7 +147,7 @@ export default function PricingPage() {
 
         {/* Pricing Cards */}
         <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-site mx-auto">
             <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
               {pricingPlans.map((plan) => (
                 <PricingCardV2 key={plan.name} plan={plan} />
@@ -158,7 +158,7 @@ export default function PricingPage() {
 
         {/* Value Proposition Section */}
         <section className="py-24 px-4 bg-palette-bgSecondary">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="max-w-site mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
               Why Developers Choose Codcompass
             </h2>
@@ -184,7 +184,7 @@ export default function PricingPage() {
 
         {/* FAQ Section */}
         <section className="py-24 px-4">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-site mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
                 Frequently Asked Questions
@@ -210,7 +210,7 @@ export default function PricingPage() {
         {/* Final CTA */}
         <section className="py-24 px-4 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-[color-mix(in_srgb,var(--accent)_22%,transparent)] to-[color-mix(in_srgb,var(--primary)_22%,transparent)] blur-3xl opacity-30" />
-          <div className="relative z-10 max-w-3xl mx-auto">
+          <div className="relative z-10 max-w-site mx-auto">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Ready to Level Up Your Skills?
             </h2>

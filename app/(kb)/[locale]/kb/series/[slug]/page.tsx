@@ -62,7 +62,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
 
   return (
     <div className="min-h-screen bg-palette-bgPrimary text-palette-textPrimary">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back button */}
         <Link
           href={`/${locale}/kb`}
@@ -80,7 +80,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{title}</h1>
           {description && (
-            <p className="text-lg text-palette-textMuted mb-6 max-w-3xl">{description}</p>
+            <p className="text-lg text-palette-textMuted mb-6 max-w-site">{description}</p>
           )}
           <div className="flex flex-wrap gap-6 text-sm text-palette-textMuted">
             <span className="flex items-center gap-2">

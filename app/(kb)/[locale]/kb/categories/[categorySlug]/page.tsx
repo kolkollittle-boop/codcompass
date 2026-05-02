@@ -45,7 +45,7 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
     <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       {/* Header */}
       <div className={`bg-gradient-to-r ${catInfo.color} text-white py-16`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
           <Link href={`/${locale}/kb/categories`} className="text-white/80 hover:text-white mb-4 inline-block">
             ← {t.allCategories}
           </Link>
@@ -60,7 +60,7 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
       </div>
 
       {/* Articles List */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {articles.length === 0 ? (
           <div className="text-center py-20 text-palette-textMuted">
             No articles in this category yet.

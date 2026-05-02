@@ -6,11 +6,13 @@ export default function ArticleLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-[hsl(var(--codcompass-background))]">
-      <SidebarTree />
-      <main className="flex-1 bg-[hsl(var(--codcompass-background))] max-w-7xl w-full mx-auto overflow-x-hidden">
-        {children}
-      </main>
+    <div className="flex min-h-screen bg-[hsl(var(--codcompass-background))] justify-center px-4 sm:px-6">
+      <div className="flex w-full max-w-site min-h-screen">
+        <SidebarTree />
+        <main className="min-w-0 flex-1 bg-[hsl(var(--codcompass-background))] overflow-x-hidden">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

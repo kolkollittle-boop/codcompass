@@ -73,7 +73,7 @@ export default function BlogPage() {
       <main className="flex-grow">
         {/* Hero */}
         <div className="bg-gradient-to-br from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-palette-bgPrimary to-[color-mix(in_srgb,var(--accent)_22%,transparent)]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
                 Technical Blog
@@ -86,7 +86,7 @@ export default function BlogPage() {
         </div>
 
         {/* Categories */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
           <div className="bg-palette-bgCard rounded-xl shadow-lg p-4 flex flex-wrap gap-2 justify-center border border-palette-border">
             {categories.map((cat) => (
               <button
@@ -105,7 +105,7 @@ export default function BlogPage() {
         </div>
 
         {/* Blog Posts */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="space-y-8">
             {filteredPosts.length > 0 ? filteredPosts.map((post) => (
               <article

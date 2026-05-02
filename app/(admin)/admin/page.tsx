@@ -48,7 +48,7 @@ export default function AdminPage() {
         </header>
 
         {/* 功能网格 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-site mx-auto">
           
           {/* 🟢 核心入口：内容审核 */}
           <Link href="/admin/review" className="group relative block p-6 bg-palette-bgCard border border-palette-border rounded-xl hover:border-palette-primary transition-all duration-300 hover:shadow-cc-theme">

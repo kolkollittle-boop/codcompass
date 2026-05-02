@@ -123,7 +123,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
 
   return (
     <div className="min-h-screen bg-palette-bgPrimary text-palette-textPrimary">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Learning Paths Section */}
           {seriesList.length > 0 && (
             <div className="mb-12">

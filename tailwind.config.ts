@@ -7,6 +7,10 @@ export default {
   ],
   theme: {
     extend: {
+      maxWidth: {
+        /** 全站主内容区统一页宽（含 KB 目录树 + 正文整体） */
+        site: '1200px',
+      },
       boxShadow: {
         'cc-theme': '0 0 20px color-mix(in srgb, var(--primary) 22%, transparent)',
         'cc-theme-lg': '0 0 40px color-mix(in srgb, var(--primary) 30%, transparent)',
