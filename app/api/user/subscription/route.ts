@@ -22,8 +22,9 @@ export async function GET(req: NextRequest) {
     );
 
     // First, get the user's Supabase ID from their email
+    // Note: Using auth.users since Prisma users table doesn't exist
     const { data: user, error: userError } = await supabaseAdmin
-      .from('users')
+      .from('auth.users')
       .select('id')
       .eq('email', session.user.email)
       .single();

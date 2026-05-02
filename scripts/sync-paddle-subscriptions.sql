@@ -1,6 +1,6 @@
 -- Sync Paddle subscriptions with user accounts
 -- This script links paddle_subscriptions records to users based on email in custom_data
--- Note: Users table is 'users' (created by Prisma), not 'auth.users'
+-- Note: Supabase auth users are stored in auth.users schema
 
 -- Step 1: Check current state of paddle_subscriptions
 SELECT 
@@ -14,16 +14,16 @@ SELECT
 FROM paddle_subscriptions
 ORDER BY created_at DESC;
 
--- Step 2: Check if kolkollittle@gmail.com exists in users table
+-- Step 2: Check if kolkollittle@gmail.com exists in auth.users table
 SELECT id, email, created_at 
-FROM users 
+FROM auth.users 
 WHERE email = 'kolkollittle@gmail.com';
 
 -- Step 3: Update paddle_subscriptions with user_id based on email in custom_data
--- This matches customer_email from custom_data to users.email
+-- This matches customer_email from custom_data to auth.users.email
 UPDATE paddle_subscriptions
 SET user_id = u.id
-FROM users u
+FROM auth.users u
 WHERE paddle_subscriptions.user_id IS NULL
   AND paddle_subscriptions.custom_data->>'customer_email' = u.email;
 
@@ -38,13 +38,10 @@ SELECT
   ps.started_at,
   ps.created_at
 FROM paddle_subscriptions ps
-LEFT JOIN users u ON ps.user_id = u.id
+LEFT JOIN auth.users u ON ps.user_id = u.id
 ORDER BY ps.created_at DESC;
 
 -- Step 5: If you need to manually add a subscription for a user, use this template:
--- First, find the user ID
--- SELECT id FROM users WHERE email = 'kolkollittle@gmail.com';
--- Then update the subscription
 -- UPDATE paddle_subscriptions
--- SET user_id = 'USER_ID_FROM_ABOVE'
+-- SET user_id = (SELECT id FROM auth.users WHERE email = 'kolkollittle@gmail.com')
 -- WHERE paddle_customer_id = 'ctm_xxxxxxxxxxxxx' AND user_id IS NULL;
