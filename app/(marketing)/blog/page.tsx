@@ -68,17 +68,17 @@ export default function BlogPage() {
     : blogPosts.filter(post => post.category === selectedCategory);
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
         {/* Hero */}
-        <div className="bg-gradient-to-br from-indigo-600/20 via-zinc-900 to-purple-600/20">
+        <div className="bg-gradient-to-br from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-palette-bgPrimary to-[color-mix(in_srgb,var(--accent)_22%,transparent)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="text-center">
               <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
                 Technical Blog
               </h1>
-              <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+              <p className="text-xl text-palette-textMuted max-w-2xl mx-auto">
                 Latest technical tutorials, best practices, and deep dives
               </p>
             </div>
@@ -87,15 +87,15 @@ export default function BlogPage() {
 
         {/* Categories */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-          <div className="bg-zinc-900 rounded-xl shadow-lg p-4 flex flex-wrap gap-2 justify-center border border-zinc-800">
+          <div className="bg-palette-bgCard rounded-xl shadow-lg p-4 flex flex-wrap gap-2 justify-center border border-palette-border">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
                   selectedCategory === cat
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 border border-zinc-700'
+                    ? 'bg-palette-primary text-white'
+                    : 'bg-palette-bgSecondary text-palette-textMuted hover:bg-palette-bgTertiary border border-palette-border'
                 }`}
               >
                 {cat}
@@ -110,34 +110,34 @@ export default function BlogPage() {
             {filteredPosts.length > 0 ? filteredPosts.map((post) => (
               <article
                 key={post.id}
-                className="bg-zinc-900 rounded-xl border border-zinc-800 p-6 hover:border-indigo-500/30 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] transition-all"
+                className="bg-palette-bgCard rounded-xl border border-palette-border p-6 hover:border-palette-primary hover:shadow-cc-theme transition-all"
               >
                 <div className="flex items-center gap-2 mb-3 flex-wrap">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary">
                     {post.category}
                   </span>
-                  <span className="text-sm text-zinc-500">{post.date}</span>
-                  <span className="text-sm text-zinc-500">·</span>
-                  <span className="text-sm text-zinc-500">{post.readTime}</span>
+                  <span className="text-sm text-palette-textMuted">{post.date}</span>
+                  <span className="text-sm text-palette-textMuted">·</span>
+                  <span className="text-sm text-palette-textMuted">{post.readTime}</span>
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-3">
-                  <Link href={`/blog/${post.slug}`} className="hover:text-indigo-400 transition-colors">
+                  <Link href={`/blog/${post.slug}`} className="hover:text-palette-primary transition-colors">
                     {post.title}
                   </Link>
                 </h2>
-                <p className="text-zinc-400 mb-4">{post.excerpt}</p>
+                <p className="text-palette-textMuted mb-4">{post.excerpt}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-zinc-500">By {post.author}</span>
+                  <span className="text-sm text-palette-textMuted">By {post.author}</span>
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="text-indigo-400 hover:text-indigo-300 font-medium text-sm"
+                    className="text-palette-primary hover:text-palette-accent font-medium text-sm"
                   >
                     Read More →
                   </Link>
                 </div>
               </article>
             )) : (
-              <p className="text-center text-zinc-400 py-8">No posts in this category yet.</p>
+              <p className="text-center text-palette-textMuted py-8">No posts in this category yet.</p>
             )}
           </div>
         </div>

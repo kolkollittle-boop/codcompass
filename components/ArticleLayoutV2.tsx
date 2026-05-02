@@ -61,7 +61,7 @@ export default function ArticleLayoutV2({
   locale = 'en',
 }: ArticleLayoutV2Props) {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-palette-bgPrimary text-palette-textPrimary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* 主内容区 */}

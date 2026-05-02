@@ -50,14 +50,14 @@ export default function NewsletterSignup({ variant = 'default' }: NewsletterSign
   return (
     <div className={`rounded-2xl p-8 sm:p-12 ${
       isDark
-        ? 'bg-gradient-to-br from-zinc-900 to-zinc-800 border border-white/[0.08]'
-        : 'bg-gradient-to-br from-indigo-50 to-purple-50'
+        ? 'bg-gradient-to-br from-palette-bgCard to-palette-bgSecondary border border-white/[0.08]'
+        : 'bg-gradient-to-br from-palette-bgCard to-palette-bgSecondary border border-palette-border'
     }`}>
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className={`text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+        <h2 className={`text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-palette-textPrimary'}`}>
           Stay Ahead of the Curve
         </h2>
-        <p className={`text-lg mb-8 ${isDark ? 'text-neutral-400' : 'text-gray-600'}`}>
+        <p className={`text-lg mb-8 ${isDark ? 'text-palette-textMuted' : 'text-palette-textMuted'}`}>
           Get weekly technical insights, tutorials, and best practices delivered to your inbox.
         </p>
 
@@ -67,17 +67,17 @@ export default function NewsletterSignup({ variant = 'default' }: NewsletterSign
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            className={`flex-1 px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+            className={`flex-1 px-4 py-3 rounded-lg border focus:ring-2 focus:ring-palette-primary focus:border-transparent ${
               isDark
-                ? 'bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500'
-                : 'border-gray-300'
+                ? 'bg-palette-bgSecondary border-palette-border text-white placeholder-palette-textMuted'
+                : 'bg-palette-bgSecondary border-palette-border text-palette-textPrimary placeholder-palette-textMuted'
             }`}
             disabled={status === 'loading'}
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
           </button>
@@ -91,7 +91,7 @@ export default function NewsletterSignup({ variant = 'default' }: NewsletterSign
           </p>
         )}
 
-        <p className={`mt-4 text-xs ${isDark ? 'text-zinc-500' : 'text-gray-500'}`}>
+        <p className={`mt-4 text-xs text-palette-textMuted`}>
           No spam, ever. Unsubscribe anytime. We respect your privacy.
         </p>
       </div>

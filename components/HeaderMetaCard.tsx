@@ -34,13 +34,13 @@ export default function HeaderMetaCard({
   const difficulty = difficultyLevel ? difficultyConfig[difficultyLevel] || difficultyConfig.L2 : null;
 
   return (
-    <div className="bg-zinc-900/80 border border-zinc-800 rounded-xl p-6 mb-8">
+    <div className="bg-palette-bgSecondary border border-palette-border rounded-xl p-6 mb-8">
       {/* 预期收益 - 扎心短句 */}
       {expectedOutcome && (
-        <div className="mb-5 pb-5 border-b border-zinc-800">
+        <div className="mb-5 pb-5 border-b border-palette-border">
           <div className="flex items-start gap-3">
-            <Target className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
-            <p className="text-zinc-200 font-medium leading-relaxed">
+            <Target className="w-5 h-5 text-palette-accent mt-0.5 flex-shrink-0" />
+            <p className="text-palette-textSecondary font-medium leading-relaxed">
               {expectedOutcome}
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function HeaderMetaCard({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
         {/* 难度等级 */}
         <div className="flex flex-col items-center sm:items-start gap-1">
-          <span className="text-xs text-zinc-500 uppercase tracking-wider">Difficulty</span>
+          <span className="text-xs text-palette-textMuted uppercase tracking-wider">Difficulty</span>
           <div className="flex items-center gap-2">
             {difficulty && (
               <>
@@ -62,7 +62,7 @@ export default function HeaderMetaCard({
                       className={`w-4 h-4 ${
                         i <= difficulty.stars
                           ? `${difficulty.color} fill-current`
-                          : 'text-zinc-700'
+                          : 'text-palette-textMuted'
                       }`}
                     />
                   ))}
@@ -78,10 +78,10 @@ export default function HeaderMetaCard({
         {/* 阅读时间 */}
         {readingTime && (
           <div className="flex flex-col items-center sm:items-start gap-1">
-            <span className="text-xs text-zinc-500 uppercase tracking-wider">Read Time</span>
+            <span className="text-xs text-palette-textMuted uppercase tracking-wider">Read Time</span>
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-zinc-400" />
-              <span className="text-sm text-zinc-300">{readingTime} min</span>
+              <Clock className="w-4 h-4 text-palette-textMuted" />
+              <span className="text-sm text-palette-textSecondary">{readingTime} min</span>
             </div>
           </div>
         )}
@@ -89,13 +89,13 @@ export default function HeaderMetaCard({
         {/* 专题进度 */}
         {seriesTitle && seriesOrder && seriesTotal && (
           <div className="flex flex-col items-center sm:items-start gap-1 col-span-2 sm:col-span-1">
-            <span className="text-xs text-zinc-500 uppercase tracking-wider">Series</span>
+            <span className="text-xs text-palette-textMuted uppercase tracking-wider">Series</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm text-zinc-300">
+              <span className="text-sm text-palette-textSecondary">
                 {seriesOrder}/{seriesTotal}
               </span>
               {seriesEstimatedTime && (
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-palette-textMuted">
                   (~{seriesEstimatedTime}min total)
                 </span>
               )}
@@ -110,7 +110,7 @@ export default function HeaderMetaCard({
           {tags.map(tag => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 px-2.5 py-1 bg-zinc-800 text-zinc-400 text-xs rounded-md border border-zinc-700/50"
+              className="inline-flex items-center gap-1 px-2.5 py-1 bg-palette-bgSecondary text-palette-textMuted text-xs rounded-md border border-palette-border/50"
             >
               <Tag className="w-3 h-3" />
               #{tag}

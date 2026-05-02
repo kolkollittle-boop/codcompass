@@ -38,13 +38,13 @@ export default function TrustBadges() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {badges.map((badge) => (
             <BackgroundGradient key={badge.title} containerClassName="w-full h-full">
-              <div className="h-full p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl hover:border-white/[0.15] transition-all flex flex-col gap-4">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
+              <div className="h-full p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl hover:border-white/[0.15] transition-all flex flex-col gap-4">
+                <div className="w-10 h-10 rounded-lg bg-palette-bgTertiary text-palette-primary flex items-center justify-center border border-palette-primary">
                   <Icon name={badge.icon} size={20} />
                 </div>
                 <div className="flex flex-col gap-1">
                   <h3 className="text-base font-semibold text-white">{badge.title}</h3>
-                  <p className="text-sm text-zinc-400 leading-relaxed">{badge.description}</p>
+                  <p className="text-sm text-palette-textMuted leading-relaxed">{badge.description}</p>
                 </div>
               </div>
             </BackgroundGradient>

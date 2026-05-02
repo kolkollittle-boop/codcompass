@@ -4,35 +4,35 @@ import Footer from '@/components/Footer';
 
 export default function BlogDetailPage({ params }: { params: { slug: string } }) {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Back Link */}
-          <Link href="/blog" className="text-indigo-400 hover:text-indigo-300 text-sm font-medium mb-8 inline-block">
+          <Link href="/blog" className="text-palette-primary hover:text-palette-accent text-sm font-medium mb-8 inline-block">
             ← Back to Blog
           </Link>
 
           {/* Header */}
-          <header className="mb-10 pb-8 border-b border-zinc-800">
+          <header className="mb-10 pb-8 border-b border-palette-border">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary">
                 React
               </span>
-              <span className="text-sm text-zinc-500">2026-04-20</span>
-              <span className="text-sm text-zinc-500">·</span>
-              <span className="text-sm text-zinc-500">8 min read</span>
+              <span className="text-sm text-palette-textMuted">2026-04-20</span>
+              <span className="text-sm text-palette-textMuted">·</span>
+              <span className="text-sm text-palette-textMuted">8 min read</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Getting Started with React Hooks
             </h1>
-            <div className="flex items-center text-zinc-500 text-sm">
+            <div className="flex items-center text-palette-textMuted text-sm">
               <span>By Codcompass Team</span>
             </div>
           </header>
 
           {/* Content */}
-          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-zinc-300 prose-p:leading-relaxed prose-a:text-indigo-400 prose-code:text-zinc-200">
+          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-palette-textSecondary prose-p:leading-relaxed prose-a:text-palette-primary prose-code:text-palette-textSecondary">
             <p>
               React Hooks were introduced in React 16.8 and fundamentally changed how we write components. If you're still using class components, you're missing out on cleaner, more readable code.
             </p>
@@ -47,7 +47,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
 
             <h2>useState Hook</h2>
             <p>This is your bread and butter. It lets you add state to any functional component:</p>
-            <pre className="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto">
+            <pre className="bg-palette-bgCard text-palette-textPrimary border border-palette-border rounded-lg p-4 overflow-x-auto">
               <code>{`import React, { useState } from 'react';
 
 function Counter() {
@@ -71,7 +71,7 @@ function Counter() {
             <p>
               Side effects are everything from fetching data to updating the DOM. useEffect lets you handle them declaratively:
             </p>
-            <pre className="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto">
+            <pre className="bg-palette-bgCard text-palette-textPrimary border border-palette-border rounded-lg p-4 overflow-x-auto">
               <code>{`import { useState, useEffect } from 'react';
 
 function UserProfile({ userId }) {

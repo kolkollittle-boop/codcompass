@@ -18,7 +18,7 @@ function SuccessContent() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <main className="flex-grow flex items-center justify-center px-4 py-24">
         <div className="max-w-md w-full text-center">
           {/* Success Icon */}
@@ -40,18 +40,18 @@ function SuccessContent() {
 
           {loading ? (
             <div className="space-y-4">
-              <div className="h-8 bg-zinc-800 rounded-lg animate-pulse w-48 mx-auto" />
-              <div className="h-4 bg-zinc-800 rounded-lg animate-pulse w-64 mx-auto" />
+              <div className="h-8 bg-palette-bgSecondary rounded-lg animate-pulse w-48 mx-auto" />
+              <div className="h-4 bg-palette-bgSecondary rounded-lg animate-pulse w-64 mx-auto" />
             </div>
           ) : (
             <>
               <h1 className="text-3xl font-bold mb-4 text-white">Payment Successful!</h1>
-              <p className="text-zinc-400 mb-8">
+              <p className="text-palette-textMuted mb-8">
                 Thank you for your subscription. Your account has been activated.
               </p>
 
               {sessionId && (
-                <p className="text-xs text-zinc-500 mb-8">
+                <p className="text-xs text-palette-textMuted mb-8">
                   Session ID: {sessionId}
                 </p>
               )}
@@ -59,13 +59,13 @@ function SuccessContent() {
               <div className="space-y-4">
                 <Link
                   href="/dashboard"
-                  className="block w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+                  className="block w-full px-6 py-3 bg-palette-primary hover:bg-palette-primary-hover text-white font-medium rounded-lg transition-colors"
                 >
                   Go to Dashboard
                 </Link>
                 <Link
                   href="/pricing"
-                  className="block w-full px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium rounded-lg transition-colors"
+                  className="block w-full px-6 py-3 bg-palette-bgSecondary hover:bg-palette-bgTertiary text-palette-textSecondary font-medium rounded-lg transition-colors"
                 >
                   View Plans
                 </Link>

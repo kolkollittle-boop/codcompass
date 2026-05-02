@@ -51,30 +51,30 @@ export default function PaywallV2({
 
   if (variant === 'card') {
     return (
-      <div className="bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-2xl border border-zinc-700 p-8 my-8">
+      <div className="bg-gradient-to-br from-palette-bgCard to-palette-bgSecondary rounded-2xl border border-palette-border p-8 my-8">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-2xl font-bold text-zinc-100 mb-2">Unlock Full Access</h3>
-          <p className="text-zinc-400 mb-6 max-w-md mx-auto">
+          <h3 className="text-2xl font-bold text-palette-textPrimary mb-2">Unlock Full Access</h3>
+          <p className="text-palette-textMuted mb-6 max-w-md mx-auto">
             {displayDescription}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/pricing"
-              className="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-lg transition-colors"
+              className="px-8 py-3 bg-palette-primary hover:bg-palette-primary-hover text-white font-medium rounded-lg transition-colors"
             >
               {displayCta}
             </Link>
             <Link
               href="/login"
-              className="px-8 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium rounded-lg border border-zinc-700 transition-colors"
+              className="px-8 py-3 bg-palette-bgSecondary hover:bg-palette-bgTertiary text-palette-textSecondary font-medium rounded-lg border border-palette-border transition-colors"
             >
               Already subscribed? Sign in
             </Link>
           </div>
-          <p className="text-xs text-zinc-500 mt-4">
+          <p className="text-xs text-palette-textMuted mt-4">
             Cancel anytime · 30-day money-back guarantee
           </p>
         </div>
@@ -84,19 +84,19 @@ export default function PaywallV2({
 
   if (variant === 'inline') {
     return (
-      <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-xl p-6 my-8 text-white">
+      <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] rounded-xl p-6 my-8 text-white">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
               <Lock className="w-5 h-5" /> {displayTitle}
             </h3>
-            <p className="text-cyan-100 text-sm">
+            <p className="text-sm text-white/85">
               {displayDescription.slice(0, 80)}...
             </p>
           </div>
           <Link
             href="/pricing"
-            className="flex-shrink-0 px-6 py-2.5 bg-white text-cyan-700 font-medium rounded-lg hover:bg-cyan-50 transition-colors"
+            className="flex-shrink-0 px-6 py-2.5 bg-white text-palette-primary font-medium rounded-lg hover:bg-palette-bgTertiary transition-colors"
           >
             {displayCta}
           </Link>
@@ -118,22 +118,22 @@ export default function PaywallV2({
 
       {/* Paywall overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="bg-gradient-to-t from-zinc-950 via-zinc-950/95 to-transparent w-full h-full flex items-end sm:items-center justify-center pb-8 sm:pb-0">
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-700 shadow-2xl p-8 max-w-md mx-4 text-center">
-            <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-gradient-to-t from-palette-bgPrimary via-palette-bgPrimary to-transparent w-full h-full flex items-end sm:items-center justify-center pb-8 sm:pb-0">
+          <div className="bg-palette-bgCard rounded-2xl border border-palette-border shadow-2xl p-8 max-w-md mx-4 text-center">
+            <div className="w-14 h-14 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-4">
               {icons[copyVersion]}
             </div>
-            <h3 className="text-xl font-bold text-zinc-100 mb-2">{displayTitle}</h3>
-            <p className="text-zinc-400 mb-6 text-sm leading-relaxed">
+            <h3 className="text-xl font-bold text-palette-textPrimary mb-2">{displayTitle}</h3>
+            <p className="text-palette-textMuted mb-6 text-sm leading-relaxed">
               {displayDescription}
             </p>
             <Link
               href="/pricing"
-              className="block w-full py-3 px-6 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-lg transition-colors"
+              className="block w-full py-3 px-6 bg-palette-primary hover:bg-palette-primary-hover text-white font-medium rounded-lg transition-colors"
             >
               {displayCta}
             </Link>
-            <p className="text-xs text-zinc-500 mt-3">
+            <p className="text-xs text-palette-textMuted mt-3">
               Cancel anytime · 30-day money-back guarantee
             </p>
           </div>

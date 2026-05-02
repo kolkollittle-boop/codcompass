@@ -9,14 +9,14 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-white mb-8">Terms of Service</h1>
-          <p className="text-zinc-500 mb-8">Last updated: April 25, 2026</p>
+          <p className="text-palette-textMuted mb-8">Last updated: April 25, 2026</p>
 
-          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-zinc-300 prose-p:leading-relaxed prose-a:text-indigo-400">
+          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-palette-textSecondary prose-p:leading-relaxed prose-a:text-palette-primary">
             <p>
               Welcome to Codcompass ("platform," "we," "our"). These Terms of Service ("Terms") govern your access to and use of the codcompass.com website and related services.
             </p>

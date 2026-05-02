@@ -109,26 +109,26 @@ const faqData = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#0a0a0a] text-neutral-200">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textSecondary">
       <Header />
 
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="py-24 px-4 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 via-purple-600/10 to-indigo-600/10 blur-3xl opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_12%,transparent)] via-[color-mix(in_srgb,var(--accent)_12%,transparent)] to-[color-mix(in_srgb,var(--primary)_12%,transparent)] blur-3xl opacity-30" />
           <div className="relative z-10 max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20 mb-6">
               <Clock className="w-4 h-4" />
               Limited: 7-Day Free Trial on All Plans
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-500 mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-palette-textMuted mb-6">
               Simple, Transparent Pricing
             </h1>
-            <p className="text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto mb-8">
+            <p className="text-lg sm:text-xl text-palette-textMuted max-w-2xl mx-auto mb-8">
               Start learning today with a 7-day free trial. No credit card required.
               Cancel anytime with our 30-day money-back guarantee.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-neutral-500">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-palette-textMuted">
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-green-400" />
                 7-day free trial
@@ -157,26 +157,26 @@ export default function PricingPage() {
         </section>
 
         {/* Value Proposition Section */}
-        <section className="py-24 px-4 bg-zinc-900/50">
+        <section className="py-24 px-4 bg-palette-bgSecondary">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
               Why Developers Choose Codcompass
             </h2>
-            <p className="text-lg text-neutral-400 mb-12">
+            <p className="text-lg text-palette-textMuted mb-12">
               Join thousands of developers who trust Codcompass for their technical learning
             </p>
             <div className="grid sm:grid-cols-3 gap-8">
-              <div className="p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl">
-                <div className="text-4xl font-bold text-indigo-400 mb-2">10K+</div>
-                <div className="text-sm text-neutral-400">Articles Curated</div>
+              <div className="p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl">
+                <div className="text-4xl font-bold text-palette-primary mb-2">10K+</div>
+                <div className="text-sm text-palette-textMuted">Articles Curated</div>
               </div>
-              <div className="p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl">
-                <div className="text-4xl font-bold text-indigo-400 mb-2">25K+</div>
-                <div className="text-sm text-neutral-400">Monthly Readers</div>
+              <div className="p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl">
+                <div className="text-4xl font-bold text-palette-primary mb-2">25K+</div>
+                <div className="text-sm text-palette-textMuted">Monthly Readers</div>
               </div>
-              <div className="p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl">
-                <div className="text-4xl font-bold text-indigo-400 mb-2">4.9/5</div>
-                <div className="text-sm text-neutral-400">User Rating</div>
+              <div className="p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl">
+                <div className="text-4xl font-bold text-palette-primary mb-2">4.9/5</div>
+                <div className="text-sm text-palette-textMuted">User Rating</div>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function PricingPage() {
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
                 Frequently Asked Questions
               </h2>
-              <p className="text-lg text-neutral-400">
+              <p className="text-lg text-palette-textMuted">
                 Everything you need to know about our pricing
               </p>
             </div>
@@ -197,10 +197,10 @@ export default function PricingPage() {
               {faqData.map((faq, index) => (
                 <div
                   key={index}
-                  className="p-6 bg-zinc-900 border border-white/[0.08] rounded-2xl"
+                  className="p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl"
                 >
                   <h3 className="text-lg font-semibold text-white mb-3">{faq.question}</h3>
-                  <p className="text-neutral-400 leading-relaxed">{faq.answer}</p>
+                  <p className="text-palette-textMuted leading-relaxed">{faq.answer}</p>
                 </div>
               ))}
             </div>
@@ -209,17 +209,17 @@ export default function PricingPage() {
 
         {/* Final CTA */}
         <section className="py-24 px-4 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 blur-3xl opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-[color-mix(in_srgb,var(--accent)_22%,transparent)] to-[color-mix(in_srgb,var(--primary)_22%,transparent)] blur-3xl opacity-30" />
           <div className="relative z-10 max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Ready to Level Up Your Skills?
             </h2>
-            <p className="text-lg text-neutral-400 mb-8">
+            <p className="text-lg text-palette-textMuted mb-8">
               Start your 7-day free trial today. No credit card required.
             </p>
             <a
               href="/kb"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-neutral-200 transition-all"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-palette-bgSecondary transition-all"
             >
               Browse Articles
               <ArrowRight className="w-5 h-5" />

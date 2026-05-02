@@ -248,21 +248,21 @@ export default function CrawlerSettingsPage() {
 
   if (loading) {
     return (
-      <div className="h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center">
-        <RefreshCw className="w-6 h-6 animate-spin text-cyan-400" />
+      <div className="h-screen bg-palette-bgPrimary text-palette-textPrimary flex items-center justify-center">
+        <RefreshCw className="w-6 h-6 animate-spin text-palette-accent" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-palette-bgPrimary text-palette-textPrimary">
       {/* Header */}
-      <header className="h-14 border-b border-zinc-800 flex items-center px-6 bg-zinc-900/50">
+      <header className="h-14 border-b border-palette-border flex items-center px-6 bg-palette-bgSecondary">
         <div className="flex items-center gap-4">
-          <Link href="/admin" className="text-zinc-400 hover:text-cyan-400 transition-colors">
+          <Link href="/admin" className="text-palette-textMuted hover:text-palette-accent transition-colors">
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <span className="font-mono font-bold text-cyan-400 tracking-wider">⚙️ CRAWLER SETTINGS</span>
+          <span className="font-mono font-bold text-palette-accent tracking-wider">⚙️ CRAWLER SETTINGS</span>
         </div>
         <div className="ml-auto flex items-center gap-3">
           {crawlerRunning && (
@@ -275,7 +275,7 @@ export default function CrawlerSettingsPage() {
             size="sm"
             onClick={triggerCrawler}
             disabled={triggering || crawlerRunning}
-            className="bg-violet-600 hover:bg-violet-700 text-white"
+            className="bg-palette-primary hover:bg-palette-primary-hover text-white"
           >
             {triggering || crawlerRunning ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
             {triggering ? '启动中...' : crawlerRunning ? '运行中...' : '立即运行'}
@@ -289,37 +289,37 @@ export default function CrawlerSettingsPage() {
 
       <main className="max-w-5xl mx-auto p-6 space-y-8">
         {/* Schedule Settings */}
-        <section className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
+        <section className="bg-palette-bgSecondary border border-palette-border rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-5 h-5 text-cyan-400" />
+            <Clock className="w-5 h-5 text-palette-accent" />
             <h2 className="text-lg font-semibold">定时设置</h2>
           </div>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <Label className="text-zinc-400 min-w-[100px]">启用定时爬虫</Label>
+              <Label className="text-palette-textMuted min-w-[100px]">启用定时爬虫</Label>
               <Select 
                 value={config.enabled ? 'true' : 'false'} 
                 onValueChange={v => setConfig(prev => ({ ...prev, enabled: v === 'true' }))}
               >
-                <SelectTrigger className="w-[180px] bg-zinc-800 border-zinc-700">
+                <SelectTrigger className="w-[180px] bg-palette-bgSecondary border-palette-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700 text-zinc-100">
+                <SelectContent className="bg-palette-bgSecondary border-palette-border text-palette-textPrimary">
                   <SelectItem value="true">启用</SelectItem>
                   <SelectItem value="false">禁用</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex items-center gap-4">
-              <Label className="text-zinc-400 min-w-[100px]">执行频率</Label>
+              <Label className="text-palette-textMuted min-w-[100px]">执行频率</Label>
               <Select 
                 value={scheduleOptions.find(o => o.value === config.schedule) ? config.schedule : 'custom'}
                 onValueChange={v => setConfig(prev => ({ ...prev, schedule: v }))}
               >
-                <SelectTrigger className="w-[200px] bg-zinc-800 border-zinc-700">
+                <SelectTrigger className="w-[200px] bg-palette-bgSecondary border-palette-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700 text-zinc-100">
+                <SelectContent className="bg-palette-bgSecondary border-palette-border text-palette-textPrimary">
                   {scheduleOptions.map(opt => (
                     <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                   ))}
@@ -332,38 +332,38 @@ export default function CrawlerSettingsPage() {
                   value={customSchedule}
                   onChange={e => setCustomSchedule(e.target.value)}
                   placeholder="Cron 表达式，如: 0 */2 * * *"
-                  className="w-[300px] bg-zinc-800 border-zinc-700"
+                  className="w-[300px] bg-palette-bgSecondary border-palette-border"
                 />
-                <span className="text-xs text-zinc-500">格式: 分 时 日 月 星期</span>
+                <span className="text-xs text-palette-textMuted">格式: 分 时 日 月 星期</span>
               </div>
             )}
           </div>
         </section>
 
         {/* Translation Settings */}
-        <section className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
+        <section className="bg-palette-bgSecondary border border-palette-border rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Languages className="w-5 h-5 text-cyan-400" />
+            <Languages className="w-5 h-5 text-palette-accent" />
             <h2 className="text-lg font-semibold">翻译设置</h2>
           </div>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <Label className="text-zinc-400 min-w-[150px]">翻译文章内容</Label>
+              <Label className="text-palette-textMuted min-w-[150px]">翻译文章内容</Label>
               <Select 
                 value={config.translateContent ? 'true' : 'false'} 
                 onValueChange={v => setConfig(prev => ({ ...prev, translateContent: v === 'true' }))}
               >
-                <SelectTrigger className="w-[180px] bg-zinc-800 border-zinc-700">
+                <SelectTrigger className="w-[180px] bg-palette-bgSecondary border-palette-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700 text-zinc-100">
+                <SelectContent className="bg-palette-bgSecondary border-palette-border text-palette-textPrimary">
                   <SelectItem value="true">启用（同时翻译标题和正文）</SelectItem>
                   <SelectItem value="false">禁用（仅翻译标题）</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex items-center gap-4">
-              <Label className="text-zinc-400 min-w-[150px]">目标语言</Label>
+              <Label className="text-palette-textMuted min-w-[150px]">目标语言</Label>
               <div className="flex gap-2 flex-wrap">
                 {['zh', 'ja', 'ko', 'es', 'fr', 'de'].map(lang => (
                   <button
@@ -378,8 +378,8 @@ export default function CrawlerSettingsPage() {
                     }}
                     className={`px-3 py-1 rounded text-sm ${
                       config.translateTargetLanguages.includes(lang)
-                        ? 'bg-cyan-600 text-white'
-                        : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                        ? 'bg-palette-primary text-white'
+                        : 'bg-palette-bgSecondary text-palette-textMuted hover:bg-palette-bgTertiary'
                     }`}
                   >
                     {lang === 'zh' ? '中文' : lang === 'ja' ? '日本語' : lang === 'ko' ? '한국어' : lang === 'es' ? 'Español' : lang === 'fr' ? 'Français' : 'Deutsch'}
@@ -391,24 +391,24 @@ export default function CrawlerSettingsPage() {
         </section>
 
         {/* Source Settings */}
-        <section className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
+        <section className="bg-palette-bgSecondary border border-palette-border rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Globe className="w-5 h-5 text-cyan-400" />
+              <Globe className="w-5 h-5 text-palette-accent" />
               <h2 className="text-lg font-semibold">数据源设置</h2>
             </div>
-            <Button size="sm" onClick={addSource} className="bg-cyan-600 hover:bg-cyan-700">
+            <Button size="sm" onClick={addSource} className="bg-palette-primary hover:bg-palette-primary-hover">
               <Plus className="w-4 h-4 mr-1" /> 添加数据源
             </Button>
           </div>
           
           <div className="space-y-4">
             {config.sources.map((source, index) => (
-              <div key={source.id} className="border border-zinc-700 rounded-lg p-4 bg-zinc-800/50">
+              <div key={source.id} className="border border-palette-border rounded-lg p-4 bg-palette-bgSecondary">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-medium">数据源 #{index + 1}</span>
-                    <span className={`px-2 py-0.5 rounded text-xs ${source.enabled ? 'bg-emerald-600/20 text-emerald-400' : 'bg-zinc-700 text-zinc-500'}`}>
+                    <span className={`px-2 py-0.5 rounded text-xs ${source.enabled ? 'bg-emerald-600/20 text-emerald-400' : 'bg-palette-bgTertiary text-palette-textMuted'}`}>
                       {source.enabled ? '已启用' : '已禁用'}
                     </span>
                   </div>
@@ -417,10 +417,10 @@ export default function CrawlerSettingsPage() {
                       value={source.enabled ? 'true' : 'false'}
                       onValueChange={v => updateSource(index, { enabled: v === 'true' })}
                     >
-                      <SelectTrigger className="w-[100px] h-7 text-xs bg-zinc-700 border-zinc-600">
+                      <SelectTrigger className="w-[100px] h-7 text-xs bg-palette-bgTertiary border-palette-border">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-700 border-zinc-600 text-zinc-100">
+                      <SelectContent className="bg-palette-bgTertiary border-palette-border text-palette-textPrimary">
                         <SelectItem value="true">启用</SelectItem>
                         <SelectItem value="false">禁用</SelectItem>
                       </SelectContent>
@@ -429,7 +429,7 @@ export default function CrawlerSettingsPage() {
                       size="sm" 
                       variant="ghost" 
                       onClick={() => removeSource(index)}
-                      className="h-7 w-7 p-0 text-zinc-400 hover:text-red-400"
+                      className="h-7 w-7 p-0 text-palette-textMuted hover:text-red-400"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -438,15 +438,15 @@ export default function CrawlerSettingsPage() {
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <Label className="text-xs text-zinc-400 mb-1 block">数据源类型</Label>
+                    <Label className="text-xs text-palette-textMuted mb-1 block">数据源类型</Label>
                     <Select 
                       value={source.type}
                       onValueChange={v => updateSource(index, { type: v as SourceConfig['type'] })}
                     >
-                      <SelectTrigger className="bg-zinc-700 border-zinc-600">
+                      <SelectTrigger className="bg-palette-bgTertiary border-palette-border">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-700 border-zinc-600 text-zinc-100">
+                      <SelectContent className="bg-palette-bgTertiary border-palette-border text-palette-textPrimary">
                         {sourceTypeOptions.map(opt => (
                           <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                         ))}
@@ -454,24 +454,24 @@ export default function CrawlerSettingsPage() {
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-xs text-zinc-400 mb-1 block">URL / API</Label>
+                    <Label className="text-xs text-palette-textMuted mb-1 block">URL / API</Label>
                     <Input 
                       value={source.url}
                       onChange={e => updateSource(index, { url: e.target.value })}
                       placeholder="https://dev.to 或 RSS 地址"
-                      className="bg-zinc-700 border-zinc-600"
+                      className="bg-palette-bgTertiary border-palette-border"
                     />
                   </div>
                 </div>
 
                 {/* Tags */}
                 <div className="mb-3">
-                  <Label className="text-xs text-zinc-400 mb-1 block">标签过滤</Label>
+                  <Label className="text-xs text-palette-textMuted mb-1 block">标签过滤</Label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {source.tags.map((tag, tagIndex) => (
-                      <span key={tagIndex} className="px-2 py-1 bg-cyan-600/20 text-cyan-400 rounded text-xs flex items-center gap-1">
+                      <span key={tagIndex} className="px-2 py-1 bg-palette-primary/20 text-palette-accent rounded text-xs flex items-center gap-1">
                         {tag}
-                        <button onClick={() => removeTagFromSource(index, tagIndex)} className="hover:text-cyan-300">×</button>
+                        <button onClick={() => removeTagFromSource(index, tagIndex)} className="hover:text-palette-accent">×</button>
                       </span>
                     ))}
                   </div>
@@ -480,7 +480,7 @@ export default function CrawlerSettingsPage() {
                       value={newTag}
                       onChange={e => setNewTag(e.target.value)}
                       placeholder="输入标签后回车"
-                      className="h-7 text-xs bg-zinc-700 border-zinc-600"
+                      className="h-7 text-xs bg-palette-bgTertiary border-palette-border"
                       onKeyDown={e => e.key === 'Enter' && addTagToSource(index)}
                     />
                   </div>
@@ -488,12 +488,12 @@ export default function CrawlerSettingsPage() {
 
                 {/* Keywords */}
                 <div>
-                  <Label className="text-xs text-zinc-400 mb-1 block">关键字过滤</Label>
+                  <Label className="text-xs text-palette-textMuted mb-1 block">关键字过滤</Label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {source.keywords.map((kw, kwIndex) => (
-                      <span key={kwIndex} className="px-2 py-1 bg-violet-600/20 text-violet-400 rounded text-xs flex items-center gap-1">
+                      <span key={kwIndex} className="px-2 py-1 bg-palette-bgTertiary text-palette-accent rounded text-xs flex items-center gap-1 border border-palette-border">
                         {kw}
-                        <button onClick={() => removeKeywordFromSource(index, kwIndex)} className="hover:text-violet-300">×</button>
+                        <button onClick={() => removeKeywordFromSource(index, kwIndex)} className="hover:text-palette-accent">×</button>
                       </span>
                     ))}
                   </div>
@@ -502,7 +502,7 @@ export default function CrawlerSettingsPage() {
                       value={newKeyword}
                       onChange={e => setNewKeyword(e.target.value)}
                       placeholder="输入关键字后回车"
-                      className="h-7 text-xs bg-zinc-700 border-zinc-600"
+                      className="h-7 text-xs bg-palette-bgTertiary border-palette-border"
                       onKeyDown={e => e.key === 'Enter' && addKeywordToSource(index)}
                     />
                   </div>
@@ -511,7 +511,7 @@ export default function CrawlerSettingsPage() {
             ))}
             
             {config.sources.length === 0 && (
-              <div className="text-center py-8 text-zinc-500">
+              <div className="text-center py-8 text-palette-textMuted">
                 暂无数据源，点击上方"添加数据源"按钮添加
               </div>
             )}
@@ -522,27 +522,27 @@ export default function CrawlerSettingsPage() {
       {/* 日志弹窗 */}
       {showLogModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-3xl bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl">
+          <div className="w-full max-w-3xl bg-palette-bgCard border border-palette-border rounded-lg shadow-2xl">
             {/* 弹窗头部 */}
-            <div className="flex items-center justify-between p-4 border-b border-zinc-700">
-              <h3 className="font-mono font-bold text-cyan-400 tracking-wider">
+            <div className="flex items-center justify-between p-4 border-b border-palette-border">
+              <h3 className="font-mono font-bold text-palette-accent tracking-wider">
                 {crawlerRunning ? '⚡ 爬虫运行中...' : '📋 爬虫日志'}
               </h3>
               <button
                 onClick={() => setShowLogModal(false)}
-                className="text-zinc-400 hover:text-zinc-200 transition-colors"
+                className="text-palette-textMuted hover:text-palette-textSecondary transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             
             {/* 日志内容区域 */}
-            <div className="p-4 h-96 overflow-y-auto font-mono text-xs text-zinc-300 bg-zinc-950 whitespace-pre-wrap">
+            <div className="p-4 h-96 overflow-y-auto font-mono text-xs text-palette-textSecondary bg-palette-bgPrimary whitespace-pre-wrap">
               {crawlerLog || '等待爬虫启动...'}
             </div>
             
             {/* 底部状态栏 */}
-            <div className="p-3 border-t border-zinc-700 bg-zinc-900 flex items-center justify-between">
+            <div className="p-3 border-t border-palette-border bg-palette-bgCard flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {crawlerRunning && (
                   <>
@@ -561,7 +561,7 @@ export default function CrawlerSettingsPage() {
                 onClick={() => {
                   navigator.clipboard.writeText(crawlerLog);
                 }}
-                className="text-xs text-zinc-400 hover:text-cyan-400 transition-colors"
+                className="text-xs text-palette-textMuted hover:text-palette-accent transition-colors"
               >
                 复制日志
               </button>

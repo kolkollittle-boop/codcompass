@@ -40,22 +40,22 @@ export default function DiscordCommunityCard({
 
   return (
     <BackgroundGradient containerClassName="w-full h-full">
-      <div className="h-full p-8 bg-zinc-900 border border-white/[0.08] rounded-2xl hover:border-indigo-500/30 transition-all duration-300">
+      <div className="h-full p-8 bg-palette-bgCard border border-white/[0.08] rounded-2xl hover:border-palette-primary transition-all duration-300">
         <div className="flex flex-col h-full">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 w-fit mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary w-fit mb-6">
             <Icon name="message" size={14} />
             {t.badge}
           </div>
 
           {/* Title & Description */}
           <h3 className="text-2xl font-bold text-white mb-3">{t.title}</h3>
-          <p className="text-neutral-400 mb-6 leading-relaxed">{t.description}</p>
+          <p className="text-palette-textMuted mb-6 leading-relaxed">{t.description}</p>
 
           {/* Features List */}
           <ul className="space-y-3 mb-8 flex-shrink-0">
             {t.features.map((feature, index) => (
-              <li key={index} className="flex items-start gap-3 text-sm text-neutral-300">
+              <li key={index} className="flex items-start gap-3 text-sm text-palette-textSecondary">
                 <Icon name="check" size={16} className="text-green-400 mt-0.5 flex-shrink-0" />
                 {feature}
               </li>

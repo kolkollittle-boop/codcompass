@@ -26,10 +26,10 @@ export default function UsersAdminPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto"></div>
+          <p className="mt-4 text-palette-textMuted">Loading...</p>
         </div>
       </div>
     );
@@ -50,60 +50,60 @@ export default function UsersAdminPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
-      <main className="flex-grow bg-gray-50">
+      <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">👥 Manage Users</h1>
-              <p className="text-gray-600 mt-1">View and manage all user accounts</p>
+              <h1 className="text-2xl font-bold text-palette-textPrimary">👥 Manage Users</h1>
+              <p className="text-palette-textMuted mt-1">View and manage all user accounts</p>
             </div>
             <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Search users..."
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="px-4 py-2 border border-palette-border rounded-lg bg-palette-bgCard text-palette-textPrimary placeholder-palette-textMuted focus:ring-2 focus:ring-palette-primary focus:border-palette-primary"
               />
             </div>
           </div>
 
           {/* Users Table */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border overflow-hidden">
+            <table className="min-w-full divide-y divide-palette-border">
+              <thead className="bg-palette-bgSecondary">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     User
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     Role
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     Joined
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-palette-bgCard divide-y divide-palette-border">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                  <tr key={user.id} className="hover:bg-palette-bgSecondary transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                          <div className="h-10 w-10 rounded-full bg-palette-bgTertiary flex items-center justify-center text-palette-primary font-bold">
                             {user.name?.charAt(0) || 'U'}
                           </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
+                          <div className="text-sm font-medium text-palette-textPrimary">{user.name}</div>
+                          <div className="text-sm text-palette-textMuted">{user.email}</div>
                         </div>
                       </div>
                     </td>
@@ -111,7 +111,7 @@ export default function UsersAdminPage() {
                       <select
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        className="text-sm border border-gray-300 rounded px-2 py-1"
+                        className="text-sm border border-palette-border rounded px-2 py-1 bg-palette-bgSecondary text-palette-textPrimary"
                       >
                         <option value="USER">User</option>
                         <option value="EDITOR">Editor</option>
@@ -127,7 +127,7 @@ export default function UsersAdminPage() {
                         {user.status === 'active' ? 'Active' : 'Banned'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    <td className="px-6 py-4 text-sm text-palette-textPrimary">
                       {user.joined}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">

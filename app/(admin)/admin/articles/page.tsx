@@ -69,10 +69,10 @@ export default function ArticlesAdminPage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
+      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-zinc-400">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto"></div>
+          <p className="mt-4 text-palette-textMuted">Loading...</p>
         </div>
       </div>
     );
@@ -81,7 +81,7 @@ export default function ArticlesAdminPage() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -89,47 +89,47 @@ export default function ArticlesAdminPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-2xl font-bold text-white">📝 文章管理</h1>
-              <p className="text-zinc-400 mt-1">创建、编辑和管理所有文章</p>
+              <p className="text-palette-textMuted mt-1">创建、编辑和管理所有文章</p>
             </div>
-            <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+            <button className="px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors">
               + 新建文章
             </button>
           </div>
 
           {/* Articles Table */}
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-            <table className="min-w-full divide-y divide-zinc-800">
-              <thead className="bg-zinc-800/50">
+          <div className="bg-palette-bgCard rounded-xl border border-palette-border overflow-hidden">
+            <table className="min-w-full divide-y divide-palette-border">
+              <thead className="bg-palette-bgSecondary">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     文章
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     分类
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     状态
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     类型
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     评分
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
                     操作
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-zinc-900 divide-y divide-zinc-800">
+              <tbody className="bg-palette-bgCard divide-y divide-palette-border">
                 {articles.map((article) => (
-                  <tr key={article.slug} className="hover:bg-zinc-800/50 transition-colors">
+                  <tr key={article.slug} className="hover:bg-palette-bgSecondary transition-colors">
                     <td className="px-6 py-4">
                       <div className="text-sm font-medium text-white">{article.titleEn}</div>
-                      <div className="text-xs text-zinc-500 truncate max-w-xs">{article.slug}</div>
+                      <div className="text-xs text-palette-textMuted truncate max-w-xs">{article.slug}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary">
                         {article.categories?.[0]?.Category?.[0]?.name || 'General'}
                       </span>
                     </td>
@@ -139,7 +139,7 @@ export default function ArticlesAdminPage() {
                           ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
                           : article.status === 'REVIEW'
                           ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
-                          : 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20'
+                          : 'bg-palette-bgTertiary text-palette-textMuted border border-palette-border'
                       }`}>
                         {article.status === 'PUBLISHED' ? '已发布' : article.status === 'REVIEW' ? '待审核' : article.status === 'ARCHIVED' ? '已归档' : '草稿'}
                       </span>
@@ -149,19 +149,19 @@ export default function ArticlesAdminPage() {
                         article.accessLevel === 'pro'
                           ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                           : article.accessLevel === 'builder'
-                          ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
-                          : 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20'
+                          ? 'bg-palette-bgTertiary text-palette-primary border border-palette-primary'
+                          : 'bg-palette-bgTertiary text-palette-textMuted border border-palette-border'
                       }`}>
                         {article.accessLevel === 'pro' ? 'Pro' : article.accessLevel === 'builder' ? 'Builder' : '免费'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-zinc-300">
+                    <td className="px-6 py-4 text-sm text-palette-textSecondary">
                       {article.qualityScore ? `${article.qualityScore}/100` : '-'}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
                       <button 
                         onClick={() => handleEdit(article.slug)}
-                        className="text-indigo-400 hover:text-indigo-300 mr-4 transition-colors"
+                        className="text-palette-primary hover:text-palette-accent mr-4 transition-colors"
                       >
                         编辑
                       </button>
@@ -181,8 +181,8 @@ export default function ArticlesAdminPage() {
               <div className="text-center py-12">
                 <div className="text-4xl mb-4">📝</div>
                 <h3 className="text-lg font-medium text-white mb-2">暂无文章</h3>
-                <p className="text-zinc-400 mb-4">创建第一篇文章开始</p>
-                <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                <p className="text-palette-textMuted mb-4">创建第一篇文章开始</p>
+                <button className="px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors">
                   创建文章
                 </button>
               </div>

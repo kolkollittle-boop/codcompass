@@ -7,6 +7,10 @@ export default {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        'cc-theme': '0 0 20px color-mix(in srgb, var(--primary) 22%, transparent)',
+        'cc-theme-lg': '0 0 40px color-mix(in srgb, var(--primary) 30%, transparent)',
+      },
       colors: {
         // Codcompass Theme System - 使用 CSS 变量
         theme: {

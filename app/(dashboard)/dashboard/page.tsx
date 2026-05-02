@@ -103,10 +103,10 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
+      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
-          <p className="mt-4 text-zinc-400">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto"></div>
+          <p className="mt-4 text-palette-textMuted">Loading...</p>
         </div>
       </div>
     );
@@ -117,12 +117,12 @@ export default function DashboardPage() {
   const isAdmin = (supabaseSession?.user as any)?.role === 'ADMIN' || (nextAuthSession?.user as any)?.role === 'ADMIN';
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Welcome Section */}
-          <div className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6 mb-8">
+          <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 mb-8">
             <div className="flex items-center gap-4">
               {(session as any)?.image && (
                 <img
@@ -135,8 +135,8 @@ export default function DashboardPage() {
                 <h1 className="text-2xl font-bold text-white">
                   Welcome, {(session as any)?.name || 'User'}!
                 </h1>
-                <p className="text-zinc-400">{(session as any)?.email}</p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mt-2">
+                <p className="text-palette-textMuted">{(session as any)?.email}</p>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary mt-2">
                   {(session as any)?.role || 'USER'}
                 </span>
               </div>
@@ -145,18 +145,18 @@ export default function DashboardPage() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6">
-              <div className="text-sm font-medium text-zinc-400 mb-1">Articles Read</div>
+            <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6">
+              <div className="text-sm font-medium text-palette-textMuted mb-1">Articles Read</div>
               <div className="text-3xl font-bold text-white">12</div>
               <div className="text-sm text-green-400 mt-2">+3 this week</div>
             </div>
-            <div className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6">
-              <div className="text-sm font-medium text-zinc-400 mb-1">Bookmarks</div>
+            <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6">
+              <div className="text-sm font-medium text-palette-textMuted mb-1">Bookmarks</div>
               <div className="text-3xl font-bold text-white">5</div>
               <div className="text-sm text-blue-400 mt-2">Save for later</div>
             </div>
-            <div className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6">
-              <div className="text-sm font-medium text-zinc-400 mb-1">Subscription</div>
+            <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6">
+              <div className="text-sm font-medium text-palette-textMuted mb-1">Subscription</div>
               <div className="text-3xl font-bold text-white">
                 {subscription?.plan === 'BUILDER' ? 'Builder' :
                  subscription?.plan === 'PRO' ? 'Pro' :
@@ -173,7 +173,7 @@ export default function DashboardPage() {
               )}
               {subscription?.status === 'active' || subscription?.status === 'trialing' ? (
                 <div className="mt-3 space-y-2">
-                  <a href="/dashboard/settings" className="text-sm text-indigo-400 hover:text-indigo-300 font-medium block">
+                  <a href="/dashboard/settings" className="text-sm text-palette-primary hover:text-palette-accent font-medium block">
                     Manage →
                   </a>
                   {(() => {
@@ -206,8 +206,8 @@ export default function DashboardPage() {
                     )}&body=${encodeURIComponent(refundBody)}`;
 
                     return (
-                      <div className="pt-2 border-t border-zinc-800">
-                        <div className="text-xs text-zinc-500">
+                      <div className="pt-2 border-t border-palette-border">
+                        <div className="text-xs text-palette-textMuted">
                           <span className="text-emerald-400">✓ 7-Day Refund Policy</span>
                           <p className="mt-1">
                             {daysLeft > 0
@@ -218,13 +218,13 @@ export default function DashboardPage() {
                         <div className="mt-3 flex flex-col gap-2">
                           <a
                             href={mailtoHref}
-                            className="inline-flex items-center justify-center rounded-lg bg-zinc-100 text-zinc-900 text-sm font-medium px-3 py-2 hover:bg-white transition-colors text-center"
+                            className="inline-flex items-center justify-center rounded-lg bg-palette-bgTertiary text-palette-textPrimary text-sm font-medium px-3 py-2 hover:bg-palette-bgSecondary transition-colors text-center"
                           >
                             申请退款（发邮件至客服）
                           </a>
                           <a
                             href="/refund"
-                            className="text-xs text-indigo-400 hover:text-indigo-300"
+                            className="text-xs text-palette-primary hover:text-palette-accent"
                           >
                             查看退款政策全文 →
                           </a>
@@ -234,66 +234,66 @@ export default function DashboardPage() {
                   })()}
                 </div>
               ) : (
-                <a href="/pricing" className="text-sm text-indigo-400 hover:text-indigo-300 mt-2 font-medium">
+                <a href="/pricing" className="text-sm text-palette-primary hover:text-palette-accent mt-2 font-medium">
                   Upgrade →
                 </a>
               )}
             </div>
-            <div className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6">
-              <div className="text-sm font-medium text-zinc-400 mb-1">Member Since</div>
+            <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6">
+              <div className="text-sm font-medium text-palette-textMuted mb-1">Member Since</div>
               <div className="text-3xl font-bold text-white">Apr</div>
-              <div className="text-sm text-zinc-500 mt-2">2026</div>
+              <div className="text-sm text-palette-textMuted mt-2">2026</div>
             </div>
           </div>
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <a href="/kb" className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:border-indigo-500/30 transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-3 group-hover:bg-indigo-500/20 transition-colors">
-                <Icon name="book" size={20} className="text-indigo-400" />
+            <a href="/kb" className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 hover:shadow-cc-theme hover:border-palette-primary transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-palette-bgTertiary flex items-center justify-center mb-3 group-hover:bg-palette-bgTertiary transition-colors">
+                <Icon name="book" size={20} className="text-palette-primary" />
               </div>
               <h3 className="font-bold text-white mb-1">Browse Articles</h3>
-              <p className="text-sm text-zinc-400">Explore our knowledge base</p>
+              <p className="text-sm text-palette-textMuted">Explore our knowledge base</p>
             </a>
-            <a href="/dashboard/bookmarks" className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:border-indigo-500/30 transition-all group">
+            <a href="/dashboard/bookmarks" className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 hover:shadow-cc-theme hover:border-palette-primary transition-all group">
               <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3 group-hover:bg-amber-500/20 transition-colors">
                 <Icon name="bookmark" size={20} className="text-amber-400" />
               </div>
               <h3 className="font-bold text-white mb-1">My Bookmarks</h3>
-              <p className="text-sm text-zinc-400">View saved articles</p>
+              <p className="text-sm text-palette-textMuted">View saved articles</p>
             </a>
-            <a href="/dashboard/settings" className="bg-zinc-900 rounded-xl shadow-sm border border-zinc-800 p-6 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:border-indigo-500/30 transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center mb-3 group-hover:bg-zinc-700 transition-colors">
-                <Icon name="settings" size={20} className="text-zinc-400" />
+            <a href="/dashboard/settings" className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 hover:shadow-cc-theme hover:border-palette-primary transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-palette-bgSecondary flex items-center justify-center mb-3 group-hover:bg-palette-bgTertiary transition-colors">
+                <Icon name="settings" size={20} className="text-palette-textMuted" />
               </div>
               <h3 className="font-bold text-white mb-1">Settings</h3>
-              <p className="text-sm text-zinc-400">Manage your account</p>
+              <p className="text-sm text-palette-textMuted">Manage your account</p>
             </a>
           </div>
 
           {/* Admin Section */}
           {isAdmin && (
-            <div className="bg-indigo-500/10 rounded-xl border border-indigo-500/20 p-6">
+            <div className="bg-palette-bgTertiary rounded-xl border border-palette-primary p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Icon name="shield" size={24} className="text-indigo-400" />
+                <Icon name="shield" size={24} className="text-palette-primary" />
                 <h2 className="text-xl font-bold text-white">Admin Panel</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <a href="/admin" className="bg-zinc-900 rounded-lg p-4 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] transition-shadow">
+                <a href="/admin" className="bg-palette-bgCard rounded-lg p-4 hover:shadow-cc-theme transition-shadow">
                   <h3 className="font-bold text-white mb-1">Admin Dashboard</h3>
-                  <p className="text-sm text-zinc-400">Manage all content</p>
+                  <p className="text-sm text-palette-textMuted">Manage all content</p>
                 </a>
-                <a href="/admin/review" className="bg-zinc-900 rounded-lg p-4 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] transition-shadow">
+                <a href="/admin/review" className="bg-palette-bgCard rounded-lg p-4 hover:shadow-cc-theme transition-shadow">
                   <h3 className="font-bold text-white mb-1">Article Review</h3>
-                  <p className="text-sm text-zinc-400">Review & publish articles</p>
+                  <p className="text-sm text-palette-textMuted">Review & publish articles</p>
                 </a>
-                <a href="/admin/articles" className="bg-zinc-900 rounded-lg p-4 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] transition-shadow">
+                <a href="/admin/articles" className="bg-palette-bgCard rounded-lg p-4 hover:shadow-cc-theme transition-shadow">
                   <h3 className="font-bold text-white mb-1">Articles</h3>
-                  <p className="text-sm text-zinc-400">Create & edit articles</p>
+                  <p className="text-sm text-palette-textMuted">Create & edit articles</p>
                 </a>
-                <a href="/admin/users" className="bg-zinc-900 rounded-lg p-4 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)] transition-shadow">
+                <a href="/admin/users" className="bg-palette-bgCard rounded-lg p-4 hover:shadow-cc-theme transition-shadow">
                   <h3 className="font-bold text-white mb-1">Users</h3>
-                  <p className="text-sm text-zinc-400">Manage users</p>
+                  <p className="text-sm text-palette-textMuted">Manage users</p>
                 </a>
               </div>
             </div>

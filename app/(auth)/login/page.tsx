@@ -16,12 +16,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl">
+    <div className="min-h-screen bg-palette-bgPrimary flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-palette-bgCard border border-palette-border rounded-xl p-8 shadow-2xl">
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white">Welcome Back</h2>
-          <p className="mt-2 text-zinc-400">Sign in to continue to Codcompass</p>
+          <p className="mt-2 text-palette-textMuted">Sign in to continue to Codcompass</p>
         </div>
 
         {/* Google Button */}
@@ -45,8 +45,8 @@ export default function LoginPage() {
           </p>
         )}
 
-        <div className="mt-8 text-center text-xs text-zinc-600">
-          By continuing, you agree to our <Link href="/terms" className="hover:text-zinc-400">Terms</Link> & <Link href="/privacy" className="hover:text-zinc-400">Privacy Policy</Link>.
+        <div className="mt-8 text-center text-xs text-palette-textMuted">
+          By continuing, you agree to our <Link href="/terms" className="hover:text-palette-textMuted">Terms</Link> & <Link href="/privacy" className="hover:text-palette-textMuted">Privacy Policy</Link>.
         </div>
       </div>
     </div>

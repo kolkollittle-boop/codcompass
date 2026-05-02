@@ -63,7 +63,7 @@ function difficultyColor(d: string) {
     case 'L3': return 'bg-orange-100 text-orange-800';
     case 'Expert':
     case 'L4': return 'bg-red-100 text-red-800';
-    default: return 'bg-gray-100 text-gray-800';
+    default: return 'bg-palette-bgTertiary text-palette-textPrimary';
   }
 }
 
@@ -149,10 +149,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const tags = dbArticle.tags?.map(t => t.Tag?.[0]?.name).filter(Boolean) || [];
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-palette-bgPrimary text-palette-textPrimary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back button */}
-        <Link href={`/${locale}/kb`} className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-cyan-400 mb-6 transition-colors">
+        <Link href={`/${locale}/kb`} className="inline-flex items-center gap-2 text-sm text-palette-textMuted hover:text-palette-accent mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />
           {t.backToKB}
         </Link>
@@ -173,9 +173,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             />
 
             {/* Article Header */}
-            <header className="mb-8 pb-6 border-b border-zinc-800">
-              <h1 className="text-3xl sm:text-4xl font-bold text-zinc-100 mb-4">{content.title}</h1>
-              <div className="flex items-center text-zinc-500 text-sm space-x-4">
+            <header className="mb-8 pb-6 border-b border-palette-border">
+              <h1 className="text-3xl sm:text-4xl font-bold text-palette-textPrimary mb-4">{content.title}</h1>
+              <div className="flex items-center text-palette-textMuted text-sm space-x-4">
                 <span>By {dbArticle.sourceAuthor || 'Codcompass Team'}</span>
                 <span>·</span>
                 <time>{dbArticle.publishedAt ? new Date(dbArticle.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}</time>
@@ -187,11 +187,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {/* Free Content */}
             <div
               className="prose prose-lg prose-invert max-w-none
-                prose-headings:font-bold prose-headings:text-zinc-100
-                prose-p:text-zinc-300 prose-p:leading-relaxed
-                prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                prose-pre:bg-zinc-900 prose-pre:text-zinc-100 prose-pre:rounded-lg
-                prose-a:text-cyan-400 prose-a:no-underline"
+                prose-headings:font-bold prose-headings:text-palette-textPrimary
+                prose-p:text-palette-textSecondary prose-p:leading-relaxed
+                prose-code:bg-palette-bgSecondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary prose-pre:rounded-lg
+                prose-a:text-palette-accent prose-a:no-underline"
             >
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{freeContent}</ReactMarkdown>
             </div>
@@ -211,11 +211,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 return (
                   <div
                     className="prose prose-lg prose-invert max-w-none mt-8
-                      prose-headings:font-bold prose-headings:text-zinc-100
-                      prose-p:text-zinc-300 prose-p:leading-relaxed
-                      prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                      prose-pre:bg-zinc-900 prose-pre:text-zinc-100 prose-pre:rounded-lg
-                      prose-a:text-cyan-400 prose-a:no-underline"
+                      prose-headings:font-bold prose-headings:text-palette-textPrimary
+                      prose-p:text-palette-textSecondary prose-p:leading-relaxed
+                      prose-code:bg-palette-bgSecondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                      prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary prose-pre:rounded-lg
+                      prose-a:text-palette-accent prose-a:no-underline"
                   >
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
                   </div>
@@ -232,8 +232,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
                       <div
                         className="prose prose-lg prose-invert max-w-none
-                          prose-headings:font-bold prose-p:text-zinc-300
-                          prose-pre:bg-zinc-900 prose-pre:text-zinc-100"
+                          prose-headings:font-bold prose-p:text-palette-textSecondary
+                          prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary"
                       >
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
                       </div>
@@ -253,10 +253,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
             {/* Sources */}
             {dbArticle.sourceSite && (
-              <div className="mt-12 pt-8 border-t border-zinc-800">
-                <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3">{t.sources}</h3>
+              <div className="mt-12 pt-8 border-t border-palette-border">
+                <h3 className="text-sm font-semibold text-palette-textMuted uppercase tracking-wider mb-3">{t.sources}</h3>
                 <ul className="space-y-1">
-                  <li className="text-sm text-zinc-400">• {dbArticle.sourceSite}</li>
+                  <li className="text-sm text-palette-textMuted">• {dbArticle.sourceSite}</li>
                 </ul>
               </div>
             )}

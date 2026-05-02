@@ -28,19 +28,19 @@ const comparisons: ComparisonItem[] = [
 
 export default function ComparisonTable() {
   return (
-    <section className="py-24 px-4 bg-zinc-900/50">
+    <section className="py-24 px-4 bg-palette-bgSecondary">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-500">
+          <h2 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-palette-textMuted">
             Why Developers Choose Codcompass 2.0
           </h2>
-          <p className="mt-4 text-lg text-neutral-400">
+          <p className="mt-4 text-lg text-palette-textMuted">
             We don't just deliver content, we deliver productivity
           </p>
         </div>
 
         {/* Comparison Table */}
-        <div className="rounded-2xl border border-white/[0.08] overflow-hidden bg-zinc-900">
+        <div className="rounded-2xl border border-white/[0.08] overflow-hidden bg-palette-bgCard">
           {/* Table Header */}
           <div className="grid grid-cols-2 border-b border-white/[0.08]">
             <div className="p-4 sm:p-6 bg-red-500/5">
@@ -61,10 +61,10 @@ export default function ComparisonTable() {
           <div className="divide-y divide-white/[0.08]">
             {comparisons.map((item, index) => (
               <div key={index} className="grid grid-cols-2">
-                <div className="p-4 sm:p-5 text-sm sm:text-base text-zinc-400">
+                <div className="p-4 sm:p-5 text-sm sm:text-base text-palette-textMuted">
                   {item.pain}
                 </div>
-                <div className="p-4 sm:p-5 text-sm sm:text-base text-zinc-200 border-l border-white/[0.08] font-medium">
+                <div className="p-4 sm:p-5 text-sm sm:text-base text-palette-textSecondary border-l border-white/[0.08] font-medium">
                   {item.solution}
                 </div>
               </div>

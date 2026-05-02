@@ -61,12 +61,12 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
   const estimatedTime = series.estimatedTime || Math.max(5, series.totalParts * 10);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-palette-bgPrimary text-palette-textPrimary">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back button */}
         <Link
           href={`/${locale}/kb`}
-          className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-cyan-400 mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-palette-textMuted hover:text-palette-accent mb-8 transition-colors"
         >
           <Icon name="chevron-left" size={16} />
           {t.backToKB}
@@ -74,15 +74,15 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
 
         {/* Series header */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary mb-4">
             <Icon name="book-marked" size={14} />
             {t.series}
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{title}</h1>
           {description && (
-            <p className="text-lg text-zinc-400 mb-6 max-w-3xl">{description}</p>
+            <p className="text-lg text-palette-textMuted mb-6 max-w-3xl">{description}</p>
           )}
-          <div className="flex flex-wrap gap-6 text-sm text-zinc-500">
+          <div className="flex flex-wrap gap-6 text-sm text-palette-textMuted">
             <span className="flex items-center gap-2">
               <Icon name="file-text" size={16} />
               {articles.length} {t.articles}
@@ -108,36 +108,36 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                 key={article.id}
                 className={`p-6 rounded-2xl border transition-all duration-200 ${
                   accessLevel === 'free'
-                    ? 'bg-zinc-900 border-white/[0.08] hover:border-green-500/30'
-                    : 'bg-zinc-900/50 border-white/[0.08] hover:border-indigo-500/30'
+                    ? 'bg-palette-bgCard border-white/[0.08] hover:border-green-500/30'
+                    : 'bg-palette-bgSecondary border-white/[0.08] hover:border-palette-primary'
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-sm font-semibold">
+                      <span className="w-8 h-8 rounded-lg bg-palette-bgTertiary text-palette-primary flex items-center justify-center text-sm font-semibold">
                         {index + 1}
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
                         accessLevel === 'pro'
                           ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
                           : accessLevel === 'builder'
-                          ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                          ? 'bg-palette-bgTertiary text-palette-primary border-palette-primary'
                           : 'bg-green-500/10 text-green-400 border-green-500/20'
                       }`}>
                         {accessLevel === 'pro' ? t.pro : accessLevel === 'builder' ? t.builder : t.free}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-zinc-800 text-zinc-400 border border-zinc-700">
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-palette-bgSecondary text-palette-textMuted border border-palette-border">
                         {difficulty}
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2 hover:text-indigo-400 transition-colors">
+                    <h3 className="text-lg font-semibold text-white mb-2 hover:text-palette-primary transition-colors">
                       {articleTitle}
                     </h3>
                     {articleExcerpt && (
-                      <p className="text-sm text-zinc-500 line-clamp-2">{articleExcerpt}</p>
+                      <p className="text-sm text-palette-textMuted line-clamp-2">{articleExcerpt}</p>
                     )}
-                    <div className="flex items-center gap-4 mt-3 text-xs text-zinc-600">
+                    <div className="flex items-center gap-4 mt-3 text-xs text-palette-textMuted">
                       <span className="flex items-center gap-1">
                         <Icon name="clock" size={12} />
                         ~{readTime} {t.minutes}
@@ -148,8 +148,8 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                     href={`/${locale}/kb/${article.slug}`}
                     className={`flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       accessLevel === 'free'
-                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700'
+                        ? 'bg-palette-primary text-white hover:bg-palette-primary-hover'
+                        : 'bg-palette-bgSecondary text-palette-textSecondary hover:bg-palette-bgTertiary border border-palette-border'
                     }`}
                   >
                     {accessLevel === 'free' ? t.readArticle : t.unlockWithPro}
@@ -162,16 +162,16 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-16 text-center p-8 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 rounded-2xl border border-indigo-500/30">
+        <div className="mt-16 text-center p-8 bg-gradient-to-br from-[color-mix(in_srgb,var(--primary)_22%,transparent)] to-[color-mix(in_srgb,var(--accent)_22%,transparent)] rounded-2xl border border-palette-primary">
           <h2 className="text-2xl font-bold text-white mb-3">
             {t.startLearning}
           </h2>
-          <p className="text-zinc-400 mb-6">
+          <p className="text-palette-textMuted mb-6">
             Unlock all articles for the complete learning experience
           </p>
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-palette-primary text-white font-semibold hover:bg-palette-primary-hover transition-colors"
           >
             View Pricing
             <Icon name="arrow-right" size={18} />

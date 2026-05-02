@@ -39,33 +39,33 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
-      <form onSubmit={handleSignUp} className="w-full max-w-md p-8 space-y-6 bg-zinc-900 rounded-xl border border-zinc-800 shadow-2xl">
+    <div className="min-h-screen bg-palette-bgPrimary flex items-center justify-center p-4">
+      <form onSubmit={handleSignUp} className="w-full max-w-md p-8 space-y-6 bg-palette-bgCard rounded-xl border border-palette-border shadow-2xl">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white">Create Account</h2>
-          <p className="text-sm text-zinc-400 mt-2">Join CodeCompass Developer Community</p>
+          <p className="text-sm text-palette-textMuted mt-2">Join CodeCompass Developer Community</p>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Email Address</label>
+            <label className="block text-sm font-medium text-palette-textMuted mb-1">Email Address</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 bg-palette-bgSecondary border border-palette-border rounded-lg text-white focus:ring-2 focus:ring-palette-primary focus:border-transparent outline-none transition-all"
               placeholder="name@example.com"
               required
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Password</label>
+            <label className="block text-sm font-medium text-palette-textMuted mb-1">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 bg-palette-bgSecondary border border-palette-border rounded-lg text-white focus:ring-2 focus:ring-palette-primary focus:border-transparent outline-none transition-all"
               placeholder="At least 6 characters"
               minLength={6}
               required
@@ -81,14 +81,14 @@ export default function SignUp() {
 
         <button
           type="submit"
-          className="w-full py-3 px-4 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+          className="w-full py-3 px-4 bg-palette-primary hover:bg-palette-primary-hover text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-palette-primary"
         >
           Sign Up
         </button>
 
-        <div className="text-center text-sm text-zinc-500">
+        <div className="text-center text-sm text-palette-textMuted">
           Already have an account?{' '}
-          <a href="/login" className="text-cyan-400 hover:text-cyan-300 font-medium">
+          <a href="/login" className="text-palette-accent hover:text-palette-accent font-medium">
             Log in
           </a>
         </div>

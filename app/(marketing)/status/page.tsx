@@ -20,7 +20,7 @@ const incidents = [
 
 export default function StatusPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -38,15 +38,15 @@ export default function StatusPage() {
           {/* Services */}
           <div className="mb-8">
             <h2 className="text-xl font-bold text-white mb-4">Service Status</h2>
-            <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
+            <div className="bg-palette-bgCard rounded-xl border border-palette-border overflow-hidden">
               {services.map((service) => (
                 <div
                   key={service.name}
-                  className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 last:border-0"
+                  className="flex items-center justify-between px-6 py-4 border-b border-palette-border last:border-0"
                 >
                   <span className="font-medium text-white">{service.name}</span>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-zinc-500">90-day uptime: {service.uptime}</span>
+                    <span className="text-sm text-palette-textMuted">90-day uptime: {service.uptime}</span>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
                       {service.status === 'operational' ? 'Operational' : service.status}
                     </span>
@@ -63,7 +63,7 @@ export default function StatusPage() {
               {incidents.map((incident) => (
                 <div
                   key={incident.date}
-                  className="bg-zinc-900 rounded-xl border border-zinc-800 p-6"
+                  className="bg-palette-bgCard rounded-xl border border-palette-border p-6"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-medium text-white">{incident.title}</h3>
@@ -71,8 +71,8 @@ export default function StatusPage() {
                       Resolved
                     </span>
                   </div>
-                  <p className="text-sm text-zinc-500 mb-2">{incident.date}</p>
-                  <p className="text-zinc-400">{incident.description}</p>
+                  <p className="text-sm text-palette-textMuted mb-2">{incident.date}</p>
+                  <p className="text-palette-textMuted">{incident.description}</p>
                 </div>
               ))}
             </div>

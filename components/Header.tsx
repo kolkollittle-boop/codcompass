@@ -49,13 +49,17 @@ export default function Header({ locale = 'en' }: HeaderProps) {
     getStarted: 'Get Started',
   };
 
+  const navInactive =
+    'border-transparent text-palette-textMuted hover:border-palette-border hover:text-palette-textPrimary';
+  const navActive = 'border-palette-primary text-palette-textPrimary';
+
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="bg-palette-bgSecondary border-b border-palette-border sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href={`/${locale}` as any} className="text-2xl font-bold text-primary-600 tracking-tight">
+              <Link href={`/${locale}` as any} className="text-2xl font-bold text-palette-primary tracking-tight">
                 Codcompass
               </Link>
             </div>
@@ -64,8 +68,8 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                 href={linkWithLocale(locale, '/kb') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                   pathname?.startsWith(`/${locale}/kb`) && !pathname?.startsWith(`/${locale}/kb/categories`)
-                    ? 'border-primary-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                    ? navActive
+                    : navInactive
                 }`}
               >
                 {t.kb}
@@ -73,9 +77,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/kb/categories') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname?.startsWith(`/${locale}/kb/categories`)
-                    ? 'border-primary-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  pathname?.startsWith(`/${locale}/kb/categories`) ? navActive : navInactive
                 }`}
               >
                 {t.categories}
@@ -83,9 +85,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/blog') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname?.startsWith(`/${locale}/blog`)
-                    ? 'border-primary-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  pathname?.startsWith(`/${locale}/blog`) ? navActive : navInactive
                 }`}
               >
                 {t.blog}
@@ -93,9 +93,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/pricing') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname === `/${locale}/pricing`
-                    ? 'border-primary-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  pathname === `/${locale}/pricing` ? navActive : navInactive
                 }`}
               >
                 {t.pricing}
@@ -103,9 +101,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/about') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname === `/${locale}/about`
-                    ? 'border-primary-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  pathname === `/${locale}/about` ? navActive : navInactive
                 }`}
               >
                 {t.about}
@@ -119,7 +115,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-palette-bgTertiary transition-colors"
                 >
                   {session.user?.image && (
                     <img
@@ -128,66 +124,66 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                       className="w-8 h-8 rounded-full"
                     />
                   )}
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-palette-textSecondary">
                     {session.user?.name || 'User'}
                   </span>
-                  <Icon name="chevron-down" size={16} className="text-gray-500" />
+                  <Icon name="chevron-down" size={16} className="text-palette-textMuted" />
                 </button>
 
                 {/* User Dropdown Menu */}
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
-                      <p className="text-xs text-gray-500">{session.user?.email}</p>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800 mt-1">
+                  <div className="absolute right-0 mt-2 w-48 bg-palette-bgCard rounded-lg shadow-lg border border-palette-border py-2 z-50">
+                    <div className="px-4 py-2 border-b border-palette-border">
+                      <p className="text-sm font-medium text-palette-textPrimary">{session.user?.name}</p>
+                      <p className="text-xs text-palette-textMuted">{session.user?.email}</p>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-palette-bgTertiary text-palette-primary mt-1">
                         {(session.user as any)?.role || 'USER'}
                       </span>
                     </div>
                     <Link
                       href={linkWithLocale(locale, '/dashboard') as any}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-palette-textSecondary hover:bg-palette-bgTertiary"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <Icon name="dashboard" size={16} className="text-gray-500" />
+                      <Icon name="dashboard" size={16} className="text-palette-textMuted" />
                       {t.dashboard}
                     </Link>
                     <Link
                       href={linkWithLocale(locale, '/dashboard/bookmarks') as any}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-palette-textSecondary hover:bg-palette-bgTertiary"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <Icon name="bookmark" size={16} className="text-gray-500" />
+                      <Icon name="bookmark" size={16} className="text-palette-textMuted" />
                       {t.bookmarks}
                     </Link>
                     <Link
                       href={linkWithLocale(locale, '/dashboard/settings') as any}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-palette-textSecondary hover:bg-palette-bgTertiary"
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <Icon name="settings" size={16} className="text-gray-500" />
+                      <Icon name="settings" size={16} className="text-palette-textMuted" />
                       {t.settings}
                     </Link>
                     {isAdmin && (
                       <>
-                        <div className="border-t border-gray-100 my-1"></div>
+                        <div className="border-t border-palette-border my-1"></div>
                         <Link
                           href={linkWithLocale(locale, '/admin') as any}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-palette-primary hover:bg-palette-bgTertiary"
                           onClick={() => setShowUserMenu(false)}
                         >
-                          <Icon name="shield" size={16} className="text-indigo-500" />
+                          <Icon name="shield" size={16} className="text-palette-primary" />
                           {t.admin}
                         </Link>
                       </>
                     )}
-                    <div className="border-t border-gray-100 my-1"></div>
+                    <div className="border-t border-palette-border my-1"></div>
                     <button
                       onClick={() => {
                         signOut({ callbackUrl: `/${locale}` });
                         setShowUserMenu(false);
                       }}
-                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-palette-bgTertiary"
                     >
                       <Icon name="log-out" size={16} className="text-red-500" />
                       {t.signOut}
@@ -199,13 +195,13 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <>
                 <Link
                   href={linkWithLocale(locale, '/login') as any}
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-palette-textSecondary hover:text-palette-textPrimary"
                 >
                   {t.signIn}
                 </Link>
                 <Link
                   href={linkWithLocale(locale, '/pricing') as any}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-palette-primary hover:bg-palette-primary-hover transition-colors"
                 >
                   {t.getStarted}
                 </Link>

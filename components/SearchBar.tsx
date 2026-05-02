@@ -54,7 +54,7 @@ export default function SearchBar() {
     <div ref={searchRef} className="relative">
       <div className="relative">
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-palette-textMuted"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -70,29 +70,29 @@ export default function SearchBar() {
           }}
           onFocus={() => setIsOpen(true)}
           placeholder="Search articles..."
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
+          className="w-full pl-10 pr-4 py-2 border border-palette-border rounded-lg bg-palette-bgCard text-palette-textPrimary placeholder-palette-textMuted focus:ring-2 focus:ring-palette-primary focus:border-palette-primary text-sm"
         />
       </div>
 
       {isOpen && (query.length >= 2 || results.length > 0) && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-palette-bgCard rounded-lg shadow-lg border border-palette-border max-h-96 overflow-y-auto z-50">
           {isLoading ? (
-            <div className="p-4 text-center text-gray-500">Searching...</div>
+            <div className="p-4 text-center text-palette-textMuted">Searching...</div>
           ) : results.length > 0 ? (
             <div className="py-2">
               {results.map((result) => (
                 <Link
                   key={result.id}
                   href={(`/kb/${result.slug}`) as any}
-                  className="block px-4 py-3 hover:bg-gray-50 transition-colors"
+                  className="block px-4 py-3 hover:bg-palette-bgTertiary transition-colors"
                   onClick={() => {
                     setIsOpen(false);
                     setQuery('');
                   }}
                 >
-                  <h4 className="text-sm font-medium text-gray-900">{result.titleEn}</h4>
+                  <h4 className="text-sm font-medium text-palette-textPrimary">{result.titleEn}</h4>
                   {result.excerptEn && (
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                    <p className="text-xs text-palette-textMuted mt-1 line-clamp-2">
                       {result.excerptEn.slice(0, 100)}...
                     </p>
                   )}
@@ -100,7 +100,7 @@ export default function SearchBar() {
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-gray-500">
+            <div className="p-4 text-center text-palette-textMuted">
               No results found for "{query}"
             </div>
           )}

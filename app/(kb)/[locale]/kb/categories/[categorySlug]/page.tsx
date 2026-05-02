@@ -42,7 +42,7 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
   const articles = await getArticlesByCategorySlug(slug, 100, 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       {/* Header */}
       <div className={`bg-gradient-to-r ${catInfo.color} text-white py-16`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,7 +62,7 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
       {/* Articles List */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {articles.length === 0 ? (
-          <div className="text-center py-20 text-zinc-500">
+          <div className="text-center py-20 text-palette-textMuted">
             No articles in this category yet.
           </div>
         ) : (
@@ -73,17 +73,17 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
                 <Link
                   key={article.id}
                   href={`/${locale}/kb/${article.slug}`}
-                  className="group bg-zinc-900 rounded-2xl border border-zinc-800 p-6 hover:border-zinc-700 transition-all"
+                  className="group bg-palette-bgCard rounded-2xl border border-palette-border p-6 hover:border-palette-border transition-all"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-white group-hover:text-indigo-400 mb-2">
+                      <h3 className="text-xl font-semibold text-white group-hover:text-palette-primary mb-2">
                         {content.title}
                       </h3>
-                      <p className="text-zinc-400 line-clamp-2 mb-3">
+                      <p className="text-palette-textMuted line-clamp-2 mb-3">
                         {content.excerpt || content.description}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-zinc-500">
+                      <div className="flex items-center gap-4 text-sm text-palette-textMuted">
                         <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
                         <span className="flex items-center gap-1">
                           👁️ {article.viewCount}
@@ -92,7 +92,7 @@ export default async function CategorySlugPage({ params }: CategorySlugPageProps
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
                             article.accessLevel === 'pro'
                               ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-                              : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                              : 'bg-palette-bgTertiary text-palette-primary border-palette-primary'
                           }`}>
                             {article.accessLevel === 'pro' ? 'Pro' : 'Builder'}
                           </span>

@@ -35,47 +35,47 @@ export default function ProductionBundle({
   const checkedCount = Object.values(checkedItems).filter(Boolean).length;
 
   return (
-    <div className="bg-zinc-900/80 border border-zinc-800 rounded-xl my-10 overflow-hidden">
+    <div className="bg-palette-bgSecondary border border-palette-border rounded-xl my-10 overflow-hidden">
       {/* 头部 - 可点击展开 */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-6 hover:bg-zinc-800/50 transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between p-6 hover:bg-palette-bgSecondary transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] rounded-lg flex items-center justify-center">
             <FileCode className="w-6 h-6 text-white" />
           </div>
           <div className="text-left">
-            <h3 className="text-lg font-bold text-zinc-100">
+            <h3 className="text-lg font-bold text-palette-textPrimary">
               Production Bundle
             </h3>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-palette-textMuted">
               本篇完整生产力工具包 · 价值 $29
             </p>
           </div>
         </div>
         {isExpanded ? (
-          <ChevronUp className="w-5 h-5 text-zinc-400" />
+          <ChevronUp className="w-5 h-5 text-palette-textMuted" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-zinc-400" />
+          <ChevronDown className="w-5 h-5 text-palette-textMuted" />
         )}
       </button>
 
       {/* 展开内容 */}
       {isExpanded && (
-        <div className="border-t border-zinc-800 p-6 space-y-6">
+        <div className="border-t border-palette-border p-6 space-y-6">
           {/* Blueprint 下载 */}
           {blueprintUrl && (
-            <div className="bg-zinc-800/50 rounded-lg p-4 flex items-center justify-between">
+            <div className="bg-palette-bgSecondary rounded-lg p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-zinc-700 rounded-lg flex items-center justify-center">
-                  <Download className="w-5 h-5 text-cyan-400" />
+                <div className="w-10 h-10 bg-palette-bgTertiary rounded-lg flex items-center justify-center">
+                  <Download className="w-5 h-5 text-palette-accent" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-zinc-200">
+                  <p className="text-sm font-medium text-palette-textSecondary">
                     {blueprintName || 'Production Blueprint'}
                   </p>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-palette-textMuted">
                     docker-compose · 配置脚本 · 基准测试 · README
                   </p>
                 </div>
@@ -83,7 +83,7 @@ export default function ProductionBundle({
               <a
                 href={blueprintUrl}
                 download
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-palette-primary hover:bg-palette-primary-hover text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 Download
@@ -95,10 +95,10 @@ export default function ProductionBundle({
           {checklist.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">
+                <h4 className="text-sm font-semibold text-palette-textMuted uppercase tracking-wider">
                   避坑 Checklist
                 </h4>
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-palette-textMuted">
                   {checkedCount}/{checklist.length} 已完成
                 </span>
               </div>
@@ -109,21 +109,21 @@ export default function ProductionBundle({
                     onClick={() => toggleChecklistItem(item.id)}
                     className={`
                       w-full flex items-start gap-3 p-3 rounded-lg text-left transition-colors
-                      ${checkedItems[item.id] ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-zinc-800/30 hover:bg-zinc-800/50'}
+                      ${checkedItems[item.id] ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-palette-bgTertiary hover:bg-palette-bgSecondary'}
                     `}
                   >
                     <div className="flex-shrink-0 mt-0.5">
                       {checkedItems[item.id] ? (
                         <CheckSquare className="w-5 h-5 text-emerald-400" />
                       ) : (
-                        <Square className="w-5 h-5 text-zinc-600" />
+                        <Square className="w-5 h-5 text-palette-textMuted" />
                       )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         {item.icon === 'warning' && <AlertTriangle className="w-4 h-4 text-amber-400" />}
-                        {item.icon === 'shield' && <Shield className="w-4 h-4 text-cyan-400" />}
-                        <span className={`text-sm ${checkedItems[item.id] ? 'text-zinc-500 line-through' : 'text-zinc-300'}`}>
+                        {item.icon === 'shield' && <Shield className="w-4 h-4 text-palette-accent" />}
+                        <span className={`text-sm ${checkedItems[item.id] ? 'text-palette-textMuted line-through' : 'text-palette-textSecondary'}`}>
                           {item.text}
                         </span>
                       </div>
@@ -136,9 +136,9 @@ export default function ProductionBundle({
 
           {/* Pro 用户提示 */}
           {!isPro && (
-            <div className="pt-4 border-t border-zinc-800 text-center">
-              <p className="text-sm text-zinc-400">
-                升级 <span className="text-cyan-400 font-medium">Pro</span> 解锁完整 Bundle 和更多专题
+            <div className="pt-4 border-t border-palette-border text-center">
+              <p className="text-sm text-palette-textMuted">
+                升级 <span className="text-palette-accent font-medium">Pro</span> 解锁完整 Bundle 和更多专题
               </p>
             </div>
           )}

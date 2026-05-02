@@ -120,7 +120,7 @@ export function CheckoutContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       {/* Load Paddle.js */}
       <Script
         src="https://cdn.paddle.com/paddle/v2/paddle.js"
@@ -139,15 +139,15 @@ export function CheckoutContent() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white">Checkout</h1>
-            <p className="mt-2 text-zinc-400">Complete your subscription to unlock all features</p>
+            <p className="mt-2 text-palette-textMuted">Complete your subscription to unlock all features</p>
           </div>
 
           {/* Order Summary */}
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 mb-6">
+          <div className="bg-palette-bgCard rounded-2xl border border-palette-border p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="text-lg font-semibold text-white">{plan.name} Plan</h2>
-                <p className="text-sm text-zinc-400">{plan.description}</p>
+                <p className="text-sm text-palette-textMuted">{plan.description}</p>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-white">{price}</div>
@@ -158,13 +158,13 @@ export function CheckoutContent() {
             </div>
             
             {/* Billing Toggle */}
-            <div className="flex bg-zinc-800 rounded-lg p-1 mb-4">
+            <div className="flex bg-palette-bgSecondary rounded-lg p-1 mb-4">
               <a
                 href={`/checkout?plan=${plan.id}&billing=monthly`}
                 className={`flex-1 text-center py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedBilling === 'monthly'
-                    ? 'bg-zinc-700 text-white shadow-sm'
-                    : 'text-zinc-400 hover:text-white'
+                    ? 'bg-palette-bgTertiary text-white shadow-sm'
+                    : 'text-palette-textMuted hover:text-white'
                 }`}
               >
                 Monthly
@@ -173,8 +173,8 @@ export function CheckoutContent() {
                 href={`/checkout?plan=${plan.id}&billing=yearly`}
                 className={`flex-1 text-center py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedBilling === 'yearly'
-                    ? 'bg-zinc-700 text-white shadow-sm'
-                    : 'text-zinc-400 hover:text-white'
+                    ? 'bg-palette-bgTertiary text-white shadow-sm'
+                    : 'text-palette-textMuted hover:text-white'
                 }`}
               >
                 Yearly <span className="text-green-400 text-xs">(-33%)</span>
@@ -184,7 +184,7 @@ export function CheckoutContent() {
             {/* Features */}
             <ul className="space-y-2">
               {plan.features.map((feature, i) => (
-                <li key={i} className="flex items-center text-sm text-zinc-400">
+                <li key={i} className="flex items-center text-sm text-palette-textMuted">
                   <svg className="h-4 w-4 text-green-400 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
@@ -195,13 +195,13 @@ export function CheckoutContent() {
           </div>
 
           {/* Checkout Form */}
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <div className="bg-palette-bgCard rounded-2xl border border-palette-border p-6">
             <h2 className="text-lg font-semibold text-white mb-4">Payment Details</h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-palette-textSecondary mb-1">
                   Email Address
                 </label>
                 <input
@@ -210,14 +210,14 @@ export function CheckoutContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
+                  className="w-full px-4 py-3 border border-palette-border rounded-lg focus:ring-2 focus:ring-palette-primary focus:border-palette-primary bg-palette-bgSecondary text-white placeholder-palette-textMuted"
                   placeholder="you@example.com"
                 />
               </div>
 
               {/* Name */}
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-zinc-300 mb-1">
+                <label htmlFor="name" className="block text-sm font-medium text-palette-textSecondary mb-1">
                   Full Name
                 </label>
                 <input
@@ -226,7 +226,7 @@ export function CheckoutContent() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-zinc-800 text-white placeholder-zinc-500"
+                  className="w-full px-4 py-3 border border-palette-border rounded-lg focus:ring-2 focus:ring-palette-primary focus:border-palette-primary bg-palette-bgSecondary text-white placeholder-palette-textMuted"
                   placeholder="John Doe"
                 />
               </div>
@@ -242,33 +242,33 @@ export function CheckoutContent() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 px-4 bg-palette-primary hover:bg-palette-primary-hover text-white font-medium rounded-lg transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Processing...' : `Subscribe for ${price}`}
               </button>
 
               {/* Security Note */}
-              <p className="text-xs text-zinc-500 text-center">
+              <p className="text-xs text-palette-textMuted text-center">
                 🔒 Secure payment powered by Paddle. 30-day money-back guarantee.
               </p>
             </form>
           </div>
 
           {/* FAQ */}
-          <div className="mt-8 bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+          <div className="mt-8 bg-palette-bgCard rounded-2xl border border-palette-border p-6">
             <h2 className="text-lg font-semibold text-white mb-4">Frequently Asked Questions</h2>
             <div className="space-y-4">
               <div>
                 <h3 className="text-sm font-medium text-white">Can I cancel anytime?</h3>
-                <p className="text-sm text-zinc-400 mt-1">Yes, you can cancel your subscription at any time from your account settings.</p>
+                <p className="text-sm text-palette-textMuted mt-1">Yes, you can cancel your subscription at any time from your account settings.</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-white">Is there a money-back guarantee?</h3>
-                <p className="text-sm text-zinc-400 mt-1">Yes, we offer a 30-day money-back guarantee. No questions asked.</p>
+                <p className="text-sm text-palette-textMuted mt-1">Yes, we offer a 30-day money-back guarantee. No questions asked.</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-white">Can I switch plans?</h3>
-                <p className="text-sm text-zinc-400 mt-1">Yes, you can upgrade or downgrade your plan at any time. Changes take effect at the next billing cycle.</p>
+                <p className="text-sm text-palette-textMuted mt-1">Yes, you can upgrade or downgrade your plan at any time. Changes take effect at the next billing cycle.</p>
               </div>
             </div>
           </div>

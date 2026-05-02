@@ -9,14 +9,14 @@ export const metadata: Metadata = {
 
 export default function RefundPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-white mb-2">Refund policy</h1>
-          <p className="text-zinc-500 mb-8">Last updated: May 2, 2026</p>
+          <p className="text-palette-textMuted mb-8">Last updated: May 2, 2026</p>
 
-          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-zinc-300 prose-p:leading-relaxed prose-a:text-indigo-400 prose-li:text-zinc-300">
+          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-palette-textSecondary prose-p:leading-relaxed prose-a:text-palette-primary prose-li:text-palette-textSecondary">
             <p>
               We want your paid experience on Codcompass to be clear and predictable. This page explains{' '}
               <strong>when you can get a refund</strong>, <strong>how to request one</strong>, and the{' '}
