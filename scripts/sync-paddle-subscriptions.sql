@@ -1,5 +1,6 @@
 -- Sync Paddle subscriptions with user accounts
 -- This script links paddle_subscriptions records to users based on email in custom_data
+-- Note: Users table is 'users' (created by Prisma), not 'auth.users'
 
 -- Step 1: Check current state of paddle_subscriptions
 SELECT 
@@ -41,6 +42,9 @@ LEFT JOIN users u ON ps.user_id = u.id
 ORDER BY ps.created_at DESC;
 
 -- Step 5: If you need to manually add a subscription for a user, use this template:
+-- First, find the user ID
+-- SELECT id FROM users WHERE email = 'kolkollittle@gmail.com';
+-- Then update the subscription
 -- UPDATE paddle_subscriptions
--- SET user_id = (SELECT id FROM users WHERE email = 'kolkollittle@gmail.com')
+-- SET user_id = 'USER_ID_FROM_ABOVE'
 -- WHERE paddle_customer_id = 'ctm_xxxxxxxxxxxxx' AND user_id IS NULL;
