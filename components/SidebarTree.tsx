@@ -106,7 +106,7 @@ export function SidebarTree() {
         </div>
         <nav className="space-y-0.5">
           <TreeNode
-            label="RAG 生产实战"
+            label="RAG Production"
             icon={<Zap className="w-3.5 h-3.5 text-[hsl(var(--codcompass-brand))]" />}
             defaultOpen={true}
             hrefs={[
@@ -119,17 +119,17 @@ export function SidebarTree() {
               "/kb/rag-pitfalls",
             ]}
           >
-            <TreeItem href="/kb/rag-intro" label="RAG 基础概念" />
-            <TreeItem href="/kb/rag-architecture" label="RAG 架构设计" />
-            <TreeItem href="/kb/rag-indexing" label="索引策略" />
-            <TreeItem href="/kb/rag-retrieval" label="检索优化" />
-            <TreeItem href="/kb/rag-evaluation" label="评估与监控" />
-            <TreeItem href="/kb/rag-production" label="生产部署" isNew />
-            <TreeItem href="/kb/rag-pitfalls" label="7 个常见陷阱" />
+            <TreeItem href="/kb/rag-intro" label="RAG Basics" />
+            <TreeItem href="/kb/rag-architecture" label="RAG Architecture" />
+            <TreeItem href="/kb/rag-indexing" label="Indexing Strategy" />
+            <TreeItem href="/kb/rag-retrieval" label="Retrieval Optimization" />
+            <TreeItem href="/kb/rag-evaluation" label="Evaluation & Monitoring" />
+            <TreeItem href="/kb/rag-production" label="Production Deployment" isNew />
+            <TreeItem href="/kb/rag-pitfalls" label="7 Common Pitfalls" />
           </TreeNode>
 
           <TreeNode
-            label="AI Agent 开发"
+            label="AI Agent Dev"
             icon={<Code className="w-3.5 h-3.5 text-emerald-400" />}
             hrefs={[
               "/kb/agent-basics",
@@ -137,13 +137,13 @@ export function SidebarTree() {
               "/kb/agent-planning",
             ]}
           >
-            <TreeItem href="/kb/agent-basics" label="Agent 基础" />
-            <TreeItem href="/kb/agent-tools" label="工具调用" />
-            <TreeItem href="/kb/agent-planning" label="规划与执行" />
+            <TreeItem href="/kb/agent-basics" label="Agent Basics" />
+            <TreeItem href="/kb/agent-tools" label="Tool Calling" />
+            <TreeItem href="/kb/agent-planning" label="Planning & Execution" />
           </TreeNode>
 
           <TreeNode
-            label="数据库与向量"
+            label="Database & Vectors"
             icon={<Database className="w-3.5 h-3.5 text-cyan-400" />}
             hrefs={[
               "/kb/vector-db",
@@ -151,13 +151,13 @@ export function SidebarTree() {
               "/kb/hybrid-search",
             ]}
           >
-            <TreeItem href="/kb/vector-db" label="向量数据库" />
-            <TreeItem href="/kb/embeddings" label="Embedding 模型" />
-            <TreeItem href="/kb/hybrid-search" label="混合搜索" />
+            <TreeItem href="/kb/vector-db" label="Vector Databases" />
+            <TreeItem href="/kb/embeddings" label="Embedding Models" />
+            <TreeItem href="/kb/hybrid-search" label="Hybrid Search" />
           </TreeNode>
 
           <TreeNode
-            label="系统架构"
+            label="System Architecture"
             icon={<Layers className="w-3.5 h-3.5 text-purple-400" />}
             hrefs={[
               "/kb/microservices",
@@ -165,13 +165,13 @@ export function SidebarTree() {
               "/kb/caching",
             ]}
           >
-            <TreeItem href="/kb/microservices" label="微服务设计" />
-            <TreeItem href="/kb/api-design" label="API 设计" />
-            <TreeItem href="/kb/caching" label="缓存策略" />
+            <TreeItem href="/kb/microservices" label="Microservices Design" />
+            <TreeItem href="/kb/api-design" label="API Design" />
+            <TreeItem href="/kb/caching" label="Caching Strategy" />
           </TreeNode>
 
           <TreeNode
-            label="安全与合规"
+            label="Security & Compliance"
             icon={<Shield className="w-3.5 h-3.5 text-red-400" />}
             hrefs={[
               "/kb/auth",
@@ -179,13 +179,13 @@ export function SidebarTree() {
               "/kb/rate-limiting",
             ]}
           >
-            <TreeItem href="/kb/auth" label="认证与授权" />
-            <TreeItem href="/kb/data-privacy" label="数据隐私" />
-            <TreeItem href="/kb/rate-limiting" label="速率限制" />
+            <TreeItem href="/kb/auth" label="Auth & Authorization" />
+            <TreeItem href="/kb/data-privacy" label="Data Privacy" />
+            <TreeItem href="/kb/rate-limiting" label="Rate Limiting" />
           </TreeNode>
 
           <TreeNode
-            label="运维与配置"
+            label="Ops & Config"
             icon={<Settings className="w-3.5 h-3.5 text-orange-400" />}
             hrefs={[
               "/kb/monitoring",
@@ -193,9 +193,9 @@ export function SidebarTree() {
               "/kb/config-mgmt",
             ]}
           >
-            <TreeItem href="/kb/monitoring" label="监控与告警" />
-            <TreeItem href="/kb/ci-cd" label="CI/CD 流水线" />
-            <TreeItem href="/kb/config-mgmt" label="配置管理" />
+            <TreeItem href="/kb/monitoring" label="Monitoring & Alerts" />
+            <TreeItem href="/kb/ci-cd" label="CI/CD Pipeline" />
+            <TreeItem href="/kb/config-mgmt" label="Config Management" />
           </TreeNode>
         </nav>
       </div>
