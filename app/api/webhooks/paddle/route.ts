@@ -16,6 +16,20 @@ const supabaseAdmin = createClient(
 // Paddle webhook secret for signature verification
 const PADDLE_WEBHOOK_SECRET = process.env.PADDLE_WEBHOOK_SECRET || '';
 
+/** Paddle Billing v2 line items use `price.id`, not top-level `price_id`. */
+function lineItemPriceId(item: any): string | undefined {
+  if (!item || typeof item !== 'object') return undefined;
+  if (typeof item.price_id === 'string' && item.price_id) return item.price_id;
+  const id = item.price?.id;
+  return typeof id === 'string' && id ? id : undefined;
+}
+
+function lineItemProductId(item: any): string | undefined {
+  if (!item || typeof item !== 'object') return undefined;
+  const pid = item.price?.product_id ?? item.product_id;
+  return typeof pid === 'string' && pid ? pid : undefined;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Get raw body for signature verification
@@ -42,6 +56,8 @@ export async function POST(req: NextRequest) {
         break;
 
       case 'subscription.created':
+      case 'subscription.trialing':
+      case 'subscription.activated':
         await handleSubscriptionCreated(eventData);
         break;
 
@@ -95,8 +111,8 @@ async function findUserIdByCustomerId(customerId: string, customerEmail?: string
         .from('User')
         .select('id')
         .eq('email', customerEmail)
-        .single();
-      
+        .maybeSingle();
+
       if (data && !error) {
         console.log(`[Paddle] Found user by email: ${data.id}`);
         return data.id;
@@ -109,8 +125,8 @@ async function findUserIdByCustomerId(customerId: string, customerEmail?: string
         .from('User')
         .select('id')
         .eq('email', customerId)
-        .single();
-      
+        .maybeSingle();
+
       if (data && !error) {
         return data.id;
       }
@@ -122,8 +138,8 @@ async function findUserIdByCustomerId(customerId: string, customerEmail?: string
         .from('User')
         .select('id')
         .eq('id', customerId)
-        .single();
-      
+        .maybeSingle();
+
       if (data && !error) {
         return data.id;
       }
@@ -136,7 +152,7 @@ async function findUserIdByCustomerId(customerId: string, customerEmail?: string
       .eq('paddle_customer_id', customerId)
       .not('user_id', 'is', null)
       .limit(1)
-      .single();
+      .maybeSingle();
     
     return data?.user_id || null;
   } catch (error) {
@@ -186,19 +202,20 @@ async function handleTransactionCompleted(data: any) {
   console.log(`[Paddle] Transaction completed: ${transactionId}`);
   console.log(`[Paddle] Customer: ${customerId}, Plan: ${customData.plan_id}`);
 
-  // Extract plan info from first item
   const firstItem = items[0];
-  const priceId = firstItem?.price_id;
-  const productId = firstItem?.price?.product_id;
+  const priceId = lineItemPriceId(firstItem);
+  const productId = lineItemProductId(firstItem);
   const inferred = inferPlanFromPriceId(priceId);
 
   const planType = customData.plan_id || inferred?.planType || 'builder';
   const billingCycle = customData.billing_cycle || inferred?.billingCycle || 'yearly';
 
-  // Extract customer email from Paddle webhook data
-  const customerEmail = data.customer?.email || data.email || null;
+  const customerEmail =
+    data.customer?.email ||
+    data.email ||
+    (typeof customData.customer_email === 'string' ? customData.customer_email : null) ||
+    null;
 
-  // Find user by customer_id (with email fallback)
   const userId = await findUserIdByCustomerId(customerId, customerEmail);
 
   const txnCustomData = {
@@ -206,16 +223,15 @@ async function handleTransactionCompleted(data: any) {
     customer_email: customerEmail || customData.customer_email,
   };
 
-  // Store transaction record
   const { error } = await supabaseAdmin
     .from('paddle_subscriptions')
     .insert({
       paddle_subscription_id: `txn_${transactionId}`,
-      paddle_customer_id: customerId,
+      paddle_customer_id: customerId || 'unknown',
       user_id: userId,
       status: 'active',
-      plan_id: productId,
-      price_id: priceId,
+      plan_id: productId ?? null,
+      price_id: priceId || 'unknown',
       plan_type: planType,
       billing_cycle: billingCycle,
       custom_data: txnCustomData,
@@ -242,10 +258,12 @@ async function handleSubscriptionCreated(data: any) {
   const status = data.status;
   const customData = data.custom_data || {};
   
-  // Extract customer email from Paddle webhook data
-  const customerEmail = data.customer?.email || data.email || null;
-  
-  // Add customer email to custom_data for future lookups
+  const customerEmail =
+    data.customer?.email ||
+    data.email ||
+    (typeof customData.customer_email === 'string' ? customData.customer_email : null) ||
+    null;
+
   const enrichedCustomData = {
     ...customData,
     customer_email: customerEmail?.trim() || customData.customer_email,
@@ -253,10 +271,9 @@ async function handleSubscriptionCreated(data: any) {
   
   console.log(`[Paddle] Subscription created: ${subscriptionId}, Status: ${status}, Customer: ${customerId}, Email: ${customerEmail}`);
 
-  // Extract plan info
   const firstItem = data.items?.[0];
-  const priceId = firstItem?.price_id;
-  const productId = firstItem?.price?.product_id;
+  const priceId = lineItemPriceId(firstItem);
+  const productId = lineItemProductId(firstItem);
   const inferred = inferPlanFromPriceId(priceId);
   const planType = customData.plan_id || inferred?.planType || 'builder';
   const billingCycle = customData.billing_cycle || inferred?.billingCycle || 'yearly';
@@ -264,16 +281,15 @@ async function handleSubscriptionCreated(data: any) {
   // Find user by customer_id and email
   const userId = await findUserIdByCustomerId(customerId, customerEmail);
 
-  // Store subscription in database
   const { error } = await supabaseAdmin
     .from('paddle_subscriptions')
     .insert({
       paddle_subscription_id: subscriptionId,
-      paddle_customer_id: customerId,
+      paddle_customer_id: customerId || 'unknown',
       user_id: userId,
       status: status,
-      plan_id: productId,
-      price_id: priceId,
+      plan_id: productId ?? null,
+      price_id: priceId || 'unknown',
       plan_type: planType,
       billing_cycle: billingCycle,
       started_at: data.started_at,
@@ -305,19 +321,27 @@ async function handleSubscriptionUpdated(data: any) {
   console.log(`[Paddle] Subscription updated: ${subscriptionId}, New status: ${status}`);
 
   const firstItem = data.items?.[0];
-  const priceId = firstItem?.price_id;
+  const priceId = lineItemPriceId(firstItem);
   const inferred = inferPlanFromPriceId(priceId);
   const planTypeFromPayload =
     customData.plan_id || inferred?.planType || undefined;
 
-  // Update subscription in database
   const { data: existingSub, error: fetchError } = await supabaseAdmin
     .from('paddle_subscriptions')
     .select('user_id, plan_type')
     .eq('paddle_subscription_id', subscriptionId)
-    .single();
+    .maybeSingle();
 
-  const resolvedPlanType = planTypeFromPayload || existingSub?.plan_type;
+  if (fetchError) {
+    console.error('[Paddle] Error loading subscription for update:', fetchError);
+    return;
+  }
+  if (!existingSub) {
+    await handleSubscriptionCreated(data);
+    return;
+  }
+
+  const resolvedPlanType = planTypeFromPayload || existingSub.plan_type;
 
   const updatePayload: Record<string, unknown> = {
     status,

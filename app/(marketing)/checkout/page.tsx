@@ -96,6 +96,7 @@ export function CheckoutContent() {
           customData: {
             plan_id: plan.id,
             billing_cycle: selectedBilling,
+            customer_email: email,
           },
           settings: {
             displayMode: 'overlay',
