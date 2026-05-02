@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getPaddlePriceIdMap } from '@/lib/paddle-plans';
 
 // Paddle configuration
 const PADDLE_API_URL = process.env.PADDLE_ENV === 'production'
@@ -6,17 +7,7 @@ const PADDLE_API_URL = process.env.PADDLE_ENV === 'production'
   : 'https://sandbox-api.paddle.com';
 const PADDLE_API_KEY = process.env.PADDLE_API_KEY || '';
 
-// Plan mapping (Paddle price IDs)
-const PLAN_MAP: Record<string, Record<string, string>> = {
-  builder: {
-    monthly: process.env.PADDLE_BUILDER_MONTHLY_PRICE_ID || '',
-    yearly: process.env.PADDLE_BUILDER_YEARLY_PRICE_ID || '',
-  },
-  pro: {
-    monthly: process.env.PADDLE_PRO_MONTHLY_PRICE_ID || '',
-    yearly: process.env.PADDLE_PRO_YEARLY_PRICE_ID || '',
-  },
-};
+const PLAN_MAP = getPaddlePriceIdMap();
 
 export async function POST(req: NextRequest) {
   try {

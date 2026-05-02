@@ -154,12 +154,16 @@ export default function DashboardPage() {
                  subscription?.plan === 'PRO' ? 'Pro' :
                  subscription?.plan === 'ENTERPRISE' ? 'Enterprise' : 'Free'}
               </div>
-              {subscription?.status === 'active' && (
+              {(subscription?.status === 'active' || subscription?.status === 'trialing') && (
                 <div className="text-sm text-green-400 mt-1">
-                  {subscription.subscription?.billingCycle === 'yearly' ? 'Billed yearly' : 'Billed monthly'}
+                  {subscription?.status === 'trialing'
+                    ? 'Free trial'
+                    : subscription.subscription?.billingCycle === 'yearly'
+                      ? 'Billed yearly'
+                      : 'Billed monthly'}
                 </div>
               )}
-              {subscription?.status === 'active' ? (
+              {subscription?.status === 'active' || subscription?.status === 'trialing' ? (
                 <div className="mt-3 space-y-2">
                   <a href="/dashboard/settings" className="text-sm text-indigo-400 hover:text-indigo-300 font-medium block">
                     Manage →

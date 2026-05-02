@@ -93,6 +93,10 @@ export function CheckoutContent() {
         window.Paddle.Checkout.open({
           items: [{ priceId: data.priceId, quantity: 1 }],
           customer: { email, name: name || undefined },
+          customData: {
+            plan_id: plan.id,
+            billing_cycle: selectedBilling,
+          },
           settings: {
             displayMode: 'overlay',
             theme: 'dark',

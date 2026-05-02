@@ -38,22 +38,61 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Active / trial / past_due, or cancelled but still within billing grace (expires_at)
-    const { data: rows, error: subError } = await supabaseAdmin
+    const emailLower = session.user.email.trim().toLowerCase();
+
+    function subscriptionLooksPaid(r: {
+      status?: string | null;
+      expires_at?: string | null;
+    }): boolean {
+      const s = r.status || '';
+      if (s === 'active' || s === 'trialing' || s === 'past_due') return true;
+      if ((s === 'canceled' || s === 'cancelled') && r.expires_at) {
+        return new Date(r.expires_at).getTime() > Date.now();
+      }
+      return false;
+    }
+
+    const { data: rowsOwn, error: subError } = await supabaseAdmin
       .from('paddle_subscriptions')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
-    const now = Date.now();
-    const subscription =
-      rows?.find((r) => {
-        if (r.status === 'active' || r.status === 'trialing' || r.status === 'past_due') return true;
-        if (r.status === 'cancelled' && r.expires_at) {
-          return new Date(r.expires_at).getTime() > now;
-        }
-        return false;
-      }) ?? null;
+    const { data: orphanPool } = await supabaseAdmin
+      .from('paddle_subscriptions')
+      .select('*')
+      .is('user_id', null)
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    const rowsOrphan =
+      orphanPool?.filter((r) => {
+        const ce = (r.custom_data as Record<string, unknown> | null)?.customer_email;
+        return typeof ce === 'string' && ce.trim().toLowerCase() === emailLower;
+      }) ?? [];
+
+    const bySubId = new Map<string, (typeof rowsOwn)[number]>();
+    for (const r of [...(rowsOwn ?? []), ...rowsOrphan]) {
+      const key = r.paddle_subscription_id as string;
+      const prev = bySubId.get(key);
+      if (!prev || (!prev.user_id && r.user_id)) {
+        bySubId.set(key, r);
+      }
+    }
+    const merged = [...bySubId.values()].sort(
+      (a, b) =>
+        new Date(b.created_at as string).getTime() -
+        new Date(a.created_at as string).getTime()
+    );
+
+    const subscription = merged.find((r) => subscriptionLooksPaid(r)) ?? null;
+
+    if (subscription && !subscription.user_id && user.id) {
+      await supabaseAdmin
+        .from('paddle_subscriptions')
+        .update({ user_id: user.id, updated_at: new Date().toISOString() })
+        .eq('id', subscription.id as string);
+    }
 
     if (subError || !subscription) {
       return NextResponse.json({

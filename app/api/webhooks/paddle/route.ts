@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { inferPlanFromPriceId } from '@/lib/paddle-plans';
 
 /**
  * Paddle Webhook Handler
@@ -189,16 +190,21 @@ async function handleTransactionCompleted(data: any) {
   const firstItem = items[0];
   const priceId = firstItem?.price_id;
   const productId = firstItem?.price?.product_id;
-  
-  // Map product to plan type
-  const planType = customData.plan_id || 'builder';
-  const billingCycle = customData.billing_cycle || 'yearly';
+  const inferred = inferPlanFromPriceId(priceId);
+
+  const planType = customData.plan_id || inferred?.planType || 'builder';
+  const billingCycle = customData.billing_cycle || inferred?.billingCycle || 'yearly';
 
   // Extract customer email from Paddle webhook data
   const customerEmail = data.customer?.email || data.email || null;
 
   // Find user by customer_id (with email fallback)
   const userId = await findUserIdByCustomerId(customerId, customerEmail);
+
+  const txnCustomData = {
+    ...customData,
+    customer_email: customerEmail || customData.customer_email,
+  };
 
   // Store transaction record
   const { error } = await supabaseAdmin
@@ -212,7 +218,7 @@ async function handleTransactionCompleted(data: any) {
       price_id: priceId,
       plan_type: planType,
       billing_cycle: billingCycle,
-      custom_data: customData,
+      custom_data: txnCustomData,
       started_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
     });
@@ -221,8 +227,6 @@ async function handleTransactionCompleted(data: any) {
     console.error('[Paddle] Error storing transaction:', error);
   } else {
     console.log(`[Paddle] Transaction stored: ${transactionId}`);
-    
-    // Sync user plan if we found the user
     if (userId) {
       await syncUserPlan(userId, planType);
     }
@@ -244,7 +248,7 @@ async function handleSubscriptionCreated(data: any) {
   // Add customer email to custom_data for future lookups
   const enrichedCustomData = {
     ...customData,
-    customer_email: customerEmail,
+    customer_email: customerEmail?.trim() || customData.customer_email,
   };
   
   console.log(`[Paddle] Subscription created: ${subscriptionId}, Status: ${status}, Customer: ${customerId}, Email: ${customerEmail}`);
@@ -253,8 +257,9 @@ async function handleSubscriptionCreated(data: any) {
   const firstItem = data.items?.[0];
   const priceId = firstItem?.price_id;
   const productId = firstItem?.price?.product_id;
-  const planType = customData.plan_id || 'builder';
-  const billingCycle = customData.billing_cycle || 'yearly';
+  const inferred = inferPlanFromPriceId(priceId);
+  const planType = customData.plan_id || inferred?.planType || 'builder';
+  const billingCycle = customData.billing_cycle || inferred?.billingCycle || 'yearly';
 
   // Find user by customer_id and email
   const userId = await findUserIdByCustomerId(customerId, customerEmail);
@@ -282,8 +287,8 @@ async function handleSubscriptionCreated(data: any) {
   } else {
     console.log(`[Paddle] Subscription stored: ${subscriptionId}`);
     
-    // Sync user plan if subscription is active
-    if (status === 'active' && userId) {
+    // Trial = trialing; paid period = active — both should unlock Pro/Builder in app
+    if (userId && (status === 'active' || status === 'trialing')) {
       await syncUserPlan(userId, planType);
     }
   }
@@ -299,8 +304,11 @@ async function handleSubscriptionUpdated(data: any) {
 
   console.log(`[Paddle] Subscription updated: ${subscriptionId}, New status: ${status}`);
 
-  // Extract plan type if available
-  const planType = customData.plan_id;
+  const firstItem = data.items?.[0];
+  const priceId = firstItem?.price_id;
+  const inferred = inferPlanFromPriceId(priceId);
+  const planTypeFromPayload =
+    customData.plan_id || inferred?.planType || undefined;
 
   // Update subscription in database
   const { data: existingSub, error: fetchError } = await supabaseAdmin
@@ -309,22 +317,29 @@ async function handleSubscriptionUpdated(data: any) {
     .eq('paddle_subscription_id', subscriptionId)
     .single();
 
+  const resolvedPlanType = planTypeFromPayload || existingSub?.plan_type;
+
+  const updatePayload: Record<string, unknown> = {
+    status,
+    plan_type: resolvedPlanType,
+    next_billed_at: data.next_billed_at,
+    past_due_at: data.past_due_at,
+    updated_at: new Date().toISOString(),
+  };
+  if (inferred?.billingCycle) {
+    updatePayload.billing_cycle = inferred.billingCycle;
+  }
+
   const { error } = await supabaseAdmin
     .from('paddle_subscriptions')
-    .update({
-      status: status,
-      next_billed_at: data.next_billed_at,
-      past_due_at: data.past_due_at,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updatePayload)
     .eq('paddle_subscription_id', subscriptionId);
 
   if (error) {
     console.error('[Paddle] Error updating subscription:', error);
   } else if (existingSub?.user_id) {
-    // Sync user plan based on subscription status
-    const newPlanType = planType || existingSub.plan_type;
-    if (status === 'active' && newPlanType) {
+    const newPlanType = resolvedPlanType;
+    if ((status === 'active' || status === 'trialing') && newPlanType) {
       await syncUserPlan(existingSub.user_id, newPlanType);
     } else if (status === 'canceled' || status === 'expired') {
       await syncUserPlan(existingSub.user_id, 'free');
