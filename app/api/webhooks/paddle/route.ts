@@ -84,9 +84,24 @@ function verifyWebhookSignature(payload: string, signature: string): boolean {
  * Find user ID by Paddle customer ID
  * Assumes customer_id is either the user's email or Supabase user ID
  */
-async function findUserIdByCustomerId(customerId: string): Promise<string | null> {
+async function findUserIdByCustomerId(customerId: string, customerEmail?: string): Promise<string | null> {
   try {
-    // First, try to find user by email (if customerId is an email)
+    // First, try to find user by email (from Paddle customer data)
+    if (customerEmail) {
+      console.log(`[Paddle] Looking up user by email: ${customerEmail}`);
+      const { data, error } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('email', customerEmail)
+        .single();
+      
+      if (data && !error) {
+        console.log(`[Paddle] Found user by email: ${data.id}`);
+        return data.id;
+      }
+    }
+    
+    // Try to find user by customerId if it looks like an email
     if (customerId.includes('@')) {
       const { data, error } = await supabaseAdmin
         .from('users')
@@ -176,8 +191,11 @@ async function handleTransactionCompleted(data: any) {
   const planType = customData.plan_id || 'builder';
   const billingCycle = customData.billing_cycle || 'yearly';
 
-  // Find user by customer_id
-  const userId = await findUserIdByCustomerId(customerId);
+  // Extract customer email from Paddle webhook data
+  const customerEmail = data.customer?.email || data.email || null;
+
+  // Find user by customer_id (with email fallback)
+  const userId = await findUserIdByCustomerId(customerId, customerEmail);
 
   // Store transaction record
   const { error } = await supabaseAdmin
@@ -217,7 +235,10 @@ async function handleSubscriptionCreated(data: any) {
   const status = data.status;
   const customData = data.custom_data || {};
   
-  console.log(`[Paddle] Subscription created: ${subscriptionId}, Status: ${status}`);
+  // Extract customer email from Paddle webhook data
+  const customerEmail = data.customer?.email || data.email || null;
+  
+  console.log(`[Paddle] Subscription created: ${subscriptionId}, Status: ${status}, Customer: ${customerId}, Email: ${customerEmail}`);
 
   // Extract plan info
   const firstItem = data.items?.[0];
@@ -226,8 +247,8 @@ async function handleSubscriptionCreated(data: any) {
   const planType = customData.plan_id || 'builder';
   const billingCycle = customData.billing_cycle || 'yearly';
 
-  // Find user by customer_id (assuming customer_id is the user's email or Supabase ID)
-  const userId = await findUserIdByCustomerId(customerId);
+  // Find user by customer_id and email
+  const userId = await findUserIdByCustomerId(customerId, customerEmail);
 
   // Store subscription in database
   const { error } = await supabaseAdmin
