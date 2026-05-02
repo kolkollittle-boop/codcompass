@@ -11,13 +11,21 @@ const nextConfig: NextConfig = {
       './node_modules/esbuild/**/*',
       './node_modules/@esbuild/**/*',
       './node_modules/get-tsconfig/**/*',
+      './node_modules/resolve-pkg-maps/**/*',
       './automation/crawler/src/**/*',
     ],
   },
 
   // Prevent Next.js from bundling heavy Node.js libraries
   // These are only used by CLI scripts, not the web app
-  serverExternalPackages: ['turndown', 'cheerio', 'tsx', 'esbuild', 'get-tsconfig'],
+  serverExternalPackages: [
+    'turndown',
+    'cheerio',
+    'tsx',
+    'esbuild',
+    'get-tsconfig',
+    'resolve-pkg-maps',
+  ],
   
   // Ensure react-resizable-panels is bundled correctly
   transpilePackages: ['react-resizable-panels'],
