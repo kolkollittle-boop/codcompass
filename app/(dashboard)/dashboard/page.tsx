@@ -190,6 +190,21 @@ export default function DashboardPage() {
                     
                     const daysLeft = Math.ceil(7 - daysSinceStart);
                     
+                    const userEmail = ((session as { email?: string })?.email || '').trim();
+                    const siteBase =
+                      process.env.NEXT_PUBLIC_SITE_URL || 'https://www.codcompass.com';
+                    const refundBody =
+                      `账号邮箱：${userEmail}\n\n` +
+                      '请补充以下信息（便于处理）：\n' +
+                      '- 购买日期\n' +
+                      '- Paddle 付款收据中的订单号 / Transaction ID\n' +
+                      '- 退款原因（可选）\n\n' +
+                      '我们将在 3–5 个工作日内按退款政策处理。\n' +
+                      `政策全文：${siteBase.replace(/\/$/, '')}/refund\n`;
+                    const mailtoHref = `mailto:support@codcompass.com?subject=${encodeURIComponent(
+                      '[Codcompass] 订阅退款申请'
+                    )}&body=${encodeURIComponent(refundBody)}`;
+
                     return (
                       <div className="pt-2 border-t border-zinc-800">
                         <div className="text-xs text-zinc-500">
@@ -199,6 +214,20 @@ export default function DashboardPage() {
                               ? `${daysLeft} day${daysLeft !== 1 ? 's' : ''} remaining for full refund`
                               : 'Full refund within 7 days of purchase'}
                           </p>
+                        </div>
+                        <div className="mt-3 flex flex-col gap-2">
+                          <a
+                            href={mailtoHref}
+                            className="inline-flex items-center justify-center rounded-lg bg-zinc-100 text-zinc-900 text-sm font-medium px-3 py-2 hover:bg-white transition-colors text-center"
+                          >
+                            申请退款（发邮件至客服）
+                          </a>
+                          <a
+                            href="/refund"
+                            className="text-xs text-indigo-400 hover:text-indigo-300"
+                          >
+                            查看退款政策全文 →
+                          </a>
                         </div>
                       </div>
                     );
