@@ -52,9 +52,10 @@ model Account {
 }
 
 model Subscription {
-  id             String             @id @default(cuid())
-  userId         String
-  lemonSqueezyId String             @unique
+  id                   String             @id @default(cuid())
+  userId               String
+  /// Paddle subscription id (Prisma maps to legacy DB column `lemonSqueezyId`)
+  paddleSubscriptionId String             @unique @map("lemonSqueezyId")
   orderId        Int
   variantId      Int
   status         SubscriptionStatus @default(INACTIVE)
@@ -73,7 +74,7 @@ model Subscription {
 
   @@index([userId])
   @@index([status])
-  @@index([lemonSqueezyId])
+  @@index([paddleSubscriptionId])
 }
 
 model Article {

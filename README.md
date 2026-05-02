@@ -1,12 +1,12 @@
 # Codcompass - Codcompass Knowledge Base
 
-A premium technical knowledge base built with Next.js 15, Supabase, and Lemon Squeezy.
+A premium technical knowledge base built with Next.js 15, Supabase, and Paddle Billing.
 
 ## 🚀 Features
 
 - **Next.js 15** - Latest React framework with App Router
 - **Supabase** - PostgreSQL database with real-time capabilities
-- **Lemon Squeezy** - Payment processing with global tax compliance
+- **Paddle** - Subscription checkout and webhooks (Merchant of Record)
 - **Authentication** - NextAuth.js with email/password and OAuth
 - **Paywall** - Premium content with 30% free preview
 - **Responsive** - Mobile-first design with Tailwind CSS
@@ -19,7 +19,7 @@ A premium technical knowledge base built with Next.js 15, Supabase, and Lemon Sq
 - **Database:** PostgreSQL (Supabase)
 - **ORM:** Prisma
 - **Authentication:** NextAuth.js
-- **Payments:** Lemon Squeezy
+- **Payments:** Paddle Billing
 - **Styling:** Tailwind CSS
 - **Deployment:** Vercel
 
@@ -30,7 +30,7 @@ A premium technical knowledge base built with Next.js 15, Supabase, and Lemon Sq
 - Node.js 18+
 - npm or yarn
 - Supabase account
-- Lemon Squeezy account (for payments)
+- Paddle account (sandbox or live) for checkout and webhooks
 
 ### Installation
 
@@ -126,11 +126,10 @@ cyberpunkkb/
 
 ## 💳 Payments
 
-### Lemon Squeezy Integration
-- Subscription management
-- Webhook handling
-- Tax compliance
-- Multi-currency support
+### Paddle Billing
+- Checkout via Paddle.js (`/checkout`, `NEXT_PUBLIC_PADDLE_CLIENT_TOKEN`)
+- Webhook endpoint: `/api/webhooks/paddle` (`PADDLE_WEBHOOK_SECRET`)
+- Subscription rows in Supabase `paddle_subscriptions` (see `app/api/webhooks/paddle/route.ts`)
 
 ### Plans
 - **Free** - Access to 10% of articles
@@ -220,7 +219,7 @@ This project is licensed under the MIT License.
 
 - Next.js team for the amazing framework
 - Supabase for the database infrastructure
-- Lemon Squeezy for payment processing
+- Paddle for payment processing
 - Vercel for hosting
 
 ---

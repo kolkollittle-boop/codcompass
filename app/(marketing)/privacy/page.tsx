@@ -48,7 +48,7 @@ export default function PrivacyPage() {
             <h2>3. Information Sharing</h2>
             <p>We do not sell your personal information. We only share it in the following circumstances:</p>
             <ul>
-              <li><strong>Service providers:</strong> Sharing necessary information with payment processors (Lemon Squeezy), cloud providers (Vercel, Supabase)</li>
+              <li><strong>Service providers:</strong> Sharing necessary information with payment processors (Paddle), cloud providers (Vercel, Supabase)</li>
               <li><strong>Legal requirements:</strong> Complying with legal obligations or protecting our rights</li>
               <li><strong>Business transfers:</strong> Transferring during company mergers, acquisitions</li>
             </ul>

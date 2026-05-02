@@ -38,16 +38,22 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Get the user's active subscription
-    // Note: user_id is now TEXT type to match User.id
-    const { data: subscription, error: subError } = await supabaseAdmin
+    // Active / trial / past_due, or cancelled but still within billing grace (expires_at)
+    const { data: rows, error: subError } = await supabaseAdmin
       .from('paddle_subscriptions')
       .select('*')
       .eq('user_id', user.id)
-      .in('status', ['active', 'trialing'])
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .order('created_at', { ascending: false });
+
+    const now = Date.now();
+    const subscription =
+      rows?.find((r) => {
+        if (r.status === 'active' || r.status === 'trialing' || r.status === 'past_due') return true;
+        if (r.status === 'cancelled' && r.expires_at) {
+          return new Date(r.expires_at).getTime() > now;
+        }
+        return false;
+      }) ?? null;
 
     if (subError || !subscription) {
       return NextResponse.json({

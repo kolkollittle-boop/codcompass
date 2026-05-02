@@ -51,7 +51,7 @@ export default function TermsPage() {
 
             <h3>4.2 Payment Processing</h3>
             <p>
-              All payments are processed through Lemon Squeezy. You agree to comply with Lemon Squeezy's payment terms.
+              All payments are processed through Paddle. You agree to comply with Paddle&apos;s payment terms.
             </p>
 
             <h3>4.3 Refund Policy</h3>

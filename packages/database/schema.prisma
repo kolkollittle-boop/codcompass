@@ -90,8 +90,8 @@ model Subscription {
   userId          String   
   user            User     @relation(fields: [userId], references: [id])
   
-  // Lemon Squeezy 标识
-  lemonSqueezyId  String   @unique
+  // Paddle 订阅 ID（数据库列名为历史遗留 lemonSqueezyId）
+  paddleSubscriptionId  String   @unique @map("lemonSqueezyId")
   orderId         Int
   variantId       Int
   
@@ -120,7 +120,7 @@ model Subscription {
   
   @@index([userId])
   @@index([status])
-  @@index([lemonSqueezyId])
+  @@index([paddleSubscriptionId])
 }
 
 enum SubscriptionStatus {
