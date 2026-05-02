@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPaddlePriceIdMap } from '@/lib/paddle-plans';
+import {
+  getPaddlePriceIdForCheckout,
+  getPaddlePriceIdMap,
+  type PaddlePlanKey,
+} from '@/lib/paddle-plans';
 
 // Paddle configuration
 const PADDLE_API_URL = process.env.PADDLE_ENV === 'production'
   ? 'https://api.paddle.com'
   : 'https://sandbox-api.paddle.com';
 const PADDLE_API_KEY = process.env.PADDLE_API_KEY || '';
-
-const PLAN_MAP = getPaddlePriceIdMap();
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,7 +23,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const priceId = PLAN_MAP[planId]?.[billing];
+    const priceId = getPaddlePriceIdForCheckout(planId, billing);
     if (!priceId) {
       return NextResponse.json(
         { error: `Invalid plan: ${planId}/${billing}. Please configure PADDLE_${planId.toUpperCase()}_${billing.toUpperCase()}_PRICE_ID` },
@@ -45,15 +47,18 @@ export async function POST(req: NextRequest) {
 
 // GET - Return Paddle configuration status
 export async function GET() {
-  const isConfigured = !!(PADDLE_API_KEY && 
-    PLAN_MAP.builder.monthly && 
-    PLAN_MAP.builder.yearly && 
-    PLAN_MAP.pro.monthly && 
-    PLAN_MAP.pro.yearly);
+  const PLAN_MAP = getPaddlePriceIdMap();
+  const isConfigured = !!(
+    PADDLE_API_KEY &&
+    PLAN_MAP.builder.monthly &&
+    PLAN_MAP.builder.yearly &&
+    PLAN_MAP.pro.monthly &&
+    PLAN_MAP.pro.yearly
+  );
 
   return NextResponse.json({
     configured: isConfigured,
     environment: process.env.PADDLE_ENV || 'sandbox',
-    plans: Object.keys(PLAN_MAP),
+    plans: Object.keys(PLAN_MAP) as PaddlePlanKey[],
   });
 }

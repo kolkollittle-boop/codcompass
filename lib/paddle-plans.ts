@@ -17,6 +17,17 @@ export function getPaddlePriceIdMap(): Record<PaddlePlanKey, Record<'monthly' | 
   };
 }
 
+/** Safe lookup for checkout body (unknown JSON). */
+export function getPaddlePriceIdForCheckout(
+  planId: unknown,
+  billing: unknown
+): string | undefined {
+  if (planId !== 'builder' && planId !== 'pro') return undefined;
+  if (billing !== 'monthly' && billing !== 'yearly') return undefined;
+  const id = getPaddlePriceIdMap()[planId][billing];
+  return typeof id === 'string' && id.trim() !== '' ? id : undefined;
+}
+
 /** Resolve plan + billing when webhook custom_data is empty. */
 export function inferPlanFromPriceId(
   priceId: string | undefined | null

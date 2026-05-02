@@ -71,7 +71,8 @@ export async function GET(req: NextRequest) {
         return typeof ce === 'string' && ce.trim().toLowerCase() === emailLower;
       }) ?? [];
 
-    const bySubId = new Map<string, (typeof rowsOwn)[number]>();
+    type PaddleSubRow = NonNullable<typeof rowsOwn>[number];
+    const bySubId = new Map<string, PaddleSubRow>();
     for (const r of [...(rowsOwn ?? []), ...rowsOrphan]) {
       const key = r.paddle_subscription_id as string;
       const prev = bySubId.get(key);
