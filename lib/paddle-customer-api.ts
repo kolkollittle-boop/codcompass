@@ -2,10 +2,23 @@
  * Paddle Billing REST — resolve customer email for webhook / subscription matching.
  */
 
-function paddleApiBase(): string {
-  return process.env.PADDLE_ENV === 'production'
-    ? 'https://api.paddle.com'
-    : 'https://sandbox-api.paddle.com';
+/** Live keys must hit api.paddle.com; sandbox keys hit sandbox-api.paddle.com */
+export function getPaddleApiBase(): string {
+  const raw = (process.env.PADDLE_ENV || '').toLowerCase().trim();
+  if (raw === 'production' || raw === 'live') {
+    return 'https://api.paddle.com';
+  }
+  if (raw === 'sandbox' || raw === 'test') {
+    return 'https://sandbox-api.paddle.com';
+  }
+  const key = process.env.PADDLE_API_KEY || '';
+  if (/pdl_live|_live_/i.test(key)) {
+    return 'https://api.paddle.com';
+  }
+  if (/pdl_sandbox|pdl_test|_test_|_sandbox_/i.test(key)) {
+    return 'https://sandbox-api.paddle.com';
+  }
+  return 'https://sandbox-api.paddle.com';
 }
 
 export async function fetchPaddleCustomerEmail(
@@ -17,8 +30,9 @@ export async function fetchPaddleCustomerEmail(
     console.warn('[Paddle API] PADDLE_API_KEY not set; cannot resolve customer email');
     return null;
   }
+  const base = getPaddleApiBase();
   try {
-    const res = await fetch(`${paddleApiBase()}/customers/${customerId}`, {
+    const res = await fetch(`${base}/customers/${customerId}`, {
       method: 'GET',
       cache: 'no-store',
       headers: {
@@ -27,7 +41,24 @@ export async function fetchPaddleCustomerEmail(
       },
     });
     if (!res.ok) {
-      console.warn('[Paddle API] get customer failed', customerId, res.status);
+      const hint =
+        res.status === 401
+          ? ' (401: use Seller API key from Paddle → Developer Tools → Authentication, not the Paddle.js client token)'
+          : '';
+      let body = '';
+      try {
+        body = (await res.text()).slice(0, 280);
+      } catch {
+        /* ignore */
+      }
+      console.warn(
+        '[Paddle API] GET /customers/',
+        customerId,
+        'failed:',
+        res.status,
+        hint,
+        body ? `body=${body}` : ''
+      );
       return null;
     }
     const json = (await res.json()) as { data?: { email?: string } };

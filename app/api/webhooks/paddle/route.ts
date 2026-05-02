@@ -31,6 +31,18 @@ function lineItemProductId(item: any): string | undefined {
   return typeof pid === 'string' && pid ? pid : undefined;
 }
 
+/** Webhook payloads usually omit email; when expanded, `customer` may include it. */
+function emailFromWebhookEntity(data: any): string | null {
+  const c = data?.customer;
+  if (c && typeof c === 'object' && typeof c.email === 'string' && c.email.trim()) {
+    return c.email.trim();
+  }
+  if (typeof data?.email === 'string' && data.email.trim()) {
+    return data.email.trim();
+  }
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Get raw body for signature verification
@@ -212,12 +224,17 @@ async function handleTransactionCompleted(data: any) {
   const billingCycle = customData.billing_cycle || inferred?.billingCycle || 'yearly';
 
   let customerEmail =
-    data.customer?.email ||
-    data.email ||
+    emailFromWebhookEntity(data) ||
     (typeof customData.customer_email === 'string' ? customData.customer_email : null) ||
     null;
   if (!customerEmail) {
     customerEmail = await fetchPaddleCustomerEmail(customerId);
+  }
+  if (!customerEmail) {
+    console.warn(
+      '[Paddle] transaction.completed: no customer email (custom_data / API). customer_id=',
+      customerId
+    );
   }
 
   const userId = await findUserIdByCustomerId(customerId, customerEmail);
@@ -263,12 +280,17 @@ async function handleSubscriptionCreated(data: any) {
   const customData = data.custom_data || {};
   
   let customerEmail =
-    data.customer?.email ||
-    data.email ||
+    emailFromWebhookEntity(data) ||
     (typeof customData.customer_email === 'string' ? customData.customer_email : null) ||
     null;
   if (!customerEmail) {
     customerEmail = await fetchPaddleCustomerEmail(customerId);
+  }
+  if (!customerEmail) {
+    console.warn(
+      '[Paddle] subscription webhook: no customer email (custom_data / API). customer_id=',
+      customerId
+    );
   }
 
   const enrichedCustomData = {
