@@ -3,10 +3,18 @@ import { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   // Allow local.codcompass.com for development
   allowedDevOrigins: ['local.codcompass.com'],
-  
+
+  /** Ensure admin crawler route can spawn local `tsx` + TypeScript sources on Vercel (NFT). */
+  outputFileTracingIncludes: {
+    '/api/admin/crawler': [
+      './node_modules/tsx/**/*',
+      './automation/crawler/src/**/*',
+    ],
+  },
+
   // Prevent Next.js from bundling heavy Node.js libraries
   // These are only used by CLI scripts, not the web app
-  serverExternalPackages: ['turndown', 'cheerio'],
+  serverExternalPackages: ['turndown', 'cheerio', 'tsx'],
   
   // Ensure react-resizable-panels is bundled correctly
   transpilePackages: ['react-resizable-panels'],

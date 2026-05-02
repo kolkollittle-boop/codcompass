@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
+import { createRequire } from 'node:module';
+import fs from 'fs';
 import path from 'path';
+
+function resolveTsxCli(): string | null {
+  try {
+    const require = createRequire(import.meta.url);
+    return require.resolve('tsx/dist/cli.mjs');
+  } catch {
+    const fallback = path.join(process.cwd(), 'node_modules', 'tsx', 'dist', 'cli.mjs');
+    return fs.existsSync(fallback) ? fallback : null;
+  }
+}
 
 // 爬虫运行状态
 let isRunning = false;
@@ -26,11 +38,35 @@ export async function POST(req: NextRequest) {
 
     // 爬虫脚本路径
     const scriptPath = path.join(process.cwd(), 'automation/crawler/src/run.ts');
+    const tsxCli = resolveTsxCli();
+    if (!tsxCli) {
+      isRunning = false;
+      lastRunStatus = 'error';
+      lastRunOutput =
+        'Local tsx not found (node_modules/tsx). Ensure "tsx" is in dependencies and redeploy.';
+      return NextResponse.json(
+        {
+          error:
+            'Crawler runtime missing: install tsx as a production dependency and redeploy.',
+        },
+        { status: 500 }
+      );
+    }
 
-    // 使用 tsx 运行爬虫脚本
-    const child = spawn('npx', ['tsx', scriptPath], {
+    // 勿用 npx：Serverless（如 Vercel）上 HOME 常指向不存在的路径，npx 拉包会 ENOENT。
+    const tmpHome = path.join('/tmp', 'codcompass-crawler');
+    try {
+      fs.mkdirSync(tmpHome, { recursive: true });
+    } catch {
+      /* ignore */
+    }
+
+    const child = spawn(process.execPath, [tsxCli, scriptPath], {
       env: {
         ...process.env,
+        HOME: tmpHome,
+        TMPDIR: '/tmp',
+        npm_config_cache: path.join(tmpHome, 'npm-cache'),
         OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || '',
         SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
         SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
