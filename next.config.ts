@@ -8,13 +8,16 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     '/api/admin/crawler': [
       './node_modules/tsx/**/*',
+      './node_modules/esbuild/**/*',
+      './node_modules/@esbuild/**/*',
+      './node_modules/get-tsconfig/**/*',
       './automation/crawler/src/**/*',
     ],
   },
 
   // Prevent Next.js from bundling heavy Node.js libraries
   // These are only used by CLI scripts, not the web app
-  serverExternalPackages: ['turndown', 'cheerio', 'tsx'],
+  serverExternalPackages: ['turndown', 'cheerio', 'tsx', 'esbuild', 'get-tsconfig'],
   
   // Ensure react-resizable-panels is bundled correctly
   transpilePackages: ['react-resizable-panels'],
