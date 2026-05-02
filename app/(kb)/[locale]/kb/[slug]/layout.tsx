@@ -8,7 +8,7 @@ export default function ArticleLayout({
   return (
     <div className="flex min-h-screen bg-[hsl(var(--codcompass-background))]">
       <SidebarTree />
-      <main className="flex-1 bg-[hsl(var(--codcompass-background))]">
+      <main className="flex-1 bg-[hsl(var(--codcompass-background))] max-w-5xl mx-auto w-full">
         {children}
       </main>
     </div>
