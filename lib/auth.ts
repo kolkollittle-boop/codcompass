@@ -11,6 +11,8 @@ if (!process.env.NEXTAUTH_SECRET) {
 }
 
 export const { auth, handlers } = NextAuth({
+  // Required for self-hosted production deployment
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
