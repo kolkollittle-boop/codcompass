@@ -4,6 +4,7 @@ node_modules
 .next
 node_modules
 docs/
+!components/docs/
 .env
 .env.local
 .next/
