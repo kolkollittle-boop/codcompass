@@ -2,25 +2,33 @@ import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 
 // 验证必要的环境变量
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  console.error('[Auth] Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET environment variables');
+// NextAuth v5 支持两种环境变量命名方式: AUTH_GOOGLE_ID/SECRET 或 GOOGLE_CLIENT_ID/SECRET
+const googleClientId = process.env.AUTH_GOOGLE_ID || process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.AUTH_GOOGLE_SECRET || process.env.GOOGLE_CLIENT_SECRET;
+
+if (!googleClientId || !googleClientSecret) {
+  console.error('[Auth] Missing Google OAuth credentials. Set AUTH_GOOGLE_ID/SECRET or GOOGLE_CLIENT_ID/SECRET');
 }
 
-if (!process.env.NEXTAUTH_SECRET) {
-  console.error('[Auth] Missing NEXTAUTH_SECRET environment variable');
+if (!process.env.AUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
+  console.error('[Auth] Missing AUTH_SECRET or NEXTAUTH_SECRET environment variable. Required in production.');
 }
 
 export const { auth, handlers } = NextAuth({
+  // v5: production self-host defaults trustHost=false → OAuth shows "server configuration" (UntrustedHost).
+  trustHost: process.env.AUTH_TRUST_HOST === 'true' || process.env.VERCEL === '1' || process.env.NODE_ENV === 'production',
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: googleClientId!,
+      clientSecret: googleClientSecret!,
+      // Google requires offline access_type for refresh_token
+      authorization: { params: { access_type: 'offline', prompt: 'consent' } },
     }),
   ],
   pages: {
     signIn: '/login',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user, account, profile }) {
       // Google OAuth sign in
