@@ -7,6 +7,7 @@ import { useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchBar from './SearchBar';
 import { Icon } from './ui';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   locale?: string;
@@ -26,12 +27,39 @@ const linkWithLocale = (locale: string, path: string) => {
   return `/${locale}${path}`;
 };
 
+/** Marketing + KB share the CQ-style top bar; tree nav only inside KB docs */
+function isCqMarketingShell(pathname: string | null) {
+  if (!pathname) return false;
+  if (pathname === '/') return true;
+  const roots = ['/blog', '/pricing', '/about', '/contact', '/help', '/status'];
+  return roots.some((r) => pathname === r || pathname.startsWith(`${r}/`));
+}
+
 export default function Header({ locale = 'en' }: HeaderProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const isAdmin = (session?.user as any)?.role === 'ADMIN';
+  const isKbDocs = pathname?.includes('/kb');
+  const cqShell = isCqMarketingShell(pathname);
+  const isDarkShell = !!isKbDocs || cqShell;
+
+  const onBlog =
+    pathname === '/blog' ||
+    !!pathname?.startsWith('/blog/') ||
+    !!pathname?.startsWith(`/${locale}/blog`);
+  const onPricing = pathname === '/pricing' || pathname === `/${locale}/pricing`;
+  const onAbout = pathname === '/about' || pathname === `/${locale}/about`;
+
+  /** `/en/kb`, `/zh/kb`, or rewritten `/kb`; not `/kb/categories` or `kb-foo` segments */
+  const p = pathname ?? '';
+  const onKbCategories = p.includes('/kb/categories');
+  const onKbMain =
+    !onKbCategories &&
+    (p === '/kb' ||
+      p.startsWith('/kb/') ||
+      /^\/(en|zh)\/kb(\/|$)/.test(p));
 
   // Always use English translations for site-wide English
   const t = {
@@ -49,17 +77,33 @@ export default function Header({ locale = 'en' }: HeaderProps) {
     getStarted: 'Get Started',
   };
 
-  const navInactive =
-    'border-transparent text-palette-textMuted hover:border-palette-border hover:text-palette-textPrimary';
-  const navActive = 'border-palette-primary text-palette-textPrimary';
+  const navInactive = isDarkShell
+    ? 'border-transparent text-docs-secondary hover:rounded-md hover:bg-white/5 hover:text-docs-heading'
+    : 'border-transparent text-palette-textMuted hover:border-palette-border hover:text-palette-textPrimary';
+  const navActive = isDarkShell
+    ? 'border-docs-accent text-docs-accent'
+    : 'border-palette-primary text-palette-textPrimary';
 
   return (
-    <header className="bg-palette-bgSecondary border-b border-palette-border sticky top-0 z-50">
+    <header
+      className={cn(
+        'sticky top-0 z-50 border-b',
+        isDarkShell
+          ? 'border-docs-border bg-docs-bg/95 backdrop-blur-sm supports-[backdrop-filter]:bg-docs-bg/90'
+          : 'border-palette-border bg-palette-bgSecondary',
+      )}
+    >
       <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex h-14 justify-between">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href={`/${locale}` as any} className="text-2xl font-bold text-palette-primary tracking-tight">
+              <Link
+                href={'/' as any}
+                className={cn(
+                  'text-2xl font-bold tracking-tight',
+                  isDarkShell ? 'text-docs-heading' : 'text-palette-primary',
+                )}
+              >
                 Codcompass
               </Link>
             </div>
@@ -67,9 +111,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/kb') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname?.startsWith(`/${locale}/kb`) && !pathname?.startsWith(`/${locale}/kb/categories`)
-                    ? navActive
-                    : navInactive
+                  onKbMain ? navActive : navInactive
                 }`}
               >
                 {t.kb}
@@ -77,7 +119,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/kb/categories') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname?.startsWith(`/${locale}/kb/categories`) ? navActive : navInactive
+                  onKbCategories ? navActive : navInactive
                 }`}
               >
                 {t.categories}
@@ -85,7 +127,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/blog') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname?.startsWith(`/${locale}/blog`) ? navActive : navInactive
+                  onBlog ? navActive : navInactive
                 }`}
               >
                 {t.blog}
@@ -93,7 +135,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/pricing') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname === `/${locale}/pricing` ? navActive : navInactive
+                  onPricing ? navActive : navInactive
                 }`}
               >
                 {t.pricing}
@@ -101,7 +143,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <Link
                 href={linkWithLocale(locale, '/about') as any}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  pathname === `/${locale}/about` ? navActive : navInactive
+                  onAbout ? navActive : navInactive
                 }`}
               >
                 {t.about}
@@ -115,75 +157,146 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-palette-bgTertiary transition-colors"
+                  className={cn(
+                    'flex items-center space-x-2 rounded-lg px-3 py-2 transition-colors',
+                    isDarkShell ? 'hover:bg-white/5' : 'hover:bg-palette-bgTertiary',
+                  )}
                 >
                   {session.user?.image && (
                     <img
                       src={session.user.image}
                       alt={session.user.name || 'User'}
-                      className="w-8 h-8 rounded-full"
+                      className="h-8 w-8 rounded-full"
                     />
                   )}
-                  <span className="text-sm font-medium text-palette-textSecondary">
+                  <span
+                    className={cn(
+                      'text-sm font-medium',
+                      isDarkShell ? 'text-docs-secondary' : 'text-palette-textSecondary',
+                    )}
+                  >
                     {session.user?.name || 'User'}
                   </span>
-                  <Icon name="chevron-down" size={16} className="text-palette-textMuted" />
+                  <Icon
+                    name="chevron-down"
+                    size={16}
+                    className={isDarkShell ? 'text-docs-muted' : 'text-palette-textMuted'}
+                  />
                 </button>
 
                 {/* User Dropdown Menu */}
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-palette-bgCard rounded-lg shadow-lg border border-palette-border py-2 z-50">
-                    <div className="px-4 py-2 border-b border-palette-border">
-                      <p className="text-sm font-medium text-palette-textPrimary">{session.user?.name}</p>
-                      <p className="text-xs text-palette-textMuted">{session.user?.email}</p>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-palette-bgTertiary text-palette-primary mt-1">
+                  <div
+                    className={cn(
+                      'absolute right-0 z-50 mt-2 w-48 rounded-lg border py-2 shadow-lg',
+                      isDarkShell
+                        ? 'border-docs-border bg-docs-surface'
+                        : 'border-palette-border bg-palette-bgCard',
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'border-b px-4 py-2',
+                        isDarkShell ? 'border-docs-border' : 'border-palette-border',
+                      )}
+                    >
+                      <p
+                        className={cn(
+                          'text-sm font-medium',
+                          isDarkShell ? 'text-white' : 'text-palette-textPrimary',
+                        )}
+                      >
+                        {session.user?.name}
+                      </p>
+                      <p className={cn('text-xs', isDarkShell ? 'text-docs-muted' : 'text-palette-textMuted')}>
+                        {session.user?.email}
+                      </p>
+                      <span
+                        className={cn(
+                          'mt-1 inline-flex items-center rounded px-2 py-0.5 text-xs font-medium',
+                          isDarkShell
+                            ? 'border border-docs-border bg-white/5 text-docs-secondary'
+                            : 'bg-palette-bgTertiary text-palette-primary',
+                        )}
+                      >
                         {(session.user as any)?.role || 'USER'}
                       </span>
                     </div>
                     <Link
                       href={linkWithLocale(locale, '/dashboard') as any}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-palette-textSecondary hover:bg-palette-bgTertiary"
+                      className={cn(
+                        'flex items-center gap-2 px-4 py-2 text-sm',
+                        isDarkShell
+                          ? 'text-docs-body hover:bg-white/5 hover:text-docs-heading'
+                          : 'text-palette-textSecondary hover:bg-palette-bgTertiary',
+                      )}
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <Icon name="dashboard" size={16} className="text-palette-textMuted" />
+                      <Icon name="dashboard" size={16} className={isDarkShell ? 'text-docs-muted' : 'text-palette-textMuted'} />
                       {t.dashboard}
                     </Link>
                     <Link
                       href={linkWithLocale(locale, '/dashboard/bookmarks') as any}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-palette-textSecondary hover:bg-palette-bgTertiary"
+                      className={cn(
+                        'flex items-center gap-2 px-4 py-2 text-sm',
+                        isDarkShell
+                          ? 'text-docs-body hover:bg-white/5 hover:text-docs-heading'
+                          : 'text-palette-textSecondary hover:bg-palette-bgTertiary',
+                      )}
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <Icon name="bookmark" size={16} className="text-palette-textMuted" />
+                      <Icon name="bookmark" size={16} className={isDarkShell ? 'text-docs-muted' : 'text-palette-textMuted'} />
                       {t.bookmarks}
                     </Link>
                     <Link
                       href={linkWithLocale(locale, '/dashboard/settings') as any}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-palette-textSecondary hover:bg-palette-bgTertiary"
+                      className={cn(
+                        'flex items-center gap-2 px-4 py-2 text-sm',
+                        isDarkShell
+                          ? 'text-docs-body hover:bg-white/5 hover:text-docs-heading'
+                          : 'text-palette-textSecondary hover:bg-palette-bgTertiary',
+                      )}
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <Icon name="settings" size={16} className="text-palette-textMuted" />
+                      <Icon name="settings" size={16} className={isDarkShell ? 'text-docs-muted' : 'text-palette-textMuted'} />
                       {t.settings}
                     </Link>
                     {isAdmin && (
                       <>
-                        <div className="border-t border-palette-border my-1"></div>
+                        <div
+                          className={cn('my-1 border-t', isDarkShell ? 'border-docs-border' : 'border-palette-border')}
+                        />
                         <Link
                           href={linkWithLocale(locale, '/admin') as any}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-palette-primary hover:bg-palette-bgTertiary"
+                          className={cn(
+                            'flex items-center gap-2 px-4 py-2 text-sm',
+                            isDarkShell
+                              ? 'text-docs-heading hover:bg-white/5 hover:text-white'
+                              : 'text-palette-primary hover:bg-palette-bgTertiary',
+                          )}
                           onClick={() => setShowUserMenu(false)}
                         >
-                          <Icon name="shield" size={16} className="text-palette-primary" />
+                          <Icon
+                            name="shield"
+                            size={16}
+                            className={isDarkShell ? 'text-docs-body' : 'text-palette-primary'}
+                          />
                           {t.admin}
                         </Link>
                       </>
                     )}
-                    <div className="border-t border-palette-border my-1"></div>
+                    <div
+                      className={cn('my-1 border-t', isDarkShell ? 'border-docs-border' : 'border-palette-border')}
+                    />
                     <button
                       onClick={() => {
-                        signOut({ callbackUrl: `/${locale}` });
+                        signOut({ callbackUrl: '/' });
                         setShowUserMenu(false);
                       }}
-                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-palette-bgTertiary"
+                      className={cn(
+                        'flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600',
+                        isDarkShell ? 'hover:bg-white/5' : 'hover:bg-palette-bgTertiary',
+                      )}
                     >
                       <Icon name="log-out" size={16} className="text-red-500" />
                       {t.signOut}
@@ -195,13 +308,25 @@ export default function Header({ locale = 'en' }: HeaderProps) {
               <>
                 <Link
                   href={linkWithLocale(locale, '/login') as any}
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-palette-textSecondary hover:text-palette-textPrimary"
+                  className={cn(
+                    'inline-flex items-center px-4 py-2 text-sm font-medium',
+                    isDarkShell
+                      ? 'text-docs-body hover:text-docs-heading'
+                      : 'text-palette-textSecondary hover:text-palette-textPrimary',
+                  )}
                 >
                   {t.signIn}
                 </Link>
                 <Link
                   href={linkWithLocale(locale, '/pricing') as any}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-palette-primary hover:bg-palette-primary-hover transition-colors"
+                  className={cn(
+                    'inline-flex items-center rounded-md border border-transparent px-4 py-2 text-sm font-medium transition-colors',
+                    isKbDocs
+                      ? 'bg-docs-accent text-white hover:bg-docs-accent-hover'
+                      : cqShell
+                        ? 'bg-docs-accent text-white hover:bg-docs-accent-hover'
+                        : 'bg-palette-primary text-white hover:bg-palette-primary-hover',
+                  )}
                 >
                   {t.getStarted}
                 </Link>

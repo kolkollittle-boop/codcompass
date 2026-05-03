@@ -19,12 +19,12 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   }
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-dvh min-h-screen flex-col bg-docs-bg text-docs-body">
       <Header locale={locale} />
-      <main className="flex-grow" lang={locale === 'zh' ? 'zh-CN' : 'en'}>
+      <main className="flex min-h-0 flex-1 flex-col" lang={locale === 'zh' ? 'zh-CN' : 'en'}>
         {children}
       </main>
-      <Footer locale={locale} />
+      <Footer locale={locale} variant="docs" />
     </div>
   );
 }

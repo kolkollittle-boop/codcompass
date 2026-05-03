@@ -4,12 +4,10 @@ import Footer from "@/components/Footer";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import SeriesCard from "@/components/SeriesCard";
 import DiscordCommunityCard from "@/components/DiscordCommunityCard";
-import BrandBanner from "@/components/BrandBanner";
 import BlueprintPreview from "@/components/BlueprintPreview";
 import TrustBadges from "@/components/TrustBadges";
 import ComparisonTable from "@/components/ComparisonTable";
 import Icon from "@/components/ui/Icon";
-import { Spotlight } from "@/components/ui/aceternity/spotlight";
 import { BackgroundGradient } from "@/components/ui/aceternity/background-gradient";
 import type { IconName } from "@/components/ui/icons";
 
@@ -32,68 +30,79 @@ async function getPublishedSeries(limit = 6) {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textSecondary">
+    <div className="flex min-h-screen flex-col">
       <Header />
 
-      <main className="flex-grow relative overflow-hidden">
-        {/* Brand Banner */}
-        <BrandBanner variant="topbar" />
+      {/* Top promo bar */}
+      <div className="bg-docs-green-dark py-2.5 text-center text-sm font-medium text-docs-accent">
+        <Link href="/pricing" className="underline-offset-2 hover:underline hover:text-docs-accent-hover">
+          7-day free trial on all plans · Builder $9.99/mo, Pro $29/mo · View pricing →
+        </Link>
+      </div>
 
-        {/* ===== Hero Section ===== */}
-        <section className="relative flex flex-col lg:flex-row items-center justify-between py-24 lg:py-32 px-4 max-w-site mx-auto">
-          {/* Left: Text */}
-          <div className="relative z-10 flex flex-col items-start text-left max-w-2xl mb-12 lg:mb-0">
-            <Spotlight className="-top-40 left-0 md:left-20 md:-top-20" fill="var(--primary)" />
-            
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary mb-6">
-              🚀 Codcompass 2.0 is Live
+      <main className="relative flex flex-1 flex-col overflow-hidden">
+        {/* Hero */}
+        <section className="mx-auto grid max-w-site items-center gap-12 px-4 py-16 lg:grid-cols-2 lg:py-24">
+          <div className="relative z-10 max-w-xl text-left">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-docs-border bg-docs-surface px-3 py-1 text-xs font-medium text-docs-secondary">
+              Codcompass 2.0
             </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-palette-textMuted mb-6 leading-tight">
-              Turn Knowledge Into Production<br />
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-palette-textSecondary">Don't Just Read. Build.</span>
+            <h1 className="text-4xl font-extrabold tracking-tight text-docs-heading sm:text-5xl lg:text-6xl lg:leading-[1.1]">
+              Turn knowledge into
+              <span className="bg-gradient-to-r from-docs-accent to-teal-400 bg-clip-text text-transparent">
+                {' '}production-ready delivery
+              </span>
             </h1>
-
-            {/* Subheadline */}
-            <p className="text-base sm:text-lg text-palette-textMuted mb-8 leading-relaxed">
-              Every core article comes with a <strong className="text-white">Production Blueprint</strong> —<br />
-              deployable code packages + real-world pitfall checklists + architecture decision diagrams.<br />
-              <strong className="text-palette-primary">Start your first month for just $1.49</strong> and dive into AI engineering today.
+            <p className="mt-6 text-base leading-relaxed text-docs-body sm:text-lg">
+              Every flagship article ships with a <strong className="text-docs-heading">Production Blueprint</strong>
+              : deployable code, pitfall checklists, and architecture callouts. Start with a{' '}
+              <strong className="text-docs-accent">7-day free trial</strong>—then{' '}
+              <strong className="text-docs-heading">Builder</strong> at <strong className="text-docs-heading">$9.99/mo</strong>{' '}
+              or <strong className="text-docs-heading">Pro</strong> at <strong className="text-docs-heading">$29/mo</strong>
+              {' '}(save with yearly: <strong className="text-docs-heading">$99/yr</strong> Builder,{' '}
+              <strong className="text-docs-heading">$299/yr</strong> Pro).
             </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
               <Link
-                href="/checkout?plan=pro&trial=7d"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-palette-primary text-white font-semibold hover:bg-palette-primary-hover transition-all shadow-lg shadow-cc-theme"
+                href="/checkout?plan=pro&billing=yearly"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-docs-accent px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-docs-accent-hover"
               >
                 <Icon name="zap" size={18} />
-                Start Pro · $1.49 First Month
+                Subscribe to Pro · $299/year
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-white/20 hover:bg-white/10 transition-all"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-docs-border px-8 py-3 text-sm font-medium text-docs-heading transition-colors hover:border-docs-border-hover hover:bg-white/5"
               >
-                Annual $14/yr · Just $1.17/mo
+                View plans & compare
                 <Icon name="arrow-right" size={18} />
               </Link>
             </div>
-
-            {/* Trust Bar */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-palette-textMuted">
-              <span>30-day money-back guarantee</span>
-              <span>·</span>
-              <span>3-5 production-ready articles weekly</span>
-              <span>·</span>
-              <span>Blueprints ready to deploy</span>
-            </div>
+            <p className="mt-6 text-sm text-docs-muted">
+              30-day money-back · 3–5 production-focused articles weekly · Blueprints ready to use
+            </p>
           </div>
 
-          {/* Right: Blueprint Preview */}
-          <div className="relative z-10 w-full lg:w-auto lg:flex-1 lg:max-w-lg">
-            <BlueprintPreview />
+          <div className="relative flex min-h-[260px] items-center justify-center lg:min-h-[340px]">
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="h-[min(100%,420px)] w-[min(100%,420px)] rounded-full bg-docs-accent/20 blur-[100px]" />
+              <div className="absolute h-64 w-64 rounded-full bg-gradient-to-br from-docs-accent/40 to-teal-900/30 blur-3xl" />
+            </div>
+            <div className="relative z-10 w-full max-w-lg">
+              <BlueprintPreview />
+            </div>
+          </div>
+        </section>
+
+        {/* Partner / stack strip */}
+        <section className="border-y border-docs-border bg-docs-surface/40 py-10">
+          <p className="mb-6 text-center text-xs font-semibold uppercase tracking-wider text-docs-muted">
+            Built for modern stacks
+          </p>
+          <div className="mx-auto flex max-w-site flex-wrap items-center justify-center gap-x-10 gap-y-5 px-4 text-sm font-medium text-docs-secondary opacity-90">
+            {['React', 'Next.js', 'TypeScript', 'PostgreSQL', 'AWS', 'Docker'].map((name) => (
+              <span key={name}>{name}</span>
+            ))}
           </div>
         </section>
 
@@ -128,17 +137,19 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-[color-mix(in_srgb,var(--accent)_22%,transparent)] to-[color-mix(in_srgb,var(--primary)_22%,transparent)] blur-3xl opacity-30" />
           <div className="relative z-10 max-w-site mx-auto">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Ready to Turn AI Knowledge Into Real Production?
+              Ready to Turn Knowledge Into Real Production?
             </h2>
             <p className="text-lg text-palette-textMuted mb-8">
-              <strong className="text-white">Just $1.49 for your first month</strong>, or $14/year (only $1.17/mo)
+              <strong className="text-white">Pro $29/mo</strong> ($299/yr) · <strong className="text-white">Builder $9.99/mo</strong> ($99/yr)
+              {' — '}
+              <span className="text-palette-textSecondary">7-day free trial, then billed on the plan you choose.</span>
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link
-                href="/checkout?plan=pro&trial=7d"
+                href="/checkout?plan=pro&billing=yearly"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-palette-primary text-white font-semibold hover:bg-palette-primary-hover transition-all shadow-lg shadow-cc-theme"
               >
-                Get Started · $1.49 First Month
+                Get Pro · $299/year
                 <Icon name="arrow-right" size={18} />
               </Link>
               <Link

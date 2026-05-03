@@ -11,12 +11,10 @@ interface CategoryPageProps {
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const locale = resolvedParams.locale;
-  
   return {
     title: 'Categories - Codcompass',
-    description: 'Browse all technical categories: AI & LLM, Database, API Development, Frontend, Backend, DevOps, Mobile Development, Security, Product & Startup.',
+    description:
+      'Browse all technical categories: AI & LLM, Database, API Development, Frontend, Backend, DevOps, Mobile Development, Security, Product & Startup.',
   };
 }
 
@@ -33,88 +31,83 @@ const translations = {
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const resolvedParams = await params;
   const locale = resolvedParams.locale;
-  const t = translations.en; // Always use English translations
-  
-  // Fetch dynamic counts
+  const t = translations.en;
+
   const totalCount = await getArticleCount();
   const premiumCount = await getPremiumCount();
-  
-  // Fetch articles for each category
+
   const categoryData = await Promise.all(
     CATEGORIES.map(async (category) => {
       const count = await getArticleCount(category.slug);
       const articles = await getPublishedArticles(3, 0, locale);
-      const filteredArticles = articles.filter((a: any) => 
-        a.categories?.some((c: any) => c.Category?.slug === category.slug)
+      const filteredArticles = articles.filter((a: any) =>
+        a.categories?.some((c: any) => c.Category?.slug === category.slug),
       );
-      
+
       return {
         ...category,
         articles: filteredArticles.slice(0, 3),
         totalArticles: count,
       };
-    })
+    }),
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white py-16">
-        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">{t.title}</h1>
-          <p className="text-xl text-palette-textSecondary max-w-2xl mx-auto">
-            {t.subtitle}
-          </p>
+    <div className="flex min-h-0 flex-col text-zinc-400">
+      <div className="border-b border-docs-border bg-docs-surface py-16 text-white">
+        <div className="mx-auto max-w-site px-4 text-center sm:px-6 lg:px-8">
+          <h1 className="mb-4 text-4xl font-bold">{t.title}</h1>
+          <p className="mx-auto max-w-2xl text-xl text-zinc-400">{t.subtitle}</p>
         </div>
       </div>
 
-      {/* Categories Grid */}
-      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mx-auto max-w-site px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {categoryData.map((category) => (
             <Link
               key={category.slug}
               href={`/${locale}/kb/categories/${category.slug}` as any}
-              className="group bg-palette-bgCard rounded-2xl border border-palette-border p-6 hover:shadow-cc-theme hover:border-palette-primary transition-all"
+              className="docs-card group rounded-2xl bg-docs-surface p-6 transition-all hover:bg-white/[0.02]"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-2xl`}>
+              <div className="mb-4 flex items-start justify-between">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-950 text-2xl">
                   {category.icon}
                 </div>
-                <span className="text-sm text-palette-textMuted">
+                <span className="text-sm text-zinc-500">
                   {category.totalArticles} {t.articles}
                 </span>
               </div>
-              
-              <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-palette-primary transition-colors">
+
+              <h3 className="mb-2 text-lg font-semibold text-white transition-colors group-hover:text-zinc-200">
                 {category.name}
               </h3>
-              
-              <p className="text-sm text-palette-textMuted mb-4">
-                {category.descriptionEn || category.description}
-              </p>
-              
+
+              <p className="mb-4 text-sm text-zinc-500">{category.descriptionEn || category.description}</p>
+
               {category.articles.length > 0 && (
                 <div className="space-y-2">
                   {category.articles.map((article: any) => (
                     <Link
                       key={article.id}
                       href={`/${locale}/kb/${article.slug}`}
-                      className="flex items-center gap-2 text-sm hover:text-palette-primary group/article"
+                      className="group/article flex items-center gap-2 text-sm text-zinc-400 hover:text-white"
                     >
-                      <svg className="w-4 h-4 text-palette-textMuted flex-shrink-0 group-hover/article:text-palette-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg
+                        className="h-4 w-4 flex-shrink-0 text-zinc-600 group-hover/article:text-zinc-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
-                      <span className="text-palette-textSecondary truncate">
-                        {getArticleContent(article, locale).title}
-                      </span>
+                      <span className="truncate">{getArticleContent(article, locale).title}</span>
                     </Link>
                   ))}
                 </div>
               )}
-              
-              <div className="mt-4 pt-4 border-t border-palette-border">
-                <span className="text-sm text-palette-primary font-medium group-hover:text-palette-accent">
+
+              <div className="mt-4 border-t border-docs-border pt-4">
+                <span className="text-sm font-medium text-zinc-300 transition-colors group-hover:text-white">
                   {t.viewAll} →
                 </span>
               </div>
@@ -123,33 +116,24 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_14%,transparent)] to-[color-mix(in_srgb,var(--accent)_14%,transparent)] rounded-2xl p-8 border border-palette-primary">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div className="mx-auto max-w-site px-4 pb-12 sm:px-6 lg:px-8">
+        <div className="docs-card rounded-2xl border border-docs-border bg-docs-surface p-8">
+          <div className="grid grid-cols-2 gap-6 text-center md:grid-cols-4">
             <div>
               <div className="text-3xl font-bold text-white">{totalCount}</div>
-              <div className="text-sm text-palette-textMuted mt-1">
-                Articles
-              </div>
+              <div className="mt-1 text-sm text-zinc-500">Articles</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-white">{CATEGORIES.length}</div>
-              <div className="text-sm text-palette-textMuted mt-1">
-                Categories
-              </div>
+              <div className="mt-1 text-sm text-zinc-500">Categories</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-white">{premiumCount}</div>
-              <div className="text-sm text-palette-textMuted mt-1">
-                Premium
-              </div>
+              <div className="mt-1 text-sm text-zinc-500">Premium</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-white">2</div>
-              <div className="text-sm text-palette-textMuted mt-1">
-                Languages
-              </div>
+              <div className="mt-1 text-sm text-zinc-500">Languages</div>
             </div>
           </div>
         </div>

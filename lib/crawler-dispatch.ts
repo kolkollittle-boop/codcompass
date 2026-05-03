@@ -1,11 +1,11 @@
 /**
- * 环境变量（Vercel / 本地）：
- * - GITHUB_TOKEN：PAT，需 `workflow` 权限以触发 workflow_dispatch
- * - GITHUB_REPO 或 GITHUB_REPOSITORY：owner/repo
- * - CRAWLER_WORKFLOW_FILE（可选）：默认 crawler.yml
- * - GITHUB_DEFAULT_BRANCH（可选）：默认 main
+ * Environment variables (Vercel / local):
+ * - GITHUB_TOKEN: PAT with `workflow` scope to trigger workflow_dispatch
+ * - GITHUB_REPO or GITHUB_REPOSITORY: owner/repo
+ * - CRAWLER_WORKFLOW_FILE (optional): defaults to crawler.yml
+ * - GITHUB_DEFAULT_BRANCH (optional): defaults to main
  *
- * 未配置 GITHUB_* 时仍会写入 CrawlerJob（status=queued_no_dispatch），供后续 worker 消费。
+ * If GITHUB_* is not set, a CrawlerJob is still written (status=queued_no_dispatch) for a worker to consume.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -36,8 +36,8 @@ function getRepo(): { owner: string; repo: string } | null {
 }
 
 /**
- * 写入 CrawlerJob，并尝试触发 GitHub Actions（仅等待 HTTP 响应，通常 1–3 秒，带超时上限）。
- * 不执行爬虫本体，避免 Vercel Serverless 超时与子进程问题。
+ * Inserts CrawlerJob and attempts to trigger GitHub Actions (waits for HTTP only, typically 1–3s, with a timeout cap).
+ * Does not run the crawler process (avoids serverless timeouts and child processes).
  */
 export async function enqueueAndDispatchCrawler(
   supabase: SupabaseClient,
@@ -81,7 +81,7 @@ export async function enqueueAndDispatchCrawler(
 
   if (!repo || !token) {
     const msg =
-      '任务已入队，但未配置 GITHUB_TOKEN + GITHUB_REPO（owner/repo），未调用 GitHub。请在 Supabase 执行 scripts/create-crawler-job-table.sql 后配置环境变量，或由 worker 消费队列。';
+      'Job queued, but GITHUB_TOKEN + GITHUB_REPO (owner/repo) are not configured—GitHub was not called. After running scripts/create-crawler-job-table.sql in Supabase, set the env vars or have a worker consume the queue.';
     await supabase
       .from('CrawlerJob')
       .update({
@@ -169,7 +169,7 @@ export async function enqueueAndDispatchCrawler(
       actionsUrl,
       errorMessage: null,
       message:
-        '已写入队列表并触发 GitHub Actions；实际抓取在云端执行，请到 Actions 查看日志。本接口不等待爬虫结束。',
+        'Job recorded and GitHub Actions triggered; crawling runs in the cloud—check Actions for logs. This API does not wait for the crawl to finish.',
     };
   }
 
@@ -190,6 +190,6 @@ export async function enqueueAndDispatchCrawler(
     githubAccepted: false,
     actionsUrl,
     errorMessage: ghError,
-    message: `任务已入队，但 GitHub 派发失败：${ghError}`,
+    message: `Job queued, but GitHub dispatch failed: ${ghError}`,
   };
 }

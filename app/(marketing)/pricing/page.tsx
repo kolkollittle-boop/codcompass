@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Pricing - Codcompass',
-  description: 'Flexible pricing plans for developers. Start with 7-day trial, upgrade to Pro ($15/mo), Team ($49/mo) or Enterprise for unlimited access.',
+  description: 'Flexible pricing for developers. 7-day trial on all plans. Builder $9.99/mo, Pro $29/mo, or Enterprise—yearly billing saves more.',
   keywords: ['developer subscription', 'tech tutorials pricing', 'AI knowledge base', 'developer tools pricing'],
   openGraph: {
     title: 'Pricing - Codcompass',
@@ -109,36 +109,36 @@ const faqData = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textSecondary">
+    <div className="flex min-h-screen flex-col text-palette-textSecondary">
       <Header />
 
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="py-24 px-4 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_12%,transparent)] via-[color-mix(in_srgb,var(--accent)_12%,transparent)] to-[color-mix(in_srgb,var(--primary)_12%,transparent)] blur-3xl opacity-30" />
-          <div className="relative z-10 max-w-site mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20 mb-6">
-              <Clock className="w-4 h-4" />
-              Limited: 7-Day Free Trial on All Plans
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="relative overflow-hidden px-4 py-20 text-center sm:py-24">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(23,178,100,0.14),transparent)]" />
+          <div className="relative z-10 mx-auto max-w-site">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-docs-accent/25 bg-docs-green-subtle px-4 py-2 text-sm font-medium text-docs-accent">
+              <Clock className="h-4 w-4" />
+              7-day trial on all plans
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-palette-textMuted mb-6">
-              Simple, Transparent Pricing
+            <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-docs-heading sm:text-5xl lg:text-6xl">
+              Simple, transparent
+              <span className="bg-gradient-to-r from-docs-accent to-teal-400 bg-clip-text text-transparent"> pricing</span>
             </h1>
-            <p className="text-lg sm:text-xl text-palette-textMuted max-w-2xl mx-auto mb-8">
-              Start learning today with a 7-day free trial. No credit card required.
-              Cancel anytime with our 30-day money-back guarantee.
+            <p className="mx-auto mb-8 max-w-2xl text-lg text-docs-body sm:text-xl">
+              Start learning today: 7-day free trial, no credit card; 30-day money-back guarantee; cancel anytime.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-palette-textMuted">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-docs-muted">
               <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="h-4 w-4 text-docs-accent" />
                 7-day free trial
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-green-400" />
-                30-day money-back guarantee
+                <Shield className="h-4 w-4 text-docs-accent" />
+                30-day money-back
               </div>
               <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="h-4 w-4 text-docs-accent" />
                 Cancel anytime
               </div>
             </div>
@@ -157,26 +157,22 @@ export default function PricingPage() {
         </section>
 
         {/* Value Proposition Section */}
-        <section className="py-24 px-4 bg-palette-bgSecondary">
-          <div className="max-w-site mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-              Why Developers Choose Codcompass
-            </h2>
-            <p className="text-lg text-palette-textMuted mb-12">
-              Join thousands of developers who trust Codcompass for their technical learning
-            </p>
-            <div className="grid sm:grid-cols-3 gap-8">
-              <div className="p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl">
-                <div className="text-4xl font-bold text-palette-primary mb-2">10K+</div>
-                <div className="text-sm text-palette-textMuted">Articles Curated</div>
+        <section className="border-y border-docs-border bg-docs-surface/50 px-4 py-24">
+          <div className="mx-auto max-w-site text-center">
+            <h2 className="mb-6 text-3xl font-bold text-docs-heading sm:text-4xl">Why developers choose Codcompass</h2>
+            <p className="mb-12 text-lg text-docs-body">Thousands of developers use it for learning and production reference.</p>
+            <div className="grid gap-8 sm:grid-cols-3">
+              <div className="docs-card rounded-2xl border border-docs-border bg-docs-bg p-6">
+                <div className="mb-2 text-4xl font-bold text-docs-accent">10K+</div>
+                <div className="text-sm text-docs-muted">Curated articles</div>
               </div>
-              <div className="p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl">
-                <div className="text-4xl font-bold text-palette-primary mb-2">25K+</div>
-                <div className="text-sm text-palette-textMuted">Monthly Readers</div>
+              <div className="docs-card rounded-2xl border border-docs-border bg-docs-bg p-6">
+                <div className="mb-2 text-4xl font-bold text-docs-accent">25K+</div>
+                <div className="text-sm text-docs-muted">Monthly readers</div>
               </div>
-              <div className="p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl">
-                <div className="text-4xl font-bold text-palette-primary mb-2">4.9/5</div>
-                <div className="text-sm text-palette-textMuted">User Rating</div>
+              <div className="docs-card rounded-2xl border border-docs-border bg-docs-bg p-6">
+                <div className="mb-2 text-4xl font-bold text-docs-accent">4.9/5</div>
+                <div className="text-sm text-docs-muted">User rating</div>
               </div>
             </div>
           </div>
@@ -186,7 +182,7 @@ export default function PricingPage() {
         <section className="py-24 px-4">
           <div className="max-w-site mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-docs-heading sm:text-4xl">
                 Frequently Asked Questions
               </h2>
               <p className="text-lg text-palette-textMuted">
@@ -197,10 +193,10 @@ export default function PricingPage() {
               {faqData.map((faq, index) => (
                 <div
                   key={index}
-                  className="p-6 bg-palette-bgCard border border-white/[0.08] rounded-2xl"
+                  className="docs-card rounded-2xl border border-docs-border bg-docs-surface p-6"
                 >
-                  <h3 className="text-lg font-semibold text-white mb-3">{faq.question}</h3>
-                  <p className="text-palette-textMuted leading-relaxed">{faq.answer}</p>
+                  <h3 className="mb-3 text-lg font-semibold text-docs-heading">{faq.question}</h3>
+                  <p className="leading-relaxed text-docs-body">{faq.answer}</p>
                 </div>
               ))}
             </div>
@@ -208,21 +204,17 @@ export default function PricingPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-24 px-4 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-[color-mix(in_srgb,var(--accent)_22%,transparent)] to-[color-mix(in_srgb,var(--primary)_22%,transparent)] blur-3xl opacity-30" />
-          <div className="relative z-10 max-w-site mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Ready to Level Up Your Skills?
-            </h2>
-            <p className="text-lg text-palette-textMuted mb-8">
-              Start your 7-day free trial today. No credit card required.
-            </p>
+        <section className="relative overflow-hidden px-4 py-24 text-center">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(23,178,100,0.12),transparent)]" />
+          <div className="relative z-10 mx-auto max-w-site">
+            <h2 className="mb-4 text-3xl font-bold text-docs-heading sm:text-4xl">Ready to level up?</h2>
+            <p className="mb-8 text-lg text-docs-body">Start your 7-day free trial—no credit card required.</p>
             <a
               href="/kb"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-palette-bgSecondary transition-all"
+              className="inline-flex items-center gap-2 rounded-md bg-docs-accent px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-docs-accent-hover"
             >
-              Browse Articles
-              <ArrowRight className="w-5 h-5" />
+              Browse the knowledge base
+              <ArrowRight className="h-5 w-5" />
             </a>
           </div>
         </section>

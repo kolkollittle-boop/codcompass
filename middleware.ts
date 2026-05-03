@@ -21,7 +21,7 @@ const excludedPaths = [
   '/contact',
   '/help',
   '/login',
-  '/signup',       // ✅ 已加入 signup，放行注册页
+  '/signup', // allow signup
   '/dashboard',
   '/admin',
   '/status',
@@ -30,18 +30,19 @@ const excludedPaths = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Redirect root to default locale KB
+  // Home: marketing landing
   if (pathname === '/') {
-    const url = request.nextUrl.clone();
-    url.pathname = `/${defaultLocale}/kb`;
-    return NextResponse.redirect(url);
+    return NextResponse.next();
   }
 
-  // Redirect bare locale to KB
-  if (locales.includes(pathname.slice(1))) {
+  // Bare /en or /zh → home + locale cookie (no longer forced to KB)
+  if (pathname === '/en' || pathname === '/zh') {
+    const loc = pathname.slice(1);
     const url = request.nextUrl.clone();
-    url.pathname = `${pathname}/kb`;
-    return NextResponse.redirect(url);
+    url.pathname = '/';
+    const res = NextResponse.redirect(url);
+    res.cookies.set('NEXT_LOCALE', loc, { path: '/' });
+    return res;
   }
 
   // Skip excluded paths

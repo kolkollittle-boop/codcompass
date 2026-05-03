@@ -17,10 +17,10 @@ const translations = {
     cta: 'Explore Now',
   },
   zh: {
-    badge: '全新',
-    title: 'Codcompass 2.0 已上线',
-    description: '生产级 Blueprint 资源包、避坑清单、学习路径——为真正交付的开发者打造。',
-    cta: '立即探索',
+    badge: 'New',
+    title: 'Codcompass 2.0 is here',
+    description: 'Production-grade Blueprints, Pitfall Checklists, and Learning Paths — built for developers who ship.',
+    cta: 'Explore Now',
   },
 };
 
@@ -29,7 +29,7 @@ export default function BrandBanner({ variant = 'topbar', onClose }: BrandBanner
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    // 从 cookie 或 localStorage 获取语言偏好
+    // Read locale preference from cookie
     const savedLocale = document.cookie
       .split('; ')
       .find(row => row.startsWith('locale='))

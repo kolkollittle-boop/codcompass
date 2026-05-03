@@ -33,20 +33,20 @@ export default function AdminReviewDashboard() {
   const [mode, setMode] = useState<'edit' | 'preview'>('preview');
   const [editorContent, setEditorContent] = useState('');
   
-  // 多选状态
+  // Multi-select
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [batchProcessing, setBatchProcessing] = useState(false);
   
-  // 爬虫状态
+  // Crawler trigger state
   const [crawlerRunning, setCrawlerRunning] = useState(false);
   
-  // 排序状态
+  // Sort order
   const [sortOrder, setSortOrder] = useState<'default' | 'score-asc' | 'score-desc'>('default');
 
   const fetchArticles = async () => {
     try {
       setLoading(true);
-      // 只获取待审核的文章
+      // Articles pending review only
       const res = await fetch('/api/admin/articles?status=REVIEW');
       const json = await res.json();
       if (json.success && json.data) {
@@ -61,7 +61,7 @@ export default function AdminReviewDashboard() {
 
   useEffect(() => { fetchArticles(); }, []);
 
-  // 获取排序后的文章列表
+  // Sorted article list
   const getSortedArticles = () => {
     if (sortOrder === 'default') return articles;
     
@@ -73,7 +73,7 @@ export default function AdminReviewDashboard() {
     return sorted;
   };
 
-  // 切换排序
+  // Cycle sort order
   const toggleSortOrder = () => {
     if (sortOrder === 'default') setSortOrder('score-desc');
     else if (sortOrder === 'score-desc') setSortOrder('score-asc');
@@ -87,9 +87,9 @@ export default function AdminReviewDashboard() {
   };
 
   const getSortLabel = () => {
-    if (sortOrder === 'default') return '默认排序';
-    if (sortOrder === 'score-desc') return '评分 ↓';
-    return '评分 ↑';
+    if (sortOrder === 'default') return 'Default order';
+    if (sortOrder === 'score-desc') return 'Score ↓';
+    return 'Score ↑';
   };
 
   const handleSelect = (art: Article) => {
@@ -97,7 +97,7 @@ export default function AdminReviewDashboard() {
     setEditorContent(art.contentEn);
   };
 
-  // 切换单个文章的选择状态
+  // Toggle one article selected
   const toggleSelectId = (id: string) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
@@ -110,7 +110,7 @@ export default function AdminReviewDashboard() {
     });
   };
 
-  // 全选/取消全选
+  // Select all / clear
   const toggleSelectAll = () => {
     if (selectedIds.size === articles.length) {
       setSelectedIds(new Set());
@@ -119,7 +119,7 @@ export default function AdminReviewDashboard() {
     }
   };
 
-  // 触发爬虫
+  // Trigger crawler
   const triggerCrawler = async () => {
     setCrawlerRunning(true);
     try {
@@ -127,30 +127,30 @@ export default function AdminReviewDashboard() {
       const json = await res.json();
       if (res.ok && json.success) {
         const lines = [
-          json.message || '已派发',
+          json.message || 'Dispatched',
           json.jobId ? `jobId: ${json.jobId}` : '',
           json.actionsUrl ? `Actions: ${json.actionsUrl}` : '',
-          json.errorMessage ? `注意: ${json.errorMessage}` : '',
+          json.errorMessage ? `Note: ${json.errorMessage}` : '',
         ].filter(Boolean);
         alert(lines.join('\n'));
       } else {
-        alert(`触发失败: ${json.error || res.statusText}`);
+        alert(`Trigger failed: ${json.error || res.statusText}`);
       }
     } catch (e: unknown) {
-      alert(`触发失败: ${e instanceof Error ? e.message : String(e)}`);
+      alert(`Trigger failed: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setCrawlerRunning(false);
     }
   };
 
-  // 批量操作
+  // Batch approve/reject
   const handleBatchAction = async (action: 'approve' | 'reject') => {
     if (selectedIds.size === 0) {
-      alert('请先选择要操作的文章');
+      alert('Select at least one article first');
       return;
     }
     
-    if (!confirm(`确定要${action === 'approve' ? '发布' : '拒绝'} ${selectedIds.size} 篇文章吗？`)) {
+    if (!confirm(`${action === 'approve' ? 'Publish' : 'Reject'} ${selectedIds.size} article(s)?`)) {
       return;
     }
     
@@ -180,14 +180,14 @@ export default function AdminReviewDashboard() {
     setBatchProcessing(false);
     setSelectedIds(new Set());
     
-    // 刷新文章列表
+    // Refresh list
     setArticles(prev => prev.filter(a => !selectedIds.has(a.id)));
     
     if (selected && selectedIds.has(selected.id)) {
       setSelected(null);
     }
     
-    alert(`批量操作完成：成功 ${successCount} 篇，失败 ${failCount} 篇`);
+    alert(`Batch done: ${successCount} succeeded, ${failCount} failed`);
   };
 
   const handleAction = async (action: 'approve' | 'reject' | 'save') => {
@@ -212,15 +212,15 @@ export default function AdminReviewDashboard() {
       const json = await res.json();
       
       if (json.success) {
-        alert(`操作成功: ${action}`);
-        // 从列表中移除已处理的文章
+        alert(`Success: ${action}`);
+        // Remove processed article from list
         setArticles(prev => prev.filter(a => a.id !== selected.id));
         setSelected(null);
       } else {
-        alert(`操作失败: ${json.error}`);
+        alert(`Action failed: ${json.error}`);
       }
     } catch (e: any) {
-      alert(`请求失败: ${e.message}`);
+      alert(`Request failed: ${e.message}`);
     }
   };
 
@@ -242,20 +242,20 @@ export default function AdminReviewDashboard() {
             className="bg-palette-primary hover:bg-palette-primary-hover text-white h-7 text-xs"
           >
             {crawlerRunning ? <RefreshCw className="w-3 h-3 mr-1 animate-spin" /> : <Play className="w-3 h-3 mr-1" />}
-            {crawlerRunning ? '运行中...' : '触发爬虫'}
+            {crawlerRunning ? 'Running...' : 'Run crawler'}
           </Button>
         </div>
         
         {selectedIds.size > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-palette-textMuted">已选 {selectedIds.size} 篇</span>
+            <span className="text-xs text-palette-textMuted">{selectedIds.size} selected</span>
             <Button 
               size="sm" 
               onClick={() => handleBatchAction('approve')} 
               disabled={batchProcessing}
               className="bg-emerald-600 hover:bg-emerald-700 text-white h-7 text-xs"
             >
-              <Check className="w-3 h-3 mr-1" /> 批量发布
+              <Check className="w-3 h-3 mr-1" /> Approve all
             </Button>
             <Button 
               size="sm" 
@@ -264,7 +264,7 @@ export default function AdminReviewDashboard() {
               variant="destructive"
               className="h-7 text-xs"
             >
-              <X className="w-3 h-3 mr-1" /> 批量拒绝
+              <X className="w-3 h-3 mr-1" /> Reject all
             </Button>
           </div>
         )}
@@ -279,7 +279,7 @@ export default function AdminReviewDashboard() {
                 <button
                   onClick={toggleSortOrder}
                   className="text-xs text-palette-textMuted hover:text-palette-accent flex items-center gap-1 px-2 py-1 rounded bg-palette-bgSecondary hover:bg-palette-bgSecondary transition-colors"
-                  title="切换评分排序"
+                  title="Toggle score sort"
                 >
                   {getSortIcon()}
                   <span className="hidden sm:inline">{getSortLabel()}</span>
@@ -289,7 +289,7 @@ export default function AdminReviewDashboard() {
                   className="text-xs text-palette-accent hover:text-palette-accent flex items-center gap-1"
                 >
                   {selectedIds.size === articles.length ? <CheckSquare className="w-3 h-3" /> : <Square className="w-3 h-3" />}
-                  {selectedIds.size === articles.length ? '取消全选' : '全选'}
+                  {selectedIds.size === articles.length ? 'Clear all' : 'Select all'}
                 </button>
               </div>
             </div>
@@ -300,28 +300,28 @@ export default function AdminReviewDashboard() {
                 const difficulty = qd.difficulty_level || 'L2';
                 const publishedAt = art.createdAt;
                 const crawledAt = art.crawledAt;
-                const publishedStr = publishedAt ? new Date(publishedAt).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' }) : '';
-                const crawledStr = crawledAt ? new Date(crawledAt).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+                const publishedStr = publishedAt ? new Date(publishedAt).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' }) : '';
+                const crawledStr = crawledAt ? new Date(crawledAt).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
                 const isSelected = selectedIds.has(art.id);
                 return (
                   <div
                     key={art.id}
                     className={`w-full text-left p-3 rounded-md border transition-all cursor-pointer ${selected?.id === art.id ? 'bg-palette-bgSecondary ring-1 ring-palette-primary border-palette-primary' : 'bg-palette-bgSecondary border-palette-border hover:bg-palette-bgSecondary'} ${isSelected ? 'border-palette-primary bg-palette-bgTertiary ring-1 ring-palette-primary ring-1 ring-palette-primary' : ''}`}
                     onClick={() => {
-                      // 点击整个卡片同时勾选和选中文章
+                      // Card click: toggle selection + open article
                       toggleSelectId(art.id);
                       handleSelect(art);
                     }}
                   >
                     <div className="flex items-start gap-3">
-                      {/* 复选框 - 点击切换勾选 */}
+                      {/* Checkbox */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleSelectId(art.id);
                         }}
                         className="mt-0.5 p-1.5 -m-1.5 text-palette-textMuted hover:text-palette-accent flex-shrink-0 rounded transition-colors"
-                        title={isSelected ? '取消选择' : '选择此文章'}
+                        title={isSelected ? 'Deselect' : 'Select article'}
                       >
                         {isSelected ? <CheckSquare className="w-5 h-5 text-palette-accent" /> : <Square className="w-5 h-5" />}
                       </button>
@@ -364,8 +364,8 @@ export default function AdminReviewDashboard() {
                 <div className="flex justify-between items-center px-4 py-2 border-b border-palette-border bg-palette-bgTertiary">
                   <h3 className="font-semibold text-palette-textPrimary">{selected.titleEn}</h3>
                   <div className="flex gap-2">
-                    <Button size="sm" variant={mode === 'preview' ? 'default' : 'ghost'} onClick={() => setMode('preview')}><Eye className="w-3 h-3 mr-1" /> 预览</Button>
-                    <Button size="sm" variant={mode === 'edit' ? 'default' : 'ghost'} onClick={() => setMode('edit')}><Edit3 className="w-3 h-3 mr-1" /> 编辑</Button>
+                    <Button size="sm" variant={mode === 'preview' ? 'default' : 'ghost'} onClick={() => setMode('preview')}><Eye className="w-3 h-3 mr-1" /> Preview</Button>
+                    <Button size="sm" variant={mode === 'edit' ? 'default' : 'ghost'} onClick={() => setMode('edit')}><Edit3 className="w-3 h-3 mr-1" /> Edit</Button>
                   </div>
                 </div>
                 <div className="flex-1 overflow-y-auto p-6">
@@ -417,7 +417,7 @@ export default function AdminReviewDashboard() {
                   </div>
                   {selected.qualityDetails?.chinese_preview && (
                     <div className="space-y-2">
-                      <Label className="text-xs text-palette-textMuted">中文预览</Label>
+                      <Label className="text-xs text-palette-textMuted">Chinese preview</Label>
                       <div className="text-xs text-palette-textSecondary bg-palette-bgCard p-2 rounded max-h-32 overflow-y-auto whitespace-pre-wrap">
                         {selected.qualityDetails.chinese_preview}
                       </div>
@@ -430,10 +430,10 @@ export default function AdminReviewDashboard() {
                 </div>
                 <div className="h-px bg-palette-bgSecondary my-4" />
                 <div className="space-y-3">
-                  <Button onClick={() => handleAction('save')} className="w-full bg-palette-bgSecondary hover:bg-palette-bgTertiary text-palette-textSecondary h-9"><Save className="w-3 h-3 mr-2" /> 保存草稿</Button>
+                  <Button onClick={() => handleAction('save')} className="w-full bg-palette-bgSecondary hover:bg-palette-bgTertiary text-palette-textSecondary h-9"><Save className="w-3 h-3 mr-2" /> Save draft</Button>
                   <div className="grid grid-cols-2 gap-3">
-                    <Button onClick={() => handleAction('approve')} className="bg-emerald-600 hover:bg-emerald-700 text-white h-9"><Check className="w-3 h-3 mr-1" /> 发布</Button>
-                    <Button onClick={() => handleAction('reject')} variant="destructive" className="bg-red-600/80 h-9"><X className="w-3 h-3 mr-1" /> 拒绝</Button>
+                    <Button onClick={() => handleAction('approve')} className="bg-emerald-600 hover:bg-emerald-700 text-white h-9"><Check className="w-3 h-3 mr-1" /> Publish</Button>
+                    <Button onClick={() => handleAction('reject')} variant="destructive" className="bg-red-600/80 h-9"><X className="w-3 h-3 mr-1" /> Reject</Button>
                   </div>
                 </div>
               </>
@@ -441,8 +441,8 @@ export default function AdminReviewDashboard() {
               <div className="h-full flex items-center justify-center text-palette-textMuted text-sm">
                 <div className="text-center">
                   <Layers className="w-8 h-8 mx-auto mb-2 text-palette-textMuted" />
-                  <p>选择文章进行审核</p>
-                  <p className="text-xs mt-1">勾选左侧复选框可批量操作</p>
+                  <p>Select an article to review</p>
+                  <p className="text-xs mt-1">Use checkboxes on the left for batch actions</p>
                 </div>
               </div>
             )}

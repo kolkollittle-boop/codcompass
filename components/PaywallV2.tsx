@@ -4,9 +4,7 @@ import { Lock, Sparkles, Zap, Shield } from 'lucide-react';
 interface PaywallV2Props {
   variant?: 'inline' | 'overlay' | 'card';
   locale?: string;
-  // A/B 测试文案版本
   copyVersion?: 'A' | 'B' | 'C';
-  // 自定义文案
   title?: string;
   description?: string;
   ctaText?: string;
@@ -15,24 +13,27 @@ interface PaywallV2Props {
 const copyTemplates = {
   A: {
     title: 'Efficiency Upgrade',
-    description: 'You\'ve seen how Hybrid Search improves retrieval accuracy by 27%. The core code below shows how to achieve this with just 3 lines of configuration, plus production tuning parameters. Upgrade to Pro and take the Blueprint with you.',
+    description:
+      "You've seen how Hybrid Search improves retrieval accuracy by 27%. The core code below shows how to achieve this with just 3 lines of configuration, plus production tuning parameters. Upgrade to Pro and take the Blueprint with you.",
     cta: 'Upgrade Pro, Get the Blueprint',
   },
   B: {
     title: 'Cost Optimization',
-    description: 'At 100GB scale, wrong indexing strategies waste memory every hour. Unlock the "Index Sharding & Memory Optimization" section to reduce your running costs by 40%.',
+    description:
+      'At 100GB scale, wrong indexing strategies waste memory every hour. Unlock the "Index Sharding & Memory Optimization" section to reduce your running costs by 40%.',
     cta: 'Upgrade Pro, Save 40% Costs',
   },
   C: {
     title: 'Results-Driven',
-    description: 'The key to reducing hallucination by 35% lies in the Re-ranking weight matrix and dynamic tuning code below. Stop letting garbage data pollute your context window and company budget. Upgrade to Pro for the complete production-grade implementation + Blueprint (docker-compose + benchmark scripts).',
+    description:
+      'The key to reducing hallucination by 35% lies in the Re-ranking weight matrix and dynamic tuning code below. Stop letting garbage data pollute your context window and company budget. Upgrade to Pro for the complete production-grade implementation + Blueprint (docker-compose + benchmark scripts).',
     cta: 'Upgrade Pro, Get Full Implementation',
   },
 };
 
 export default function PaywallV2({
   variant = 'overlay',
-  locale = 'en',
+  locale: _locale = 'en',
   copyVersion = 'C',
   title,
   description,
@@ -44,39 +45,35 @@ export default function PaywallV2({
   const displayCta = ctaText || copy.cta;
 
   const icons = {
-    A: <Zap className="w-7 h-7" />,
-    B: <Shield className="w-7 h-7" />,
-    C: <Sparkles className="w-7 h-7" />,
+    A: <Zap className="h-7 w-7" />,
+    B: <Shield className="h-7 w-7" />,
+    C: <Sparkles className="h-7 w-7" />,
   };
 
   if (variant === 'card') {
     return (
-      <div className="bg-gradient-to-br from-palette-bgCard to-palette-bgSecondary rounded-2xl border border-palette-border p-8 my-8">
+      <div className="docs-card my-8 rounded-2xl border border-docs-border bg-docs-surface p-8">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-8 h-8 text-white" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-docs-bg">
+            <Lock className="h-8 w-8 text-zinc-300" />
           </div>
-          <h3 className="text-2xl font-bold text-palette-textPrimary mb-2">Unlock Full Access</h3>
-          <p className="text-palette-textMuted mb-6 max-w-md mx-auto">
-            {displayDescription}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <h3 className="mb-2 text-2xl font-bold text-white">Unlock Full Access</h3>
+          <p className="mx-auto mb-6 max-w-md text-zinc-500">{displayDescription}</p>
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href="/pricing"
-              className="px-8 py-3 bg-palette-primary hover:bg-palette-primary-hover text-white font-medium rounded-lg transition-colors"
+              className="rounded-lg bg-white px-8 py-3 font-medium text-black transition-colors hover:bg-zinc-200"
             >
               {displayCta}
             </Link>
             <Link
               href="/login"
-              className="px-8 py-3 bg-palette-bgSecondary hover:bg-palette-bgTertiary text-palette-textSecondary font-medium rounded-lg border border-palette-border transition-colors"
+              className="rounded-lg border border-docs-border bg-docs-bg px-8 py-3 font-medium text-zinc-300 transition-colors hover:border-docs-border-hover hover:text-white"
             >
               Already subscribed? Sign in
             </Link>
           </div>
-          <p className="text-xs text-palette-textMuted mt-4">
-            Cancel anytime · 30-day money-back guarantee
-          </p>
+          <p className="mt-4 text-xs text-zinc-600">Cancel anytime · 30-day money-back guarantee</p>
         </div>
       </div>
     );
@@ -84,19 +81,17 @@ export default function PaywallV2({
 
   if (variant === 'inline') {
     return (
-      <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] rounded-xl p-6 my-8 text-white">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="my-8 rounded-xl border border-docs-border bg-docs-surface p-6 text-white">
+        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div>
-            <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
-              <Lock className="w-5 h-5" /> {displayTitle}
+            <h3 className="mb-1 flex items-center gap-2 text-lg font-bold">
+              <Lock className="h-5 w-5" /> {displayTitle}
             </h3>
-            <p className="text-sm text-white/85">
-              {displayDescription.slice(0, 80)}...
-            </p>
+            <p className="text-sm text-zinc-400">{displayDescription.slice(0, 80)}...</p>
           </div>
           <Link
             href="/pricing"
-            className="flex-shrink-0 px-6 py-2.5 bg-white text-palette-primary font-medium rounded-lg hover:bg-palette-bgTertiary transition-colors"
+            className="flex-shrink-0 rounded-lg bg-white px-6 py-2.5 font-medium text-black transition-colors hover:bg-zinc-200"
           >
             {displayCta}
           </Link>
@@ -105,37 +100,30 @@ export default function PaywallV2({
     );
   }
 
-  // Default: overlay (for blurring premium content)
   return (
     <div className="relative my-10">
-      {/* Blurred preview */}
-      <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
+      <div className="pointer-events-none select-none opacity-30 blur-md" aria-hidden="true">
         <div className="prose prose-lg max-w-none prose-invert">
           <p>This is premium content that requires a subscription to view.</p>
           <p>Subscribe to unlock full access to all articles.</p>
         </div>
       </div>
 
-      {/* Paywall overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="bg-gradient-to-t from-palette-bgPrimary via-palette-bgPrimary to-transparent w-full h-full flex items-end sm:items-center justify-center pb-8 sm:pb-0">
-          <div className="bg-palette-bgCard rounded-2xl border border-palette-border shadow-2xl p-8 max-w-md mx-4 text-center">
-            <div className="w-14 h-14 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="flex h-full w-full items-end justify-center bg-gradient-to-t from-docs-bg via-docs-bg/90 to-transparent pb-8 sm:items-center sm:pb-0">
+          <div className="docs-card mx-4 max-w-md rounded-2xl border border-docs-border bg-docs-surface p-8 text-center shadow-2xl">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-docs-bg text-zinc-200">
               {icons[copyVersion]}
             </div>
-            <h3 className="text-xl font-bold text-palette-textPrimary mb-2">{displayTitle}</h3>
-            <p className="text-palette-textMuted mb-6 text-sm leading-relaxed">
-              {displayDescription}
-            </p>
+            <h3 className="mb-2 text-xl font-bold text-white">{displayTitle}</h3>
+            <p className="mb-6 text-sm leading-relaxed text-zinc-500">{displayDescription}</p>
             <Link
               href="/pricing"
-              className="block w-full py-3 px-6 bg-palette-primary hover:bg-palette-primary-hover text-white font-medium rounded-lg transition-colors"
+              className="block w-full rounded-lg bg-white py-3 px-6 font-medium text-black transition-colors hover:bg-zinc-200"
             >
               {displayCta}
             </Link>
-            <p className="text-xs text-palette-textMuted mt-3">
-              Cancel anytime · 30-day money-back guarantee
-            </p>
+            <p className="mt-3 text-xs text-zinc-600">Cancel anytime · 30-day money-back guarantee</p>
           </div>
         </div>
       </div>

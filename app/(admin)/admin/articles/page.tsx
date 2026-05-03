@@ -45,7 +45,7 @@ export default function ArticlesAdminPage() {
   };
 
   const handleDelete = async (slug: string, title: string) => {
-    if (!confirm(`确定要删除文章 "${title}" 吗？此操作不可撤销。`)) {
+    if (!confirm(`Delete article "${title}"? This cannot be undone.`)) {
       return;
     }
 
@@ -56,14 +56,14 @@ export default function ArticlesAdminPage() {
 
       if (res.ok) {
         setArticles(articles.filter(a => a.slug !== slug));
-        alert('文章已删除');
+        alert('Article deleted');
       } else {
         const error = await res.json();
-        alert(`删除失败: ${error.error || '未知错误'}`);
+        alert(`Delete failed: ${error.error || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Delete failed:', error);
-      alert('删除失败，请重试');
+      alert('Delete failed. Please try again.');
     }
   };
 
@@ -88,11 +88,11 @@ export default function ArticlesAdminPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-white">📝 文章管理</h1>
-              <p className="text-palette-textMuted mt-1">创建、编辑和管理所有文章</p>
+              <h1 className="text-2xl font-bold text-white">📝 Articles</h1>
+              <p className="text-palette-textMuted mt-1">Create, edit, and manage all articles</p>
             </div>
             <button className="px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors">
-              + 新建文章
+              + New article
             </button>
           </div>
 
@@ -102,22 +102,22 @@ export default function ArticlesAdminPage() {
               <thead className="bg-palette-bgSecondary">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
-                    文章
+                    Article
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
-                    分类
+                    Category
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
-                    状态
+                    Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
-                    类型
+                    Tier
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
-                    评分
+                    Score
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
-                    操作
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -141,7 +141,7 @@ export default function ArticlesAdminPage() {
                           ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
                           : 'bg-palette-bgTertiary text-palette-textMuted border border-palette-border'
                       }`}>
-                        {article.status === 'PUBLISHED' ? '已发布' : article.status === 'REVIEW' ? '待审核' : article.status === 'ARCHIVED' ? '已归档' : '草稿'}
+                        {article.status === 'PUBLISHED' ? 'Published' : article.status === 'REVIEW' ? 'In review' : article.status === 'ARCHIVED' ? 'Archived' : 'Draft'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -152,7 +152,7 @@ export default function ArticlesAdminPage() {
                           ? 'bg-palette-bgTertiary text-palette-primary border border-palette-primary'
                           : 'bg-palette-bgTertiary text-palette-textMuted border border-palette-border'
                       }`}>
-                        {article.accessLevel === 'pro' ? 'Pro' : article.accessLevel === 'builder' ? 'Builder' : '免费'}
+                        {article.accessLevel === 'pro' ? 'Pro' : article.accessLevel === 'builder' ? 'Builder' : 'Free'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-palette-textSecondary">
@@ -163,13 +163,13 @@ export default function ArticlesAdminPage() {
                         onClick={() => handleEdit(article.slug)}
                         className="text-palette-primary hover:text-palette-accent mr-4 transition-colors"
                       >
-                        编辑
+                        Edit
                       </button>
                       <button 
                         onClick={() => handleDelete(article.slug, article.titleEn)}
                         className="text-red-400 hover:text-red-300 transition-colors"
                       >
-                        删除
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -180,10 +180,10 @@ export default function ArticlesAdminPage() {
             {articles.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-4xl mb-4">📝</div>
-                <h3 className="text-lg font-medium text-white mb-2">暂无文章</h3>
-                <p className="text-palette-textMuted mb-4">创建第一篇文章开始</p>
+                <h3 className="text-lg font-medium text-white mb-2">No articles yet</h3>
+                <p className="text-palette-textMuted mb-4">Create your first article to get started</p>
                 <button className="px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors">
-                  创建文章
+                  Create article
                 </button>
               </div>
             )}

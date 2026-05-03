@@ -20,14 +20,14 @@ const translations = {
     ],
   },
   zh: {
-    badge: '社区',
-    title: '加入我们的 Discord 社区',
-    description: '与 2,500+ 开发者交流。获取实时帮助、分享想法，及时了解最新教程和最佳实践。',
-    joinBtn: '加入 Discord 服务器',
+    badge: 'Community',
+    title: 'Join Our Discord Community',
+    description: 'Connect with 2,500+ developers. Get real-time help, share ideas, and stay updated on the latest tutorials and best practices.',
+    joinBtn: 'Join Discord Server',
     features: [
-      '专家实时问答',
-      '新内容抢先体验',
-      '独家代码片段和资源',
+      'Real-time Q&A with experts',
+      'Early access to new content',
+      'Exclusive code snippets & resources',
     ],
   },
 };

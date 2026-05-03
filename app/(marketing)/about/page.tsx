@@ -5,140 +5,143 @@ import { Icon } from '@/components/ui';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
+    <div className="flex min-h-screen flex-col text-palette-textPrimary">
       <Header />
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-br from-[color-mix(in_srgb,var(--primary)_22%,transparent)] via-palette-bgPrimary to-[color-mix(in_srgb,var(--accent)_22%,transparent)]">
-          <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div className="text-center">
-              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-                About Codcompass
-              </h1>
-              <p className="text-xl text-palette-textMuted max-w-2xl mx-auto">
-                A knowledge base platform providing high-quality technical tutorials and expert insights for developers
-              </p>
-            </div>
+      <main className="flex-1">
+        {/* Hero */}
+        <div className="relative overflow-hidden px-4 py-20 sm:py-24">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(23,178,100,0.14),transparent)]" />
+          <div className="relative mx-auto max-w-site px-4 text-center sm:px-6 lg:px-8">
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-docs-heading sm:text-5xl">
+              About <span className="text-docs-accent">Codcompass</span>
+            </h1>
+            <p className="mx-auto max-w-2xl text-lg text-docs-body sm:text-xl">
+              High-quality technical tutorials and a knowledge base for developers—focused on production-ready practice and Blueprints.
+            </p>
           </div>
         </div>
 
         {/* Mission Section */}
-        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="mx-auto max-w-site px-4 py-16 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-12 md:grid-cols-2">
             <div>
-              <h2 className="text-3xl font-bold text-white mb-6">Our Mission</h2>
-              <p className="text-lg text-palette-textMuted mb-4">
-                In an era of information overload, developers face a flood of content but varying quality. Codcompass is dedicated to:
+              <h2 className="mb-6 text-3xl font-bold text-docs-heading">Our mission</h2>
+              <p className="mb-4 text-lg text-docs-body">
+                In a sea of noise, developers need trusted curation and content that ships. Codcompass is committed to:
               </p>
-              <ul className="space-y-3 text-palette-textMuted">
+              <ul className="space-y-3 text-docs-body">
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-palette-primary mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="mr-3 mt-0.5 h-6 w-6 shrink-0 text-docs-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span><Icon name="book-marked" size={16} className="inline text-palette-primary mr-1" /> Curating high-quality technical content, rejecting information noise</span>
+                  <span>
+                    <Icon name="book-marked" size={16} className="mr-1 inline text-docs-accent" /> Curated, high-signal technical content
+                  </span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-palette-primary mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="mr-3 mt-0.5 h-6 w-6 shrink-0 text-docs-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span><Icon name="code" size={16} className="inline text-palette-primary mr-1" /> Providing production-ready code examples from real projects</span>
+                  <span>
+                    <Icon name="code" size={16} className="mr-1 inline text-docs-accent" /> Production-ready examples from real projects
+                  </span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-palette-primary mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="mr-3 mt-0.5 h-6 w-6 shrink-0 text-docs-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span><Icon name="refresh" size={16} className="inline text-palette-primary mr-1" /> Weekly updates on the latest frameworks, tools, and best practices</span>
+                  <span>
+                    <Icon name="refresh" size={16} className="mr-1 inline text-docs-accent" /> Ongoing coverage of frameworks, tools, and best practices
+                  </span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-palette-primary mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="mr-3 mt-0.5 h-6 w-6 shrink-0 text-docs-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span><Icon name="target" size={16} className="inline text-palette-primary mr-1" /> Focusing on modern tech stacks like React, TypeScript, Next.js</span>
+                  <span>
+                    <Icon name="target" size={16} className="mr-1 inline text-docs-accent" /> Deep focus on React, TypeScript, Next.js, and the modern stack
+                  </span>
                 </li>
               </ul>
             </div>
-            <div className="bg-palette-bgCard rounded-2xl shadow-lg p-8 border border-palette-border">
+            <div className="docs-card rounded-2xl border border-docs-border bg-docs-surface p-8">
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-palette-bgTertiary flex items-center justify-center">
-                  <Icon name="compass" size={32} className="text-palette-primary" />
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/5 ring-1 ring-docs-border">
+                  <Icon name="compass" size={32} className="text-docs-accent" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">Codcompass</h3>
-                <p className="text-palette-textMuted">Code + Compass = Developer's Compass</p>
-                <p className="text-palette-textMuted mt-2">Navigating your technical growth</p>
+                <h3 className="mb-2 text-2xl font-bold text-docs-heading">Codcompass</h3>
+                <p className="text-docs-body">Code + Compass = a navigator for builders</p>
+                <p className="mt-2 text-docs-muted">Alongside your technical growth path</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Stats Section */}
-        <div className="bg-palette-bgSecondary py-16 border-y border-palette-border">
-          <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div className="border-y border-docs-border bg-docs-surface/50 py-16">
+          <div className="mx-auto max-w-site px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-2 gap-8 text-center md:grid-cols-4">
               <div>
-                <div className="text-4xl font-bold text-palette-primary mb-2">50+</div>
-                <div className="text-palette-textMuted">Technical Articles</div>
+                <div className="mb-2 text-4xl font-bold text-docs-accent">50+</div>
+                <div className="text-docs-muted">Technical articles</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-palette-primary mb-2">12</div>
-                <div className="text-palette-textMuted">Tech Topics</div>
+                <div className="mb-2 text-4xl font-bold text-docs-accent">12</div>
+                <div className="text-docs-muted">Topic series</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-palette-primary mb-2">4.8</div>
-                <div className="text-palette-textMuted">Average Rating</div>
+                <div className="mb-2 text-4xl font-bold text-docs-accent">4.8</div>
+                <div className="text-docs-muted">Average rating</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-palette-primary mb-2">Weekly</div>
-                <div className="text-palette-textMuted">Continuous Updates</div>
+                <div className="mb-2 text-4xl font-bold text-docs-accent">Weekly</div>
+                <div className="text-docs-muted">Fresh updates</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Team Section */}
-        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">Core Team</h2>
-            <p className="text-lg text-palette-textMuted">Built by developers, for developers</p>
+        <div className="mx-auto max-w-site px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-docs-heading">Core team</h2>
+            <p className="text-lg text-docs-body">Built by developers, for developers</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-palette-bgCard rounded-xl shadow-md p-6 text-center border border-palette-border">
-              <div className="w-20 h-20 bg-palette-bgTertiary rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Icon name="code" size={32} className="text-palette-primary" />
+          <div className="grid gap-8 md:grid-cols-3">
+            <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6 text-center">
+              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/5 ring-1 ring-docs-border">
+                <Icon name="code" size={32} className="text-docs-accent" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Technical Editor</h3>
-              <p className="text-palette-textMuted">10 years of frontend development experience, focused on React/TypeScript ecosystem</p>
+              <h3 className="mb-2 text-xl font-bold text-docs-heading">Technical editor</h3>
+              <p className="text-docs-body">Ten years in frontend, deep in the React / TypeScript ecosystem</p>
             </div>
-            <div className="bg-palette-bgCard rounded-xl shadow-md p-6 text-center border border-palette-border">
-              <div className="w-20 h-20 bg-purple-500/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Icon name="file-text" size={32} className="text-purple-400" />
+            <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6 text-center">
+              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-teal-500/10 ring-1 ring-teal-500/20">
+                <Icon name="file-text" size={32} className="text-teal-400" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Content Strategist</h3>
-              <p className="text-palette-textMuted">Technical writing expert, specializing in simplifying complex concepts into easy-to-understand tutorials</p>
+              <h3 className="mb-2 text-xl font-bold text-docs-heading">Content strategy</h3>
+              <p className="text-docs-body">Technical writing and structured explanations that make hard topics clear</p>
             </div>
-            <div className="bg-palette-bgCard rounded-xl shadow-md p-6 text-center border border-palette-border">
-              <div className="w-20 h-20 bg-green-500/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Icon name="cpu" size={32} className="text-green-400" />
+            <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6 text-center">
+              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-docs-green-subtle ring-1 ring-docs-accent/25">
+                <Icon name="cpu" size={32} className="text-docs-accent" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">AI Assistant</h3>
-              <p className="text-palette-textMuted">Jarvis - Automated content collection and quality review</p>
+              <h3 className="mb-2 text-xl font-bold text-docs-heading">AI assistant</h3>
+              <p className="text-docs-body">Jarvis — assists with ingestion and first-pass quality checks</p>
             </div>
           </div>
         </div>
 
         {/* CTA Section */}
-        <div className="bg-palette-primary py-16">
-          <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Ready to level up your technical skills?
-            </h2>
-            <p className="text-palette-textSecondary text-lg mb-8">
-              Join Codcompass for high-quality technical tutorials and expert insights
-            </p>
+        <div className="border-t border-docs-border bg-docs-accent py-16">
+          <div className="mx-auto max-w-site px-4 text-center sm:px-6 lg:px-8">
+            <h2 className="mb-4 text-3xl font-bold text-white">Ready to grow your skills?</h2>
+            <p className="mb-8 text-lg text-white/90">Join Codcompass for high-quality tutorials and expert perspective</p>
             <Link
               href="/pricing"
-              className="inline-block bg-white text-palette-primary font-medium px-8 py-3 rounded-lg hover:bg-palette-bgTertiary transition-colors"
+              className="inline-block rounded-md border border-white/20 bg-docs-bg px-8 py-3 font-medium text-docs-heading transition-colors hover:bg-docs-surface"
             >
-              View Pricing Plans
+              View pricing
             </Link>
           </div>
         </div>

@@ -1,8 +1,21 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import Providers from '@/components/Providers';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+});
 
 const COLOR_THEME_BOOT = `(function(){try{var K='codcompass-color-theme';var C=['theme-blue-purple','theme-cyan-dark','theme-emerald-cyan'];var v=localStorage.getItem(K);var r=document.documentElement;for(var i=0;i<C.length;i++)r.classList.remove(C[i]);r.classList.add(C.indexOf(v)>=0?v:C[0]);}catch(e){}})();`;
 
@@ -70,8 +83,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-white antialiased">
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className={`${inter.className} min-h-screen bg-white antialiased`}>
         <Script id="codcompass-color-theme" strategy="beforeInteractive">
           {COLOR_THEME_BOOT}
         </Script>

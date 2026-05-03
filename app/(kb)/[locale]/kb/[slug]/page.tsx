@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Paywall from '@/components/Paywall';
 import PaywallV2 from '@/components/PaywallV2';
 import HeaderMetaCard from '@/components/HeaderMetaCard';
 import PathNavigator from '@/components/PathNavigator';
@@ -11,6 +10,8 @@ import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ArrowLeft } from 'lucide-react';
+import { DocsBreadcrumbs } from '@/components/docs/DocsBreadcrumbs';
+import { articleMarkdownComponents } from '@/lib/article-markdown';
 
 interface ArticlePageProps {
   params: Promise<{
@@ -52,20 +53,6 @@ const difficultyMap: Record<string, string> = {
   'AI/ML': 'Advanced',
   'DevOps': 'Advanced',
 };
-
-function difficultyColor(d: string) {
-  switch (d) {
-    case 'Beginner':
-    case 'L1': return 'bg-green-100 text-green-800';
-    case 'Intermediate':
-    case 'L2': return 'bg-yellow-100 text-yellow-800';
-    case 'Advanced':
-    case 'L3': return 'bg-orange-100 text-orange-800';
-    case 'Expert':
-    case 'L4': return 'bg-red-100 text-red-800';
-    default: return 'bg-palette-bgTertiary text-palette-textPrimary';
-  }
-}
 
 const translations = {
   en: {
@@ -148,20 +135,29 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   // Parse tags
   const tags = dbArticle.tags?.map(t => t.Tag?.[0]?.name).filter(Boolean) || [];
 
-  return (
-    <div className="min-h-screen bg-palette-bgPrimary text-palette-textPrimary">
-      <div className="px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back button */}
-        <Link href={`/${locale}/kb`} className="inline-flex items-center gap-2 text-sm text-palette-textMuted hover:text-palette-accent mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-          {t.backToKB}
-        </Link>
+  const headingIds = new Set<string>();
+  const mdComponents = articleMarkdownComponents(headingIds);
+  const proseArticle =
+    'prose prose-lg prose-invert max-w-none prose-a:no-underline prose-p:leading-relaxed prose-p:break-words prose-pre:whitespace-pre-wrap prose-pre:break-words';
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Main content */}
-          <main className="flex-1 min-w-0">
-            {/* Header Meta Card */}
-            <HeaderMetaCard
+  return (
+    <div className="min-h-0 text-zinc-400">
+      <Link
+        href={`/${locale}/kb`}
+        className="mb-4 inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-300"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        {t.backToKB}
+      </Link>
+
+      <DocsBreadcrumbs
+        locale={locale}
+        items={[{ label: 'Knowledge Base', href: '/kb' }, { label: content.title }]}
+      />
+
+      <div className="flex flex-col gap-8 lg:flex-row">
+        <main className="min-w-0 flex-1">
+          <HeaderMetaCard
               difficultyLevel={difficulty}
               readingTime={readTime}
               expectedOutcome={dbArticle.expectedOutcome}
@@ -172,10 +168,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               seriesEstimatedTime={seriesData?.estimatedTime}
             />
 
-            {/* Article Header */}
-            <header className="mb-8 pb-6 border-b border-palette-border">
-              <h1 className="text-3xl sm:text-4xl font-bold text-palette-textPrimary mb-4">{content.title}</h1>
-              <div className="flex items-center text-palette-textMuted text-sm space-x-4">
+            <header className="mb-8 border-b border-docs-border pb-6">
+              <h1 className="mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">{content.title}</h1>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-500">
                 <span>By {dbArticle.sourceAuthor || 'Codcompass Team'}</span>
                 <span>·</span>
                 <time>{dbArticle.publishedAt ? new Date(dbArticle.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}</time>
@@ -184,19 +179,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </div>
             </header>
 
-            {/* Free Content */}
-            <div
-              className="prose prose-lg prose-invert max-w-none
-                prose-headings:font-bold prose-headings:text-palette-textPrimary
-                prose-p:text-palette-textSecondary prose-p:leading-relaxed prose-p:break-words
-                prose-code:bg-palette-bgSecondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:break-all
-                prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary prose-pre:rounded-lg prose-pre:whitespace-pre-wrap prose-pre:break-words
-                prose-a:text-palette-accent prose-a:no-underline"
-            >
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{freeContent}</ReactMarkdown>
-            </div>
+            <div id="docs-content" className="space-y-8">
+              <div className={proseArticle}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                  {freeContent}
+                </ReactMarkdown>
+              </div>
 
-            {/* Premium Content */}
             {(() => {
               // Cast to string to avoid TypeScript narrowing issues
               const articleAccessLevel = (dbArticle.accessLevel || (dbArticle.isPremium ? 'pro' : 'free')) as string;
@@ -209,15 +198,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               
               if (hasAccess) {
                 return (
-                  <div
-                    className="prose prose-lg prose-invert max-w-none mt-8
-                      prose-headings:font-bold prose-headings:text-palette-textPrimary
-                      prose-p:text-palette-textSecondary prose-p:leading-relaxed prose-p:break-words
-                      prose-code:bg-palette-bgSecondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:break-all
-                      prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary prose-pre:rounded-lg prose-pre:whitespace-pre-wrap prose-pre:break-words
-                      prose-a:text-palette-accent prose-a:no-underline"
-                  >
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
+                  <div className={`${proseArticle} mt-8`}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                      {premiumContent}
+                    </ReactMarkdown>
                   </div>
                 );
               }
@@ -229,21 +213,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   
                   {/* Blurred preview */}
                   <div className="relative mt-10">
-                    <div className="blur-md select-none pointer-events-none opacity-30" aria-hidden="true">
-                      <div
-                        className="prose prose-lg prose-invert max-w-none
-                          prose-headings:font-bold prose-p:text-palette-textSecondary
-                          prose-pre:bg-palette-bgCard prose-pre:text-palette-textPrimary"
-                      >
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{premiumContent}</ReactMarkdown>
+                    <div className="pointer-events-none select-none opacity-30 blur-md" aria-hidden="true">
+                      <div className={proseArticle}>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                          {premiumContent}
+                        </ReactMarkdown>
                       </div>
                     </div>
                   </div>
                 </>
               );
             })()}
+            </div>
 
-            {/* Production Bundle */}
             <ProductionBundle
               blueprintUrl={dbArticle.blueprintUrl}
               blueprintName={dbArticle.blueprintName}
@@ -253,18 +235,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
             {/* Sources */}
             {dbArticle.sourceSite && (
-              <div className="mt-12 pt-8 border-t border-palette-border">
-                <h3 className="text-sm font-semibold text-palette-textMuted uppercase tracking-wider mb-3">{t.sources}</h3>
+              <div className="mt-12 border-t border-docs-border pt-8">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500">{t.sources}</h3>
                 <ul className="space-y-1">
-                  <li className="text-sm text-palette-textMuted">• {dbArticle.sourceSite}</li>
+                  <li className="text-sm text-zinc-500">• {dbArticle.sourceSite}</li>
                 </ul>
               </div>
             )}
-          </main>
+        </main>
 
-          {/* Sidebar - Path Navigator */}
           {seriesData && seriesParts.length > 0 && (
-            <aside className="lg:w-80 flex-shrink-0">
+            <aside className="w-full shrink-0 lg:w-80">
               <PathNavigator
                 seriesTitle={seriesData.title}
                 seriesSlug={seriesData.slug}
@@ -276,7 +257,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               />
             </aside>
           )}
-        </div>
       </div>
     </div>
   );

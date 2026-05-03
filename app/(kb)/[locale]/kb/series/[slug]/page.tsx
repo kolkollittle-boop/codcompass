@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSeriesArticles } from '@/lib/supabase';
-import { getLocaleFromCookie, type Locale } from '@/lib/i18n';
+import { type Locale } from '@/lib/i18n';
 import Icon from '@/components/ui/Icon';
 import type { Metadata } from 'next';
 
@@ -15,7 +15,7 @@ interface SeriesPageProps {
 export async function generateMetadata({ params }: SeriesPageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const { series } = await getSeriesArticles(resolvedParams.slug, resolvedParams.locale);
-  
+
   if (!series) {
     return { title: 'Series Not Found' };
   }
@@ -48,7 +48,7 @@ const translations = {
 export default async function SeriesPage({ params }: SeriesPageProps) {
   const resolvedParams = await params;
   const locale = (resolvedParams.locale as Locale) || 'en';
-  const t = translations.en; // Always use English translations
+  const t = translations.en;
 
   const { series, articles } = await getSeriesArticles(resolvedParams.slug, locale);
 
@@ -61,28 +61,24 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
   const estimatedTime = series.estimatedTime || Math.max(5, series.totalParts * 10);
 
   return (
-    <div className="min-h-screen bg-palette-bgPrimary text-palette-textPrimary">
-      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Back button */}
+    <div className="min-h-0 text-zinc-400">
+      <div className="mx-auto max-w-site px-4 py-12 sm:px-6 lg:px-8">
         <Link
           href={`/${locale}/kb`}
-          className="inline-flex items-center gap-2 text-sm text-palette-textMuted hover:text-palette-accent mb-8 transition-colors"
+          className="mb-8 inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-white"
         >
           <Icon name="chevron-left" size={16} />
           {t.backToKB}
         </Link>
 
-        {/* Series header */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary mb-4">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-docs-border bg-docs-surface px-3 py-1 text-xs font-medium text-zinc-300">
             <Icon name="book-marked" size={14} />
             {t.series}
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{title}</h1>
-          {description && (
-            <p className="text-lg text-palette-textMuted mb-6 max-w-site">{description}</p>
-          )}
-          <div className="flex flex-wrap gap-6 text-sm text-palette-textMuted">
+          <h1 className="mb-4 text-3xl font-bold text-white sm:text-4xl">{title}</h1>
+          {description && <p className="mb-6 max-w-site text-lg text-zinc-500">{description}</p>}
+          <div className="flex flex-wrap gap-6 text-sm text-zinc-500">
             <span className="flex items-center gap-2">
               <Icon name="file-text" size={16} />
               {articles.length} {t.articles}
@@ -94,7 +90,6 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
           </div>
         </div>
 
-        {/* Articles list */}
         <div className="space-y-4">
           {articles.map((article: any, index: number) => {
             const articleTitle = article.translations?.[0]?.title || article.titleEn;
@@ -106,38 +101,36 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
             return (
               <article
                 key={article.id}
-                className={`p-6 rounded-2xl border transition-all duration-200 ${
-                  accessLevel === 'free'
-                    ? 'bg-palette-bgCard border-white/[0.08] hover:border-green-500/30'
-                    : 'bg-palette-bgSecondary border-white/[0.08] hover:border-palette-primary'
-                }`}
+                className="docs-card rounded-2xl border border-docs-border bg-docs-surface p-6 transition-colors hover:bg-white/[0.02]"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="w-8 h-8 rounded-lg bg-palette-bgTertiary text-palette-primary flex items-center justify-center text-sm font-semibold">
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-2 flex items-center gap-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-docs-bg text-sm font-semibold text-zinc-300">
                         {index + 1}
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
-                        accessLevel === 'pro'
-                          ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-                          : accessLevel === 'builder'
-                          ? 'bg-palette-bgTertiary text-palette-primary border-palette-primary'
-                          : 'bg-green-500/10 text-green-400 border-green-500/20'
-                      }`}>
+                      <span
+                        className={`rounded-full border px-2 py-0.5 text-xs font-medium ${
+                          accessLevel === 'pro'
+                            ? 'border-docs-border-hover bg-white/10 text-zinc-200'
+                            : accessLevel === 'builder'
+                              ? 'border-docs-border bg-docs-bg text-zinc-400'
+                              : 'border-docs-border bg-docs-bg text-zinc-500'
+                        }`}
+                      >
                         {accessLevel === 'pro' ? t.pro : accessLevel === 'builder' ? t.builder : t.free}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-palette-bgSecondary text-palette-textMuted border border-palette-border">
+                      <span className="rounded-full border border-docs-border bg-docs-bg px-2 py-0.5 text-xs font-medium text-zinc-500">
                         {difficulty}
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2 hover:text-palette-primary transition-colors">
+                    <h3 className="mb-2 text-lg font-semibold text-white transition-colors hover:text-zinc-200">
                       {articleTitle}
                     </h3>
                     {articleExcerpt && (
-                      <p className="text-sm text-palette-textMuted line-clamp-2">{articleExcerpt}</p>
+                      <p className="line-clamp-2 text-sm text-zinc-500">{articleExcerpt}</p>
                     )}
-                    <div className="flex items-center gap-4 mt-3 text-xs text-palette-textMuted">
+                    <div className="mt-3 flex items-center gap-4 text-xs text-zinc-500">
                       <span className="flex items-center gap-1">
                         <Icon name="clock" size={12} />
                         ~{readTime} {t.minutes}
@@ -146,10 +139,10 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                   </div>
                   <Link
                     href={`/${locale}/kb/${article.slug}`}
-                    className={`flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`inline-flex flex-shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                       accessLevel === 'free'
-                        ? 'bg-palette-primary text-white hover:bg-palette-primary-hover'
-                        : 'bg-palette-bgSecondary text-palette-textSecondary hover:bg-palette-bgTertiary border border-palette-border'
+                        ? 'bg-white text-black hover:bg-zinc-200'
+                        : 'border border-docs-border bg-docs-bg text-zinc-300 hover:border-docs-border-hover hover:text-white'
                     }`}
                   >
                     {accessLevel === 'free' ? t.readArticle : t.unlockWithPro}
@@ -161,17 +154,12 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
           })}
         </div>
 
-        {/* Bottom CTA */}
-        <div className="mt-16 text-center p-8 bg-gradient-to-br from-[color-mix(in_srgb,var(--primary)_22%,transparent)] to-[color-mix(in_srgb,var(--accent)_22%,transparent)] rounded-2xl border border-palette-primary">
-          <h2 className="text-2xl font-bold text-white mb-3">
-            {t.startLearning}
-          </h2>
-          <p className="text-palette-textMuted mb-6">
-            Unlock all articles for the complete learning experience
-          </p>
+        <div className="docs-card mt-16 rounded-2xl border border-docs-border bg-docs-surface p-8 text-center">
+          <h2 className="mb-3 text-2xl font-bold text-white">{t.startLearning}</h2>
+          <p className="mb-6 text-zinc-500">Unlock all articles for the complete learning experience</p>
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-palette-primary text-white font-semibold hover:bg-palette-primary-hover transition-colors"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 font-semibold text-black transition-colors hover:bg-zinc-200"
           >
             View Pricing
             <Icon name="arrow-right" size={18} />

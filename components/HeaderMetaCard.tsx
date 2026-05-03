@@ -3,22 +3,21 @@
 import { Star, Clock, Target, Tag } from 'lucide-react';
 
 interface HeaderMetaCardProps {
-  difficultyLevel?: string | null;    // L1, L2, L3, L4
-  readingTime?: number | null;        // 预计阅读时间（分钟）
-  expectedOutcome?: string | null;    // 预期收益短句
-  tags?: string[];                    // 标签列表
-  seriesTitle?: string | null;        // 专题名称
-  seriesOrder?: number | null;        // 专题中的顺序
-  seriesTotal?: number | null;        // 专题总篇数
-  seriesEstimatedTime?: number | null; // 专题总预计学习时间
+  difficultyLevel?: string | null;
+  readingTime?: number | null;
+  expectedOutcome?: string | null;
+  tags?: string[];
+  seriesTitle?: string | null;
+  seriesOrder?: number | null;
+  seriesTotal?: number | null;
+  seriesEstimatedTime?: number | null;
 }
 
-// 难度等级配置
 const difficultyConfig: Record<string, { label: string; color: string; stars: number }> = {
-  L1: { label: 'Beginner', color: 'text-emerald-400', stars: 1 },
-  L2: { label: 'Intermediate', color: 'text-yellow-400', stars: 2 },
-  L3: { label: 'Advanced', color: 'text-orange-400', stars: 3 },
-  L4: { label: 'Expert', color: 'text-red-400', stars: 4 },
+  L1: { label: 'Beginner', color: 'text-zinc-300', stars: 1 },
+  L2: { label: 'Intermediate', color: 'text-zinc-400', stars: 2 },
+  L3: { label: 'Advanced', color: 'text-zinc-400', stars: 3 },
+  L4: { label: 'Expert', color: 'text-zinc-300', stars: 4 },
 };
 
 export default function HeaderMetaCard({
@@ -34,86 +33,71 @@ export default function HeaderMetaCard({
   const difficulty = difficultyLevel ? difficultyConfig[difficultyLevel] || difficultyConfig.L2 : null;
 
   return (
-    <div className="bg-palette-bgSecondary border border-palette-border rounded-xl p-6 mb-8">
-      {/* 预期收益 - 扎心短句 */}
+    <div className="docs-card mb-8 rounded-xl bg-docs-surface p-6">
       {expectedOutcome && (
-        <div className="mb-5 pb-5 border-b border-palette-border">
+        <div className="mb-5 border-b border-docs-border pb-5">
           <div className="flex items-start gap-3">
-            <Target className="w-5 h-5 text-palette-accent mt-0.5 flex-shrink-0" />
-            <p className="text-palette-textSecondary font-medium leading-relaxed">
-              {expectedOutcome}
-            </p>
+            <Target className="mt-0.5 h-5 w-5 flex-shrink-0 text-zinc-500" />
+            <p className="font-medium leading-relaxed text-zinc-300">{expectedOutcome}</p>
           </div>
         </div>
       )}
 
-      {/* 元数据网格 */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
-        {/* 难度等级 */}
-        <div className="flex flex-col items-center sm:items-start gap-1">
-          <span className="text-xs text-palette-textMuted uppercase tracking-wider">Difficulty</span>
+      <div className="mb-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="flex flex-col items-center gap-1 sm:items-start">
+          <span className="text-xs uppercase tracking-wider text-zinc-500">Difficulty</span>
           <div className="flex items-center gap-2">
             {difficulty && (
               <>
                 <div className="flex">
-                  {[1, 2, 3, 4].map(i => (
+                  {[1, 2, 3, 4].map((i) => (
                     <Star
                       key={i}
-                      className={`w-4 h-4 ${
-                        i <= difficulty.stars
-                          ? `${difficulty.color} fill-current`
-                          : 'text-palette-textMuted'
+                      className={`h-4 w-4 ${
+                        i <= difficulty.stars ? `${difficulty.color} fill-current` : 'text-zinc-700'
                       }`}
                     />
                   ))}
                 </div>
-                <span className={`text-sm font-medium ${difficulty.color}`}>
-                  {difficulty.label}
-                </span>
+                <span className={`text-sm font-medium ${difficulty.color}`}>{difficulty.label}</span>
               </>
             )}
           </div>
         </div>
 
-        {/* 阅读时间 */}
         {readingTime && (
-          <div className="flex flex-col items-center sm:items-start gap-1">
-            <span className="text-xs text-palette-textMuted uppercase tracking-wider">Read Time</span>
+          <div className="flex flex-col items-center gap-1 sm:items-start">
+            <span className="text-xs uppercase tracking-wider text-zinc-500">Read Time</span>
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-palette-textMuted" />
-              <span className="text-sm text-palette-textSecondary">{readingTime} min</span>
+              <Clock className="h-4 w-4 text-zinc-500" />
+              <span className="text-sm text-zinc-400">{readingTime} min</span>
             </div>
           </div>
         )}
 
-        {/* 专题进度 */}
         {seriesTitle && seriesOrder && seriesTotal && (
-          <div className="flex flex-col items-center sm:items-start gap-1 col-span-2 sm:col-span-1">
-            <span className="text-xs text-palette-textMuted uppercase tracking-wider">Series</span>
+          <div className="col-span-2 flex flex-col items-center gap-1 sm:col-span-1 sm:items-start">
+            <span className="text-xs uppercase tracking-wider text-zinc-500">Series</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm text-palette-textSecondary">
+              <span className="text-sm text-zinc-400">
                 {seriesOrder}/{seriesTotal}
               </span>
               {seriesEstimatedTime && (
-                <span className="text-xs text-palette-textMuted">
-                  (~{seriesEstimatedTime}min total)
-                </span>
+                <span className="text-xs text-zinc-500">(~{seriesEstimatedTime}min total)</span>
               )}
             </div>
           </div>
         )}
       </div>
 
-      {/* 标签 */}
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {tags.map(tag => (
+          {tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 px-2.5 py-1 bg-palette-bgSecondary text-palette-textMuted text-xs rounded-md border border-palette-border/50"
+              className="inline-flex items-center gap-1 rounded-md border border-docs-border bg-docs-bg px-2.5 py-1 text-xs text-zinc-500"
             >
-              <Tag className="w-3 h-3" />
-              #{tag}
+              <Tag className="h-3 w-3" />#{tag}
             </span>
           ))}
         </div>

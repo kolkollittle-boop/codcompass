@@ -195,15 +195,15 @@ export default function DashboardPage() {
                     const siteBase =
                       process.env.NEXT_PUBLIC_SITE_URL || 'https://www.codcompass.com';
                     const refundBody =
-                      `账号邮箱：${userEmail}\n\n` +
-                      '请补充以下信息（便于处理）：\n' +
-                      '- 购买日期\n' +
-                      '- Paddle 付款收据中的订单号 / Transaction ID\n' +
-                      '- 退款原因（可选）\n\n' +
-                      '我们将在 3–5 个工作日内按退款政策处理。\n' +
-                      `政策全文：${siteBase.replace(/\/$/, '')}/refund\n`;
+                      `Account email: ${userEmail}\n\n` +
+                      'Please include:\n' +
+                      '- Purchase date\n' +
+                      '- Order / Transaction ID from your Paddle receipt\n' +
+                      '- Reason for refund (optional)\n\n' +
+                      'We will process per our refund policy within 3–5 business days.\n' +
+                      `Full policy: ${siteBase.replace(/\/$/, '')}/refund\n`;
                     const mailtoHref = `mailto:support@codcompass.com?subject=${encodeURIComponent(
-                      '[Codcompass] 订阅退款申请'
+                      '[Codcompass] Subscription refund request'
                     )}&body=${encodeURIComponent(refundBody)}`;
 
                     return (
@@ -221,13 +221,13 @@ export default function DashboardPage() {
                             href={mailtoHref}
                             className="inline-flex items-center justify-center rounded-lg bg-palette-bgTertiary text-palette-textPrimary text-sm font-medium px-3 py-2 hover:bg-palette-bgSecondary transition-colors text-center"
                           >
-                            申请退款（发邮件至客服）
+                            Request refund (email support)
                           </a>
                           <a
                             href="/refund"
                             className="text-xs text-palette-primary hover:text-palette-accent"
                           >
-                            查看退款政策全文 →
+                            Read full refund policy →
                           </a>
                         </div>
                       </div>

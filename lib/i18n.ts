@@ -1,6 +1,6 @@
 /**
  * i18n utilities for Codcompass
- * Supports English (en) and Chinese (zh)
+ * Supports English (en) and Chinese locale (zh)
  */
 
 export type Locale = 'en' | 'zh';
@@ -9,7 +9,7 @@ export const locales: Locale[] = ['en', 'zh'];
 
 export const localeNames: Record<Locale, string> = {
   en: 'English',
-  zh: '中文',
+  zh: 'Chinese',
 };
 
 export const localeFlags: Record<Locale, string> = {
@@ -81,7 +81,7 @@ export function getArticleContent(
     };
   }
 
-  // For Chinese, try to find translation
+  // For zh, try to find translation
   const translation = article.translations?.find(t => t.locale === 'zh');
   if (translation && translation.content) {
     return {

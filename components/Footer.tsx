@@ -2,6 +2,8 @@ import Link from 'next/link';
 
 interface FooterProps {
   locale?: string;
+  /** KB / docs: deep footer matching docs-shell */
+  variant?: 'default' | 'docs';
 }
 
 const excludedPaths = [
@@ -16,7 +18,7 @@ const linkWithLocale = (locale: string, path: string) => {
   return `/${locale}${path}`;
 };
 
-export default function Footer({ locale = 'en' }: FooterProps) {
+export default function Footer({ locale = 'en', variant = 'default' }: FooterProps) {
   // Always use English translations for site-wide English
   const t = {
     description: 'Premium knowledge base for developers and professionals.',
@@ -36,16 +38,30 @@ export default function Footer({ locale = 'en' }: FooterProps) {
     rights: 'All rights reserved.',
   };
 
-  const linkClass = 'text-base text-palette-textMuted hover:text-palette-textPrimary';
-  const headingClass = 'text-sm font-semibold text-palette-textMuted uppercase tracking-wider';
+  const linkClass =
+    variant === 'docs'
+      ? 'text-base text-zinc-500 hover:text-white'
+      : 'text-base text-palette-textMuted hover:text-palette-textPrimary';
+  const headingClass =
+    variant === 'docs'
+      ? 'text-sm font-semibold text-zinc-500 uppercase tracking-wider'
+      : 'text-sm font-semibold text-palette-textMuted uppercase tracking-wider';
+  const footBorder = variant === 'docs' ? 'border-docs-border' : 'border-palette-border';
+  const mutedText = variant === 'docs' ? 'text-zinc-500' : 'text-palette-textMuted';
 
   return (
-    <footer className="bg-palette-bgSecondary border-t border-palette-border">
+    <footer
+      className={
+        variant === 'docs'
+          ? 'border-t border-docs-border bg-docs-surface text-zinc-400'
+          : 'border-t border-palette-border bg-palette-bgSecondary'
+      }
+    >
       <div className="max-w-site mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className={headingClass}>Codcompass</h3>
-            <p className="mt-4 text-base text-palette-textMuted">{t.description}</p>
+            <p className={`mt-4 text-base ${mutedText}`}>{t.description}</p>
           </div>
           <div>
             <h3 className={headingClass}>{t.product}</h3>
@@ -113,11 +129,11 @@ export default function Footer({ locale = 'en' }: FooterProps) {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-palette-border pt-8 md:flex md:items-center md:justify-between">
+        <div className={`mt-8 border-t ${footBorder} pt-8 md:flex md:items-center md:justify-between`}>
           <div className="flex space-x-6 md:order-2">
             {/* Social media icons would go here */}
           </div>
-          <p className="mt-8 text-base text-palette-textMuted md:mt-0 md:order-1">
+          <p className={`mt-8 text-base md:mt-0 md:order-1 ${mutedText}`}>
             &copy; {new Date().getFullYear()} Codcompass. {t.rights}
           </p>
         </div>

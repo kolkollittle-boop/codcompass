@@ -26,7 +26,7 @@ export default function ProductionBundle({
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
 
   const toggleChecklistItem = (id: string) => {
-    setCheckedItems(prev => ({
+    setCheckedItems((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
@@ -35,95 +35,88 @@ export default function ProductionBundle({
   const checkedCount = Object.values(checkedItems).filter(Boolean).length;
 
   return (
-    <div className="bg-palette-bgSecondary border border-palette-border rounded-xl my-10 overflow-hidden">
-      {/* 头部 - 可点击展开 */}
+    <div className="docs-card my-10 overflow-hidden rounded-xl border border-docs-border bg-docs-surface">
       <button
+        type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-6 hover:bg-palette-bgSecondary transition-colors cursor-pointer"
+        className="flex w-full cursor-pointer items-center justify-between p-6 text-left transition-colors hover:bg-white/[0.03]"
       >
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] rounded-lg flex items-center justify-center">
-            <FileCode className="w-6 h-6 text-white" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-docs-bg">
+            <FileCode className="h-6 w-6 text-zinc-300" />
           </div>
-          <div className="text-left">
-            <h3 className="text-lg font-bold text-palette-textPrimary">
-              Production Bundle
-            </h3>
-            <p className="text-sm text-palette-textMuted">
-              本篇完整生产力工具包 · 价值 $29
-            </p>
+          <div>
+            <h3 className="text-lg font-bold text-white">Production Bundle</h3>
+            <p className="text-sm text-zinc-500">Full productivity bundle for this article · $29 value</p>
           </div>
         </div>
         {isExpanded ? (
-          <ChevronUp className="w-5 h-5 text-palette-textMuted" />
+          <ChevronUp className="h-5 w-5 text-zinc-500" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-palette-textMuted" />
+          <ChevronDown className="h-5 w-5 text-zinc-500" />
         )}
       </button>
 
-      {/* 展开内容 */}
       {isExpanded && (
-        <div className="border-t border-palette-border p-6 space-y-6">
-          {/* Blueprint 下载 */}
+        <div className="space-y-6 border-t border-docs-border p-6">
           {blueprintUrl && (
-            <div className="bg-palette-bgSecondary rounded-lg p-4 flex items-center justify-between">
+            <div className="flex items-center justify-between rounded-lg border border-docs-border bg-docs-bg p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-palette-bgTertiary rounded-lg flex items-center justify-center">
-                  <Download className="w-5 h-5 text-palette-accent" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-docs-surface">
+                  <Download className="h-5 w-5 text-zinc-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-palette-textSecondary">
-                    {blueprintName || 'Production Blueprint'}
-                  </p>
-                  <p className="text-xs text-palette-textMuted">
-                    docker-compose · 配置脚本 · 基准测试 · README
-                  </p>
+                  <p className="text-sm font-medium text-zinc-300">{blueprintName || 'Production Blueprint'}</p>
+                  <p className="text-xs text-zinc-500">docker-compose · config scripts · benchmarks · README</p>
                 </div>
               </div>
               <a
                 href={blueprintUrl}
                 download
-                className="px-4 py-2 bg-palette-primary hover:bg-palette-primary-hover text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-zinc-200"
               >
-                <Download className="w-4 h-4" />
+                <Download className="h-4 w-4" />
                 Download
               </a>
             </div>
           )}
 
-          {/* 避坑 Checklist */}
           {checklist.length > 0 && (
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-sm font-semibold text-palette-textMuted uppercase tracking-wider">
-                  避坑 Checklist
-                </h4>
-                <span className="text-xs text-palette-textMuted">
-                  {checkedCount}/{checklist.length} 已完成
+              <div className="mb-4 flex items-center justify-between">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Pitfall checklist</h4>
+                <span className="text-xs text-zinc-500">
+                  {checkedCount}/{checklist.length} done
                 </span>
               </div>
               <div className="space-y-2">
                 {checklist.map((item) => (
                   <button
                     key={item.id}
+                    type="button"
                     onClick={() => toggleChecklistItem(item.id)}
-                    className={`
-                      w-full flex items-start gap-3 p-3 rounded-lg text-left transition-colors
-                      ${checkedItems[item.id] ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-palette-bgTertiary hover:bg-palette-bgSecondary'}
-                    `}
+                    className={`flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-colors ${
+                      checkedItems[item.id]
+                        ? 'border-docs-border-hover bg-white/[0.04]'
+                        : 'border-transparent bg-docs-bg hover:border-docs-border'
+                    }`}
                   >
-                    <div className="flex-shrink-0 mt-0.5">
+                    <div className="mt-0.5 flex-shrink-0">
                       {checkedItems[item.id] ? (
-                        <CheckSquare className="w-5 h-5 text-emerald-400" />
+                        <CheckSquare className="h-5 w-5 text-zinc-300" />
                       ) : (
-                        <Square className="w-5 h-5 text-palette-textMuted" />
+                        <Square className="h-5 w-5 text-zinc-600" />
                       )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        {item.icon === 'warning' && <AlertTriangle className="w-4 h-4 text-amber-400" />}
-                        {item.icon === 'shield' && <Shield className="w-4 h-4 text-palette-accent" />}
-                        <span className={`text-sm ${checkedItems[item.id] ? 'text-palette-textMuted line-through' : 'text-palette-textSecondary'}`}>
+                        {item.icon === 'warning' && <AlertTriangle className="h-4 w-4 text-zinc-500" />}
+                        {item.icon === 'shield' && <Shield className="h-4 w-4 text-zinc-500" />}
+                        <span
+                          className={`text-sm ${
+                            checkedItems[item.id] ? 'text-zinc-600 line-through' : 'text-zinc-400'
+                          }`}
+                        >
                           {item.text}
                         </span>
                       </div>
@@ -134,11 +127,10 @@ export default function ProductionBundle({
             </div>
           )}
 
-          {/* Pro 用户提示 */}
           {!isPro && (
-            <div className="pt-4 border-t border-palette-border text-center">
-              <p className="text-sm text-palette-textMuted">
-                升级 <span className="text-palette-accent font-medium">Pro</span> 解锁完整 Bundle 和更多专题
+            <div className="border-t border-docs-border pt-4 text-center">
+              <p className="text-sm text-zinc-500">
+                Upgrade to <span className="font-medium text-zinc-300">Pro</span> to unlock the full bundle and more series
               </p>
             </div>
           )}

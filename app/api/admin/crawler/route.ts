@@ -8,8 +8,8 @@ const supabase = createClient(
 );
 
 /**
- * POST：快速入队 + 触发 GitHub Actions（仅等待 GitHub HTTP，默认 ≤12s），不执行爬虫进程。
- * GET ?jobId=：查询单条 CrawlerJob。
+ * POST: enqueue + trigger GitHub Actions (waits for GitHub HTTP only, default ≤12s); does not run the crawler process.
+ * GET ?jobId=: fetch one CrawlerJob row.
  */
 export async function POST() {
   try {

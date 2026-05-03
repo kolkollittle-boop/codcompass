@@ -38,7 +38,7 @@ export default function AdminPage() {
     <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
       <Header />
       <main className="flex-grow p-8">
-        {/* 顶部标题 */}
+        {/* Title */}
         <header className="mb-10 border-b border-palette-border pb-6">
           <div className="flex items-center gap-3 mb-2">
             <ShieldCheck className="w-8 h-8 text-palette-accent" />
@@ -47,10 +47,10 @@ export default function AdminPage() {
           <p className="text-palette-textMuted text-sm">CodeCompass AI Knowledge Base Management</p>
         </header>
 
-        {/* 功能网格 */}
+        {/* Feature grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-site mx-auto">
           
-          {/* 🟢 核心入口：内容审核 */}
+          {/* Content review */}
           <Link href="/admin/review" className="group relative block p-6 bg-palette-bgCard border border-palette-border rounded-xl hover:border-palette-primary transition-all duration-300 hover:shadow-cc-theme">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-palette-bgSecondary rounded-lg">
@@ -60,7 +60,7 @@ export default function AdminPage() {
             </div>
             <h2 className="text-lg font-semibold mb-1 group-hover:text-palette-accent transition-colors">Content Review</h2>
             <p className="text-sm text-palette-textMuted leading-relaxed">
-              审核 AI 评分后的文章，进行人工干预、难度定级与发布。
+              Review AI-scored articles: human edits, difficulty, and publish.
             </p>
             <div className="mt-4 flex gap-2">
               <span className="text-[10px] px-2 py-0.5 bg-palette-bgSecondary rounded text-palette-textMuted">AI Scored</span>
@@ -68,7 +68,7 @@ export default function AdminPage() {
             </div>
           </Link>
 
-          {/* 🔒 预留入口：用户管理 */}
+          {/* User management (placeholder) */}
           <div className="p-6 bg-palette-bgSecondary border border-palette-border rounded-xl opacity-60 cursor-not-allowed">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-palette-bgSecondary rounded-lg">
@@ -77,11 +77,11 @@ export default function AdminPage() {
             </div>
             <h2 className="text-lg font-semibold mb-1 text-palette-textMuted">User Management</h2>
             <p className="text-sm text-palette-textMuted">
-              管理会员订阅、用户权限与积分系统。(Coming Soon)
+              Manage subscriptions, roles, and credits. (Coming Soon)
             </p>
           </div>
 
-          {/* 🔒 预留入口：数据看板 */}
+          {/* Analytics (placeholder) */}
           <div className="p-6 bg-palette-bgSecondary border border-palette-border rounded-xl opacity-60 cursor-not-allowed">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-palette-bgSecondary rounded-lg">
@@ -90,11 +90,11 @@ export default function AdminPage() {
             </div>
             <h2 className="text-lg font-semibold mb-1 text-palette-textMuted">Analytics</h2>
             <p className="text-sm text-palette-textMuted">
-              查看流量来源、文章阅读量与转化率统计。(Coming Soon)
+              Traffic sources, reads, and conversion. (Coming Soon)
             </p>
           </div>
 
-          {/* 🟢 核心入口：爬虫设置 */}
+          {/* Crawler settings */}
           <Link href="/admin/crawler-settings" className="group relative block p-6 bg-palette-bgCard border border-palette-border rounded-xl hover:border-palette-primary transition-all duration-300 hover:shadow-cc-theme">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-palette-bgSecondary rounded-lg">
@@ -104,7 +104,7 @@ export default function AdminPage() {
             </div>
             <h2 className="text-lg font-semibold mb-1 group-hover:text-palette-accent transition-colors">Crawler Settings</h2>
             <p className="text-sm text-palette-textMuted leading-relaxed">
-              配置爬虫调度频率、数据源、关键字与翻译设置。
+              Configure crawler schedule, sources, keywords, and translation.
             </p>
             <div className="mt-4 flex gap-2">
               <span className="text-[10px] px-2 py-0.5 bg-palette-bgSecondary rounded text-palette-textMuted">Scheduler</span>
@@ -112,7 +112,7 @@ export default function AdminPage() {
             </div>
           </Link>
 
-          {/* 🔒 预留入口：系统设置 */}
+          {/* System settings (placeholder) */}
           <div className="p-6 bg-palette-bgSecondary border border-palette-border rounded-xl opacity-60 cursor-not-allowed">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-palette-bgSecondary rounded-lg">
@@ -121,7 +121,7 @@ export default function AdminPage() {
             </div>
             <h2 className="text-lg font-semibold mb-1 text-palette-textMuted">System Config</h2>
             <p className="text-sm text-palette-textMuted">
-              API 密钥与 Webhook 配置。(Coming Soon)
+              API keys and webhooks. (Coming Soon)
             </p>
           </div>
 
