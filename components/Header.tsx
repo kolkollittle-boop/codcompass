@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchBar from './SearchBar';
 import { Icon } from './ui';
@@ -39,6 +39,29 @@ export default function Header({ locale = 'en' }: HeaderProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const onChange = () => {
+      if (mq.matches) setMobileOpen(false);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   const isAdmin = (session?.user as any)?.role === 'ADMIN';
   const isKbDocs = pathname?.includes('/kb');
@@ -84,6 +107,18 @@ export default function Header({ locale = 'en' }: HeaderProps) {
     ? 'border-docs-accent text-docs-accent'
     : 'border-palette-primary text-palette-textPrimary';
 
+  const mobileNavClass = (active: boolean) =>
+    cn(
+      'flex min-h-[44px] items-center rounded-lg px-4 py-2.5 text-base transition-colors',
+      isDarkShell
+        ? active
+          ? 'bg-docs-green-subtle font-medium text-docs-accent'
+          : 'text-docs-secondary hover:bg-white/5 hover:text-docs-heading'
+        : active
+          ? 'bg-palette-bgTertiary font-medium text-palette-primary'
+          : 'text-palette-textSecondary hover:bg-palette-bgTertiary hover:text-palette-textPrimary',
+    );
+
   return (
     <header
       className={cn(
@@ -94,64 +129,67 @@ export default function Header({ locale = 'en' }: HeaderProps) {
       )}
     >
       <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-14 justify-between">
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
+        <div className="flex h-14 items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center">
+            <div className="flex flex-shrink-0 items-center">
               <Link
                 href={'/' as any}
                 className={cn(
-                  'text-2xl font-bold tracking-tight',
+                  'text-xl font-bold tracking-tight sm:text-2xl',
                   isDarkShell ? 'text-docs-heading' : 'text-palette-primary',
                 )}
+                onClick={() => setMobileOpen(false)}
               >
                 Codcompass
               </Link>
             </div>
-            <nav className="ml-8 flex space-x-6">
+            <nav className="ml-6 hidden items-center space-x-5 lg:flex xl:space-x-6">
               <Link
                 href={linkWithLocale(locale, '/kb') as any}
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
                   onKbMain ? navActive : navInactive
-                }`}
+                } border-b-2`}
               >
                 {t.kb}
               </Link>
               <Link
                 href={linkWithLocale(locale, '/kb/categories') as any}
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
                   onKbCategories ? navActive : navInactive
-                }`}
+                } border-b-2`}
               >
                 {t.categories}
               </Link>
               <Link
                 href={linkWithLocale(locale, '/blog') as any}
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
                   onBlog ? navActive : navInactive
-                }`}
+                } border-b-2`}
               >
                 {t.blog}
               </Link>
               <Link
                 href={linkWithLocale(locale, '/pricing') as any}
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
                   onPricing ? navActive : navInactive
-                }`}
+                } border-b-2`}
               >
                 {t.pricing}
               </Link>
               <Link
                 href={linkWithLocale(locale, '/about') as any}
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
                   onAbout ? navActive : navInactive
-                }`}
+                } border-b-2`}
               >
                 {t.about}
               </Link>
             </nav>
           </div>
-          <div className="flex items-center space-x-3 flex-1 max-w-lg">
-            <SearchBar />
+          <div className="flex min-w-0 flex-1 items-center justify-end gap-2 lg:max-w-lg lg:flex-initial lg:space-x-3">
+            <div className="hidden min-w-0 flex-1 lg:block">
+              <SearchBar />
+            </div>
             <LanguageSwitcher />
             {session ? (
               <div className="relative">
@@ -305,11 +343,11 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                 )}
               </div>
             ) : (
-              <>
+              <div className="hidden items-center gap-2 lg:flex">
                 <Link
                   href={linkWithLocale(locale, '/login') as any}
                   className={cn(
-                    'inline-flex items-center px-4 py-2 text-sm font-medium',
+                    'inline-flex min-h-[44px] items-center px-4 py-2 text-sm font-medium',
                     isDarkShell
                       ? 'text-docs-body hover:text-docs-heading'
                       : 'text-palette-textSecondary hover:text-palette-textPrimary',
@@ -320,7 +358,7 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                 <Link
                   href={linkWithLocale(locale, '/pricing') as any}
                   className={cn(
-                    'inline-flex items-center rounded-md border border-transparent px-4 py-2 text-sm font-medium transition-colors',
+                    'inline-flex min-h-[44px] items-center rounded-md border border-transparent px-4 py-2 text-sm font-medium transition-colors',
                     isKbDocs
                       ? 'bg-docs-accent text-white hover:bg-docs-accent-hover'
                       : cqShell
@@ -330,10 +368,140 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                 >
                   {t.getStarted}
                 </Link>
-              </>
+              </div>
             )}
+            <button
+              type="button"
+              className={cn(
+                'flex h-11 w-11 shrink-0 items-center justify-center rounded-md lg:hidden',
+                isDarkShell ? 'text-docs-heading hover:bg-white/10' : 'text-palette-textPrimary hover:bg-palette-bgTertiary',
+              )}
+              aria-expanded={mobileOpen}
+              aria-controls="site-mobile-nav"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setMobileOpen((o) => !o)}
+            >
+              <Icon name={mobileOpen ? 'x' : 'menu'} size={22} />
+            </button>
           </div>
         </div>
+      </div>
+
+      {mobileOpen && (
+        <div
+          className="cq-mobile-drawer-overlay"
+          aria-hidden
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+      <div
+        id="site-mobile-nav"
+        className={cn(
+          'cq-mobile-drawer-panel',
+          mobileOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none',
+          !isDarkShell && 'border-palette-border bg-palette-bgSecondary',
+        )}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!mobileOpen}
+      >
+        <div
+          className={cn(
+            'flex items-center justify-between border-b px-3 py-2',
+            isDarkShell ? 'border-docs-border' : 'border-palette-border',
+          )}
+        >
+          <span className={cn('text-sm font-semibold', isDarkShell ? 'text-docs-heading' : 'text-palette-textPrimary')}>
+            Menu
+          </span>
+          <button
+            type="button"
+            className={cn(
+              'flex h-11 w-11 items-center justify-center rounded-md',
+              isDarkShell ? 'text-docs-muted hover:bg-white/10 hover:text-docs-heading' : 'text-palette-textMuted hover:bg-palette-bgTertiary',
+            )}
+            aria-label="Close menu"
+            onClick={() => setMobileOpen(false)}
+          >
+            <Icon name="x" size={22} />
+          </button>
+        </div>
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label="Primary">
+          <Link
+            href={linkWithLocale(locale, '/kb') as any}
+            className={mobileNavClass(onKbMain)}
+            onClick={() => setMobileOpen(false)}
+          >
+            {t.kb}
+          </Link>
+          <Link
+            href={linkWithLocale(locale, '/kb/categories') as any}
+            className={mobileNavClass(onKbCategories)}
+            onClick={() => setMobileOpen(false)}
+          >
+            {t.categories}
+          </Link>
+          <Link
+            href={linkWithLocale(locale, '/blog') as any}
+            className={mobileNavClass(onBlog)}
+            onClick={() => setMobileOpen(false)}
+          >
+            {t.blog}
+          </Link>
+          <Link
+            href={linkWithLocale(locale, '/pricing') as any}
+            className={mobileNavClass(onPricing)}
+            onClick={() => setMobileOpen(false)}
+          >
+            {t.pricing}
+          </Link>
+          <Link
+            href={linkWithLocale(locale, '/about') as any}
+            className={mobileNavClass(onAbout)}
+            onClick={() => setMobileOpen(false)}
+          >
+            {t.about}
+          </Link>
+        </nav>
+        <div
+          className={cn('border-t p-3', isDarkShell ? 'border-docs-border' : 'border-palette-border')}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <SearchBar />
+        </div>
+        {!session && (
+          <div
+            className={cn(
+              'mt-auto flex flex-col gap-2 border-t p-3 lg:hidden',
+              isDarkShell ? 'border-docs-border' : 'border-palette-border',
+            )}
+          >
+            <Link
+              href={linkWithLocale(locale, '/login') as any}
+              className={cn(
+                'flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2.5 text-base transition-colors',
+                isDarkShell
+                  ? 'text-docs-body hover:bg-white/5 hover:text-docs-heading'
+                  : 'text-palette-textSecondary hover:bg-palette-bgTertiary hover:text-palette-textPrimary',
+              )}
+              onClick={() => setMobileOpen(false)}
+            >
+              {t.signIn}
+            </Link>
+            <Link
+              href={linkWithLocale(locale, '/pricing') as any}
+              className={cn(
+                'flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2.5 text-base font-semibold text-white transition-colors',
+                isKbDocs || cqShell || isDarkShell
+                  ? 'bg-docs-accent hover:bg-docs-accent-hover'
+                  : 'bg-palette-primary hover:bg-palette-primary-hover',
+              )}
+              onClick={() => setMobileOpen(false)}
+            >
+              {t.getStarted}
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   );

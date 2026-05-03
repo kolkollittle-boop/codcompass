@@ -420,6 +420,18 @@
   .docs-scroll::-webkit-scrollbar-thumb:hover {
     background: #3d4a63;
   }
+
+  /* CloudQuery mobile shell — cloudquery-mobile-cursor-prompt.md */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 4.5rem;
+  }
+
+  @media (hover: none) {
+    html {
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
 }
 
 @layer components {
@@ -454,5 +466,66 @@
 
   .docs-toc-link:hover {
     @apply text-docs-heading;
+  }
+
+  /* Mobile nav drawer (marketing + KB top bar) */
+  .cq-mobile-drawer-overlay {
+    @apply fixed inset-0 top-14 z-[1190] bg-black/50 backdrop-blur-[2px] lg:hidden;
+  }
+
+  .cq-mobile-drawer-panel {
+    @apply fixed right-0 top-14 z-[1200] flex h-[calc(100dvh-3.5rem)] w-[280px] flex-col border-l border-docs-border bg-docs-bg shadow-2xl transition-transform duration-300 ease-out lg:hidden;
+  }
+
+  /* Logo / stack marquee (mobile-friendly strip) */
+  .cq-logo-marquee {
+    @apply relative overflow-hidden border-y border-docs-border bg-docs-bg py-6;
+  }
+
+  .cq-logo-marquee__inner {
+    @apply pointer-events-none absolute inset-y-0 left-0 z-[2] w-10 bg-gradient-to-r from-[#0E1320] to-transparent;
+  }
+
+  .cq-logo-marquee__inner--right {
+    @apply left-auto right-0 bg-gradient-to-l from-[#0E1320] to-transparent;
+  }
+
+  .cq-logo-marquee__track {
+    display: inline-flex;
+    width: max-content;
+    align-items: center;
+    gap: 2.5rem;
+    animation: cq-logo-marquee 32s linear infinite;
+  }
+
+  @keyframes cq-logo-marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cq-logo-marquee__track {
+      animation: none;
+      transform: none;
+    }
+  }
+
+  /* Docs / article: code blocks on small screens */
+  .prose-invert pre,
+  #docs-content pre {
+    font-size: 12px;
+    line-height: 1.6;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (min-width: 1024px) {
+    .prose-invert pre,
+    #docs-content pre {
+      font-size: 14px;
+    }
   }
 }

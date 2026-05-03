@@ -41,19 +41,19 @@ export default function HomePage() {
       </div>
 
       <main className="relative flex flex-1 flex-col overflow-hidden">
-        {/* Hero */}
-        <section className="mx-auto grid max-w-site items-center gap-12 px-4 py-16 lg:grid-cols-2 lg:py-24">
-          <div className="relative z-10 max-w-xl text-left">
+        {/* Hero — CloudQuery mobile: centered ≤1199px, 36px title; desktop grid + left align */}
+        <section className="mx-auto grid max-w-site items-center gap-10 px-4 py-10 text-center xl:grid-cols-2 xl:gap-12 xl:py-24 xl:text-left">
+          <div className="relative z-10 mx-auto w-full max-w-xl xl:mx-0">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-docs-border bg-docs-surface px-3 py-1 text-xs font-medium text-docs-secondary">
               Codcompass 2.0
             </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-docs-heading sm:text-5xl lg:text-6xl lg:leading-[1.1]">
+            <h1 className="text-[36px] font-extrabold leading-tight tracking-tight text-docs-heading sm:text-4xl xl:text-5xl xl:leading-[1.1] 2xl:text-6xl">
               Turn knowledge into
               <span className="bg-gradient-to-r from-docs-accent to-teal-400 bg-clip-text text-transparent">
                 {' '}production-ready delivery
               </span>
             </h1>
-            <p className="mt-6 text-base leading-relaxed text-docs-body sm:text-lg">
+            <p className="mt-6 text-base leading-relaxed text-docs-body sm:text-[16px] xl:text-lg">
               Every flagship article ships with a <strong className="text-docs-heading">Production Blueprint</strong>
               : deployable code, pitfall checklists, and architecture callouts. Start with a{' '}
               <strong className="text-docs-accent">7-day free trial</strong>—then{' '}
@@ -62,7 +62,7 @@ export default function HomePage() {
               {' '}(save with yearly: <strong className="text-docs-heading">$99/yr</strong> Builder,{' '}
               <strong className="text-docs-heading">$299/yr</strong> Pro).
             </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="mt-8 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-center sm:gap-4 xl:justify-start">
               <Link
                 href="/checkout?plan=pro&billing=yearly"
                 className="inline-flex items-center justify-center gap-2 rounded-md bg-docs-accent px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-docs-accent-hover"
@@ -83,7 +83,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="relative flex min-h-[260px] items-center justify-center lg:min-h-[340px]">
+          <div className="relative hidden min-h-[340px] w-full items-center justify-center xl:flex">
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="h-[min(100%,420px)] w-[min(100%,420px)] rounded-full bg-docs-accent/20 blur-[100px]" />
               <div className="absolute h-64 w-64 rounded-full bg-gradient-to-br from-docs-accent/40 to-teal-900/30 blur-3xl" />
@@ -94,15 +94,21 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Partner / stack strip */}
-        <section className="border-y border-docs-border bg-docs-surface/40 py-10">
-          <p className="mb-6 text-center text-xs font-semibold uppercase tracking-wider text-docs-muted">
+        {/* Partner / stack strip — mobile marquee */}
+        <section className="cq-logo-marquee">
+          <div className="cq-logo-marquee__inner" aria-hidden />
+          <div className="cq-logo-marquee__inner cq-logo-marquee__inner--right" aria-hidden />
+          <p className="mb-4 text-center text-xs font-semibold uppercase tracking-wider text-docs-muted">
             Built for modern stacks
           </p>
-          <div className="mx-auto flex max-w-site flex-wrap items-center justify-center gap-x-10 gap-y-5 px-4 text-sm font-medium text-docs-secondary opacity-90">
-            {['React', 'Next.js', 'TypeScript', 'PostgreSQL', 'AWS', 'Docker'].map((name) => (
-              <span key={name}>{name}</span>
-            ))}
+          <div className="relative mx-auto max-w-site overflow-hidden">
+            <div className="cq-logo-marquee__track">
+              {['React', 'Next.js', 'TypeScript', 'PostgreSQL', 'AWS', 'Docker', 'React', 'Next.js', 'TypeScript', 'PostgreSQL', 'AWS', 'Docker'].map((name, i) => (
+                <span key={`${name}-${i}`} className="whitespace-nowrap text-sm font-medium text-docs-secondary opacity-90">
+                  {name}
+                </span>
+              ))}
+            </div>
           </div>
         </section>
 
