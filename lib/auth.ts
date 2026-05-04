@@ -1,18 +1,31 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 
+// 调试日志：输出环境变量状态
+console.log('[Auth] Environment check:', {
+  hasGoogleClientId: !!process.env.GOOGLE_CLIENT_ID,
+  hasGoogleClientSecret: !!process.env.GOOGLE_CLIENT_SECRET,
+  hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
+  nodeEnv: process.env.NODE_ENV,
+  vercelEnv: process.env.VERCEL_ENV || 'not-vercel',
+  vercelRegion: process.env.VERCEL_REGION || 'not-set',
+});
+
 // 验证必要的环境变量
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  console.error('[Auth] Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET environment variables');
+  console.error('[Auth] ERROR: Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
+  console.error('[Auth] GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? '***set***' : 'MISSING');
+  console.error('[Auth] GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET ? '***set***' : 'MISSING');
 }
 
 if (!process.env.NEXTAUTH_SECRET) {
-  console.error('[Auth] Missing NEXTAUTH_SECRET environment variable');
+  console.error('[Auth] ERROR: Missing NEXTAUTH_SECRET');
 }
 
 export const { auth, handlers } = NextAuth({
   // Required for production deployment on Vercel
   trustHost: true,
+  debug: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
