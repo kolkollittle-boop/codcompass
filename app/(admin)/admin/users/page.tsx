@@ -6,23 +6,95 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+interface AdminUserRow {
+  id: string;
+  email: string;
+  name: string | null;
+  role: string;
+  planType: string;
+  subscriptionStatus: string;
+  joined: string;
+  status: 'active' | 'banned';
+}
+
+function formatPlanType(plan: string): string {
+  switch (plan?.toUpperCase()) {
+    case 'FREE':
+      return 'Free';
+    case 'BUILDER':
+      return 'Builder';
+    case 'PRO':
+      return 'Pro';
+    case 'ENTERPRISE':
+      return 'Enterprise';
+    default:
+      return plan || '—';
+  }
+}
+
 export default function UsersAdminPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [users, setUsers] = useState([
-    { id: '1', email: 'kolkollittle@gmail.com', name: 'Admin User', role: 'ADMIN', joined: '2026-04-25', status: 'active' },
-    { id: '2', email: 'user1@example.com', name: 'Test User 1', role: 'USER', joined: '2026-04-24', status: 'active' },
-    { id: '3', email: 'user2@example.com', name: 'Test User 2', role: 'USER', joined: '2026-04-23', status: 'active' },
-  ]);
+  const [users, setUsers] = useState<AdminUserRow[]>([]);
+  const [listLoading, setListLoading] = useState(true);
+  const [listError, setListError] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login');
     }
-    if (status === 'authenticated' && (session?.user as any)?.role !== 'ADMIN') {
+    if (status === 'authenticated' && (session?.user as { role?: string })?.role !== 'ADMIN') {
       router.push('/dashboard');
     }
   }, [status, session, router]);
+
+  useEffect(() => {
+    if (status !== 'authenticated' || (session?.user as { role?: string })?.role !== 'ADMIN') {
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      setListLoading(true);
+      setListError(null);
+      try {
+        const res = await fetch('/api/admin/users', { credentials: 'include' });
+        if (!res.ok) {
+          throw new Error(res.status === 403 ? 'Forbidden' : 'Failed to load users');
+        }
+        const data = await res.json();
+        const rows: AdminUserRow[] = (data.users || []).map(
+          (u: {
+            id: string;
+            email: string;
+            name: string | null;
+            role: string;
+            planType: string;
+            subscriptionStatus: string;
+            isBanned: boolean;
+            createdAt: string;
+          }) => ({
+            id: u.id,
+            email: u.email,
+            name: u.name,
+            role: u.role,
+            planType: u.planType,
+            subscriptionStatus: u.subscriptionStatus,
+            joined: u.createdAt ? new Date(u.createdAt).toISOString().split('T')[0] : '—',
+            status: u.isBanned ? 'banned' : 'active',
+          })
+        );
+        if (!cancelled) setUsers(rows);
+      } catch (e) {
+        console.error(e);
+        if (!cancelled) setListError('Could not load users. Try again later.');
+      } finally {
+        if (!cancelled) setListLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [status, session]);
 
   if (status === 'loading') {
     return (
@@ -38,15 +110,15 @@ export default function UsersAdminPage() {
   if (!session) return null;
 
   const handleRoleChange = (userId: string, newRole: string) => {
-    setUsers(users.map(u => 
-      u.id === userId ? { ...u, role: newRole } : u
-    ));
+    setUsers(users.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
   };
 
   const handleBanUser = (userId: string) => {
-    setUsers(users.map(u => 
-      u.id === userId ? { ...u, status: 'banned' } : u
-    ));
+    setUsers(
+      users.map((u) =>
+        u.id === userId ? { ...u, status: u.status === 'active' ? 'banned' : 'active' } : u
+      )
+    );
   };
 
   return (
@@ -54,7 +126,6 @@ export default function UsersAdminPage() {
       <Header />
       <main className="flex-grow">
         <div className="mx-auto max-w-site px-4 py-8 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="mb-8 flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-docs-heading">👥 Manage Users</h1>
@@ -69,7 +140,12 @@ export default function UsersAdminPage() {
             </div>
           </div>
 
-          {/* Users Table */}
+          {listError && (
+            <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {listError}
+            </div>
+          )}
+
           <div className="docs-card overflow-hidden rounded-xl border border-docs-border bg-docs-surface">
             <table className="min-w-full divide-y divide-docs-border">
               <thead className="bg-white/5">
@@ -79,6 +155,12 @@ export default function UsersAdminPage() {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
+                    Plan
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
+                    Billing
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Status
@@ -92,56 +174,79 @@ export default function UsersAdminPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-docs-border bg-docs-surface">
-                {users.map((user) => (
-                  <tr key={user.id} className="transition-colors hover:bg-white/5">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="h-10 w-10 flex-shrink-0">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 font-bold text-docs-accent">
-                            {user.name?.charAt(0) || 'U'}
-                          </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-docs-heading">{user.name}</div>
-                          <div className="text-sm text-docs-muted">{user.email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <select
-                        value={user.role}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        className="rounded border border-docs-border bg-white/5 px-2 py-1 text-sm text-docs-heading"
-                      >
-                        <option value="USER">User</option>
-                        <option value="EDITOR">Editor</option>
-                        <option value="ADMIN">Admin</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.status === 'active' 
-                          ? 'border border-green-500/20 bg-green-500/10 text-green-400' 
-                          : 'border border-red-500/20 bg-red-500/10 text-red-400'
-                      }`}>
-                        {user.status === 'active' ? 'Active' : 'Banned'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-docs-heading">
-                      {user.joined}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-medium">
-                      {user.email !== 'kolkollittle@gmail.com' && (
-                        <button
-                          onClick={() => handleBanUser(user.id)}
-                          className="text-red-400 hover:text-red-300"
-                        >
-                          {user.status === 'active' ? 'Ban' : 'Unban'}
-                        </button>
-                      )}
+                {listLoading ? (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-12 text-center text-docs-muted">
+                      Loading users…
                     </td>
                   </tr>
-                ))}
+                ) : users.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-12 text-center text-docs-muted">
+                      No users found.
+                    </td>
+                  </tr>
+                ) : (
+                  users.map((user) => (
+                    <tr key={user.id} className="transition-colors hover:bg-white/5">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 flex-shrink-0">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 font-bold text-docs-accent">
+                              {(user.name || user.email || 'U').charAt(0)}
+                            </div>
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-docs-heading">
+                              {user.name || '—'}
+                            </div>
+                            <div className="text-sm text-docs-muted">{user.email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={user.role}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                          className="rounded border border-docs-border bg-white/5 px-2 py-1 text-sm text-docs-heading"
+                        >
+                          <option value="USER">User</option>
+                          <option value="EDITOR">Editor</option>
+                          <option value="ADMIN">Admin</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-docs-heading">
+                        {formatPlanType(user.planType)}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-docs-muted">
+                        {user.subscriptionStatus || '—'}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                            user.status === 'active'
+                              ? 'border border-green-500/20 bg-green-500/10 text-green-400'
+                              : 'border border-red-500/20 bg-red-500/10 text-red-400'
+                          }`}
+                        >
+                          {user.status === 'active' ? 'Active' : 'Banned'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-docs-heading">{user.joined}</td>
+                      <td className="px-6 py-4 text-sm font-medium">
+                        {user.email !== 'kolkollittle@gmail.com' && (
+                          <button
+                            type="button"
+                            onClick={() => handleBanUser(user.id)}
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            {user.status === 'active' ? 'Ban' : 'Unban'}
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

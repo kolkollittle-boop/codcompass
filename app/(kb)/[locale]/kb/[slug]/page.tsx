@@ -5,6 +5,7 @@ import HeaderMetaCard from '@/components/HeaderMetaCard';
 import PathNavigator from '@/components/PathNavigator';
 import ProductionBundle from '@/components/ProductionBundle';
 import { getArticleBySlug, incrementViewCount, getSeriesArticles } from '@/lib/supabase';
+import { getKbUserAccessLevel } from '@/lib/kb-access';
 import { getArticleContent, type Locale } from '@/lib/i18n';
 import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
@@ -140,6 +141,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const proseArticle =
     'prose prose-lg prose-invert max-w-none prose-a:no-underline prose-p:leading-relaxed prose-p:break-words prose-pre:whitespace-pre-wrap prose-pre:break-words';
 
+  const userAccessLevel = await getKbUserAccessLevel();
+  const articleAccessLevel = String(
+    dbArticle.accessLevel || (dbArticle.isPremium ? 'pro' : 'free')
+  ).toLowerCase();
+  const hasPremiumArticleAccess =
+    articleAccessLevel === 'free' ||
+    (articleAccessLevel === 'builder' &&
+      (userAccessLevel === 'builder' || userAccessLevel === 'pro')) ||
+    (articleAccessLevel === 'pro' && userAccessLevel === 'pro');
+  const showProductionBundleAsPaid =
+    userAccessLevel === 'builder' || userAccessLevel === 'pro';
+
   return (
     <div className="min-h-0 text-zinc-400">
       <Link
@@ -186,51 +199,33 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 </ReactMarkdown>
               </div>
 
-            {(() => {
-              // Cast to string to avoid TypeScript narrowing issues
-              const articleAccessLevel = (dbArticle.accessLevel || (dbArticle.isPremium ? 'pro' : 'free')) as string;
-              // TODO: Get user's actual subscription level from session
-              const userAccessLevel = 'free' as string; // This should come from user session
-              
-              const hasAccess = articleAccessLevel === 'free' ||
-                (articleAccessLevel === 'builder' && (userAccessLevel === 'builder' || userAccessLevel === 'pro')) ||
-                (articleAccessLevel === 'pro' && userAccessLevel === 'pro');
-              
-              if (hasAccess) {
-                return (
-                  <div className={`${proseArticle} mt-8`}>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                      {premiumContent}
-                    </ReactMarkdown>
-                  </div>
-                );
-              }
-              
-              return (
-                <>
-                  {/* Paywall V2 */}
-                  <PaywallV2 variant="overlay" locale={locale} copyVersion="C" />
-                  
-                  {/* Blurred preview */}
-                  <div className="relative mt-10">
-                    <div className="pointer-events-none select-none opacity-30 blur-md" aria-hidden="true">
-                      <div className={proseArticle}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                          {premiumContent}
-                        </ReactMarkdown>
-                      </div>
+            {hasPremiumArticleAccess ? (
+              <div className={`${proseArticle} mt-8`}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                  {premiumContent}
+                </ReactMarkdown>
+              </div>
+            ) : (
+              <>
+                <PaywallV2 variant="overlay" locale={locale} copyVersion="C" />
+                <div className="relative mt-10">
+                  <div className="pointer-events-none select-none opacity-30 blur-md" aria-hidden="true">
+                    <div className={proseArticle}>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                        {premiumContent}
+                      </ReactMarkdown>
                     </div>
                   </div>
-                </>
-              );
-            })()}
+                </div>
+              </>
+            )}
             </div>
 
             <ProductionBundle
               blueprintUrl={dbArticle.blueprintUrl}
               blueprintName={dbArticle.blueprintName}
               checklist={checklistData}
-              isPro={false}
+              isPro={showProductionBundleAsPaid}
             />
 
             {/* Sources */}

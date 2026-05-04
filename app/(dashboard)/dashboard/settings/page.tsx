@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ColorThemePicker from '@/components/ColorThemePicker';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -221,12 +220,6 @@ export default function SettingsPage() {
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </form>
-          </div>
-
-          <div className="docs-card mb-6 rounded-xl border border-docs-border bg-docs-surface p-6">
-            <h2 className="mb-2 text-lg font-bold text-docs-heading">Appearance</h2>
-            <p className="mb-4 text-sm text-docs-muted">Color palette for supported screens (stored in this browser).</p>
-            <ColorThemePicker />
           </div>
 
           <div className="docs-card mb-6 rounded-xl border border-docs-border bg-docs-surface p-6">
