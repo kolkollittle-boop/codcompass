@@ -6,7 +6,10 @@ import PathNavigator from '@/components/PathNavigator';
 import ProductionBundle from '@/components/ProductionBundle';
 import { getArticleBySlug, incrementViewCount, getSeriesArticles } from '@/lib/supabase';
 import { getKbUserAccessLevel } from '@/lib/kb-access';
+import { recordUserArticleViewIfAuthenticated } from '@/lib/article-view';
 import { getArticleContent, type Locale } from '@/lib/i18n';
+import ArticleBookmarkButton from '@/components/ArticleBookmarkButton';
+import ArticleReadTracker from '@/components/ArticleReadTracker';
 import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -105,6 +108,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   
   // Increment view count
   await incrementViewCount(dbArticle.id);
+  await recordUserArticleViewIfAuthenticated(dbArticle.id);
 
   // Fetch series info
   let seriesData: { id: string; slug: string; title: string; totalParts: number; estimatedTime: number | null } | null = null;
@@ -155,6 +159,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <div className="min-h-0 text-zinc-400">
+      <ArticleReadTracker articleId={dbArticle.id} />
       <Link
         href={`/${locale}/kb`}
         className="mb-4 inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-300"
@@ -182,7 +187,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             />
 
             <header className="mb-8 border-b border-docs-border pb-6">
-              <h1 className="mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">{content.title}</h1>
+              <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{content.title}</h1>
+                <ArticleBookmarkButton articleId={dbArticle.id} slug={slug} locale={locale} />
+              </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-500">
                 <span>By {dbArticle.sourceAuthor || 'Codcompass Team'}</span>
                 <span>·</span>

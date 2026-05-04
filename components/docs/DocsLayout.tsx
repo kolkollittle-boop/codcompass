@@ -156,7 +156,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
           </div>
           <div className="p-3 lg:p-0">
             <p className="mb-3 hidden text-xs font-semibold uppercase tracking-wider text-docs-muted lg:block">
-              Knowledge Base
+              Codcompass Knowledge Base
             </p>
             <NavBranch nodes={tree} pathname={pathname} locale={locale} depth={0} onNavigate={closeNav} />
           </div>

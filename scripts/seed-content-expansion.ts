@@ -2,9 +2,15 @@
 /**
  * Codcompass Knowledge Base Content Expansion
  * Usage: npx tsx scripts/seed-content-expansion.ts
+ *
+ * Categories follow Codcompass 2.0 taxonomy (lib/cc20-kb-taxonomy.ts).
  */
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import {
+  CC20_SECTIONS,
+  getCc20SectionSlugForArticle,
+} from '../lib/cc20-kb-taxonomy';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,19 +18,6 @@ const supabase = createClient(
 );
 
 function uid() { return crypto.randomUUID(); }
-
-const categories = [
-  { slug: 'react', name: 'React', nameEn: 'React', description: 'React tutorials, patterns, and best practices' },
-  { slug: 'typescript', name: 'TypeScript', nameEn: 'TypeScript', description: 'TypeScript guides and advanced techniques' },
-  { slug: 'nextjs', name: 'Next.js', nameEn: 'Next.js', description: 'Next.js framework tutorials and optimization' },
-  { slug: 'ai-ml', name: 'AI/ML', nameEn: 'AI/ML', description: 'AI and Machine Learning for developers' },
-  { slug: 'devops', name: 'DevOps', nameEn: 'DevOps', description: 'DevOps practices, CI/CD, and infrastructure' },
-  { slug: 'javascript', name: 'JavaScript', nameEn: 'JavaScript', description: 'Modern JavaScript features and patterns' },
-  { slug: 'css', name: 'CSS & Design', nameEn: 'CSS & Design', description: 'CSS techniques, responsive design, and animations' },
-  { slug: 'nodejs', name: 'Node.js', nameEn: 'Node.js', description: 'Node.js backend development and APIs' },
-  { slug: 'database', name: 'Database', nameEn: 'Database', description: 'SQL, NoSQL, and database design patterns' },
-  { slug: 'security', name: 'Security', nameEn: 'Security', description: 'Web security, authentication, and best practices' },
-];
 
 const tagNames = [
   'hooks', 'state-management', 'performance', 'security', 'typescript',
@@ -95,16 +88,29 @@ async function seed() {
   console.log('\n🌱 Codcompass Content Expansion');
   console.log('═'.repeat(50));
 
-  // 1. Upsert categories (provide id for new records)
-  console.log('\n📁 Categories...');
+  // 1. Upsert CC20 categories
+  console.log('\n📁 Categories (Codcompass 2.0)...');
   const catIdMap: Record<string, string> = {};
-  for (const cat of categories) {
-    // Check if exists first
-    const { data: existing } = await supabase.from('Category').select('id').eq('slug', cat.slug).single();
+  for (let i = 0; i < CC20_SECTIONS.length; i++) {
+    const cat = CC20_SECTIONS[i];
+    const { data: existing } = await supabase.from('Category').select('id').eq('slug', cat.slug).maybeSingle();
     const id = existing?.id || uid();
-    const { error } = await supabase.from('Category').upsert({ id, ...cat }, { onConflict: 'slug' });
+    const { error } = await supabase.from('Category').upsert(
+      {
+        id,
+        slug: cat.slug,
+        name: cat.name,
+        nameEn: cat.name,
+        description: cat.descriptionEn,
+        order: i + 1,
+      },
+      { onConflict: 'slug' }
+    );
     if (error) console.log(`  ❌ ${cat.slug}: ${error.message}`);
-    else { console.log(`  ✅ ${cat.slug}`); catIdMap[cat.slug] = id; }
+    else {
+      console.log(`  ✅ ${cat.slug}`);
+      catIdMap[cat.slug] = id;
+    }
   }
 
   // 2. Upsert tags
@@ -148,12 +154,12 @@ async function seed() {
     ok++;
     console.log(`  ✅ ${a.slug}`);
 
-    // Link category
-    const catId = catIdMap[a.categorySlug];
+    // Link category (CC20 section from slug mapping)
+    const sectionSlug = getCc20SectionSlugForArticle(a.slug);
+    const catId = catIdMap[sectionSlug];
     if (catId) {
-      await supabase.from('ArticleToCategory').upsert(
-        { articleId: id, categoryId: catId }, { onConflict: 'articleId,categoryId' }
-      );
+      await supabase.from('_ArticleToCategory').delete().eq('A', id);
+      await supabase.from('_ArticleToCategory').insert({ A: id, B: catId });
     }
     // Link tags
     for (const tagSlug of a.tagSlugs) {

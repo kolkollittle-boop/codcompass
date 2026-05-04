@@ -65,6 +65,14 @@ function NavBranch({ node, locale }: { node: KbNavNode; locale: string }) {
     return <NavLeaf href={node.href} label={node.label} locale={locale} isNew={node.isNew} />;
   }
 
+  if (!hasChildren && !node.href) {
+    return (
+      <div className="docs-nav-item border border-transparent px-2.5 py-1.5 text-xs text-docs-muted">
+        <span className="leading-snug">{node.label}</span>
+      </div>
+    );
+  }
+
   if (hasChildren) {
     return (
       <div className="mb-0.5">

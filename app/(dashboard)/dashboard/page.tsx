@@ -27,11 +27,19 @@ interface SubscriptionData {
   } | null;
 }
 
+interface UserStats {
+  bookmarkCount: number;
+  articlesRead: number;
+  articlesReadThisWeek: number;
+  memberSince: string | null;
+}
+
 export default function DashboardPage() {
   const { data: nextAuthSession, status: nextAuthStatus } = useSession();
   const [supabaseSession, setSupabaseSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
   const router = useRouter();
 
   // Check session from both auth systems
@@ -98,6 +106,33 @@ export default function DashboardPage() {
     fetchSubscription();
   }, [nextAuthSession, supabaseSession]);
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!nextAuthSession?.user?.email && !supabaseSession?.user?.email) {
+        return;
+      }
+      try {
+        const { data: sb } = await supabase.auth.getSession();
+        const headers: HeadersInit = {};
+        if (sb?.session?.access_token) {
+          headers.Authorization = `Bearer ${sb.session.access_token}`;
+        }
+        const res = await fetch('/api/user/stats', {
+          credentials: 'include',
+          cache: 'no-store',
+          headers,
+        });
+        if (res.ok) {
+          setStats(await res.json());
+        }
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, [nextAuthSession, supabaseSession]);
+
   // Merge session data from both systems
   const session = supabaseSession?.user || nextAuthSession?.user;
   const isLoading = loading || nextAuthStatus === 'loading';
@@ -148,13 +183,23 @@ export default function DashboardPage() {
           <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
             <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6">
               <div className="mb-1 text-sm font-medium text-docs-muted">Articles Read</div>
-              <div className="text-3xl font-bold text-docs-heading">12</div>
-              <div className="mt-2 text-sm text-emerald-400">+3 this week</div>
+              <div className="text-3xl font-bold text-docs-heading">
+                {stats === null ? '—' : stats.articlesRead}
+              </div>
+              <div className="mt-2 text-sm text-emerald-400">
+                {stats === null
+                  ? 'Loading…'
+                  : stats.articlesReadThisWeek > 0
+                    ? `+${stats.articlesReadThisWeek} this week`
+                    : 'Distinct articles while signed in'}
+              </div>
             </div>
             <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6">
               <div className="mb-1 text-sm font-medium text-docs-muted">Bookmarks</div>
-              <div className="text-3xl font-bold text-docs-heading">5</div>
-              <div className="mt-2 text-sm text-sky-400">Save for later</div>
+              <div className="text-3xl font-bold text-docs-heading">
+                {stats === null ? '—' : stats.bookmarkCount}
+              </div>
+              <div className="mt-2 text-sm text-sky-400">Saved from articles</div>
             </div>
             <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6">
               <div className="mb-1 text-sm font-medium text-docs-muted">Subscription</div>
@@ -242,8 +287,26 @@ export default function DashboardPage() {
             </div>
             <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6">
               <div className="mb-1 text-sm font-medium text-docs-muted">Member Since</div>
-              <div className="text-3xl font-bold text-docs-heading">Apr</div>
-              <div className="mt-2 text-sm text-docs-muted">2026</div>
+              {stats === null ? (
+                <>
+                  <div className="text-3xl font-bold text-docs-heading">—</div>
+                  <div className="mt-2 text-sm text-docs-muted">Loading…</div>
+                </>
+              ) : stats.memberSince ? (
+                <>
+                  <div className="text-3xl font-bold text-docs-heading">
+                    {new Date(stats.memberSince).toLocaleDateString('en-US', { month: 'short' })}
+                  </div>
+                  <div className="mt-2 text-sm text-docs-muted">
+                    {new Date(stats.memberSince).getFullYear()}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-3xl font-bold text-docs-heading">—</div>
+                  <div className="mt-2 text-sm text-docs-muted">Unavailable</div>
+                </>
+              )}
             </div>
           </div>
 
