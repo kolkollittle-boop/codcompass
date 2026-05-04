@@ -8,16 +8,15 @@ console.log('[Auth] Environment check:', {
   hasGoogleClientId: !!process.env.GOOGLE_CLIENT_ID,
   hasGoogleClientSecret: !!process.env.GOOGLE_CLIENT_SECRET,
   hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
+  nextAuthUrl: process.env.NEXTAUTH_URL,
+  authUrl: process.env.AUTH_URL,
   nodeEnv: process.env.NODE_ENV,
   vercelEnv: process.env.VERCEL_ENV || 'not-vercel',
-  vercelRegion: process.env.VERCEL_REGION || 'not-set',
 });
 
 // 验证必要的环境变量
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   console.error('[Auth] ERROR: Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
-  console.error('[Auth] GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? '***set***' : 'MISSING');
-  console.error('[Auth] GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET ? '***set***' : 'MISSING');
 }
 
 if (!process.env.NEXTAUTH_SECRET) {
@@ -29,36 +28,6 @@ export const { auth, handlers } = NextAuth({
   trustHost: true,
   debug: true,
   adapter: PrismaAdapter(prisma),
-  // Fix PKCE cookie issues in serverless environment
-  cookies: {
-    pkceCodeVerifier: {
-      name: '__Secure-authjs.pkce.code_verifier',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-      },
-    },
-    state: {
-      name: '__Secure-authjs.state',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-      },
-    },
-    nonce: {
-      name: '__Secure-authjs.nonce',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-      },
-    },
-  },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
