@@ -104,8 +104,8 @@ export function CheckoutContent() {
             locale: 'en',
           },
           onComplete: () => {
-            console.log('[Paddle] Checkout completed, redirecting to login...');
-            router.push('/login?redirect=/dashboard');
+            console.log('[Paddle] Checkout completed, redirecting to success page...');
+            router.push('/checkout/success');
           },
         });
       } else {
