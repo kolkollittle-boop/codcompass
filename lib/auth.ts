@@ -63,12 +63,23 @@ export const { auth, handlers } = NextAuth({
       else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       if (session.user) {
-        session.user.id = token.sub as string;
-        (session.user as any).role = token.role as string || 'USER';
-        (session.user as any).plan = token.plan as string || 'FREE';
-        session.user.image = token.picture as string;
+        // token.sub may be undefined when using database sessions (PrismaAdapter)
+        if (token?.sub) {
+          session.user.id = token.sub as string;
+        }
+        if (user) {
+          session.user.id = user.id;
+          (session.user as any).role = (user as any).role || 'USER';
+          (session.user as any).plan = (user as any).planType || 'FREE';
+        } else if (token) {
+          (session.user as any).role = (token as any).role || 'USER';
+          (session.user as any).plan = (token as any).plan || 'FREE';
+        }
+        if (token?.picture) {
+          session.user.image = token.picture as string;
+        }
         console.log('[Auth] Session created for:', session.user.email, 'Role:', (session.user as any).role, 'Plan:', (session.user as any).plan);
       }
       return session;
