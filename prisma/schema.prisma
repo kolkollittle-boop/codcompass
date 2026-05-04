@@ -23,6 +23,7 @@ model User {
   updatedAt          DateTime              @updatedAt
   lastLoginAt        DateTime?
   accounts           Account[]
+  sessions           Session[]
   views              ArticleView[]
   bookmarks          Bookmark[]
   subscriptions      Subscription[]
