@@ -37,12 +37,13 @@
     ".next/dev/types/**/*.ts"
   ],
     "exclude": [
-    "node_modules",
-    "crawler",
-    "tests",
-    "assets",
-    "config",
-    "packages",
-    "scripts"
-  ]
+      "node_modules",
+      "crawler",
+      "automation/crawler",
+      "tests",
+      "assets",
+      "config",
+      "packages",
+      "scripts"
+    ]
 }
