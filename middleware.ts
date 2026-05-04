@@ -21,6 +21,7 @@ const excludedPaths = [
   '/contact',
   '/help',
   '/login',
+  '/local-only', // gitignored local crawler UI; must not locale-rewrite
   '/signup', // allow signup
   '/dashboard',
   '/admin',

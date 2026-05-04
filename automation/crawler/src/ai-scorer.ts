@@ -3,8 +3,9 @@ import OpenAI from "openai";
 import dotenv from 'dotenv';
 import path from 'path';
 
-// 1. 🚀 必须在最前面加载环境变量
+// 1. 🚀 加载环境变量（支持在 automation/crawler 子目录执行）
 dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+dotenv.config({ path: path.join(process.cwd(), '..', '..', '.env.local') });
 
 // 2. 延迟创建客户端，避免启动时因找不到 Key 报错
 let client: OpenAI | null = null;

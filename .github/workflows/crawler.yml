@@ -1,27 +1,24 @@
+# 爬虫默认仅在本地执行（automation/crawler）。此处不再定时/推送触发，避免在 GitHub 上跑抓取。
+# 若仍需在 Actions 手动试跑：打开 workflow_dispatch 并在仓库 Secrets 中配置密钥。
 name: Crawler
 
 on:
-  schedule:
-    - cron: '0 * * * *'  # 每小时自动抓取一次
   workflow_dispatch:
     inputs:
       job_id:
-        description: 'CrawlerJob id from admin (optional, for tracing)'
+        description: 'CrawlerJob id from admin (optional)'
         required: false
       triggered_by:
-        description: 'admin | schedule | push'
+        description: 'manual'
         required: false
-        default: 'admin'
-  push:
-    branches:
-      - main              # 每次推送代码到 main 也会尝试运行
+        default: 'manual'
 
 jobs:
   scrape-and-score:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -35,9 +32,10 @@ jobs:
         working-directory: ./automation/crawler
         run: npm ci --ignore-scripts || npm install
 
-      - name: Run Crawler & AI Scorer
+      - name: Run Crawler locally on runner (optional / not recommended)
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
           NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          CRAWLER_SCORE_THRESHOLD: '80'
         run: cd automation/crawler && npx tsx src/run.ts

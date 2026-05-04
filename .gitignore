@@ -11,3 +11,6 @@ Codcompass_2.0/
 .env
 .env.local
 .next/
+
+# Local crawler checkpoint (processed URLs)
+automation/crawler/data/
