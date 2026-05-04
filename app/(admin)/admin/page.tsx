@@ -23,10 +23,10 @@ export default function AdminPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
+      <div className="flex flex-1 items-center justify-center bg-docs-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto"></div>
-          <p className="mt-4 text-palette-textMuted">Loading...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-docs-accent"></div>
+          <p className="mt-4 text-docs-muted">Loading...</p>
         </div>
       </div>
     );
@@ -35,99 +35,97 @@ export default function AdminPage() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
+    <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-grow p-8">
         {/* Title */}
-        <header className="mb-10 border-b border-palette-border pb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <ShieldCheck className="w-8 h-8 text-palette-accent" />
-            <h1 className="text-2xl font-bold tracking-tight text-white">COMMAND CENTER</h1>
+        <header className="mb-10 border-b border-docs-border pb-6">
+          <div className="mb-2 flex items-center gap-3">
+            <ShieldCheck className="h-8 w-8 text-docs-accent" />
+            <h1 className="text-2xl font-bold tracking-tight text-docs-heading">COMMAND CENTER</h1>
           </div>
-          <p className="text-palette-textMuted text-sm">CodeCompass AI Knowledge Base Management</p>
+          <p className="text-sm text-docs-muted">CodeCompass AI Knowledge Base Management</p>
         </header>
 
         {/* Feature grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-site mx-auto">
-          
+        <div className="mx-auto grid max-w-site grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Content review */}
-          <Link href="/admin/review" className="group relative block p-6 bg-palette-bgCard border border-palette-border rounded-xl hover:border-palette-primary transition-all duration-300 hover:shadow-cc-theme">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-palette-bgSecondary rounded-lg">
-                <FileText className="w-6 h-6 text-palette-accent" />
+          <Link
+            href="/admin/review"
+            className="docs-card group relative block rounded-xl border border-docs-border bg-docs-surface p-6 transition-all duration-300 hover:border-docs-accent/50 hover:shadow-cc-theme"
+          >
+            <div className="mb-4 flex items-start justify-between">
+              <div className="rounded-lg bg-white/5 p-2">
+                <FileText className="h-6 w-6 text-docs-accent" />
               </div>
-              <ArrowRight className="w-5 h-5 text-palette-textMuted group-hover:text-palette-accent transition-colors" />
+              <ArrowRight className="h-5 w-5 text-docs-muted transition-colors group-hover:text-docs-accent" />
             </div>
-            <h2 className="text-lg font-semibold mb-1 group-hover:text-palette-accent transition-colors">Content Review</h2>
-            <p className="text-sm text-palette-textMuted leading-relaxed">
+            <h2 className="mb-1 text-lg font-semibold transition-colors group-hover:text-docs-accent">Content Review</h2>
+            <p className="text-sm leading-relaxed text-docs-muted">
               Review AI-scored articles: human edits, difficulty, and publish.
             </p>
             <div className="mt-4 flex gap-2">
-              <span className="text-[10px] px-2 py-0.5 bg-palette-bgSecondary rounded text-palette-textMuted">AI Scored</span>
-              <span className="text-[10px] px-2 py-0.5 bg-palette-bgSecondary rounded text-palette-textMuted">Editorial</span>
+              <span className="rounded bg-white/5 px-2 py-0.5 text-[10px] text-docs-muted">AI Scored</span>
+              <span className="rounded bg-white/5 px-2 py-0.5 text-[10px] text-docs-muted">Editorial</span>
             </div>
           </Link>
 
           {/* User management (placeholder) */}
-          <div className="p-6 bg-palette-bgSecondary border border-palette-border rounded-xl opacity-60 cursor-not-allowed">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-palette-bgSecondary rounded-lg">
-                <Users className="w-6 h-6 text-palette-textMuted" />
+          <div className="cursor-not-allowed rounded-xl border border-docs-border bg-white/5 p-6 opacity-60">
+            <div className="mb-4 flex items-start justify-between">
+              <div className="rounded-lg bg-white/5 p-2">
+                <Users className="h-6 w-6 text-docs-muted" />
               </div>
             </div>
-            <h2 className="text-lg font-semibold mb-1 text-palette-textMuted">User Management</h2>
-            <p className="text-sm text-palette-textMuted">
-              Manage subscriptions, roles, and credits. (Coming Soon)
-            </p>
+            <h2 className="mb-1 text-lg font-semibold text-docs-muted">User Management</h2>
+            <p className="text-sm text-docs-muted">Manage subscriptions, roles, and credits. (Coming Soon)</p>
           </div>
 
           {/* Analytics (placeholder) */}
-          <div className="p-6 bg-palette-bgSecondary border border-palette-border rounded-xl opacity-60 cursor-not-allowed">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-palette-bgSecondary rounded-lg">
-                <BarChart3 className="w-6 h-6 text-palette-textMuted" />
+          <div className="cursor-not-allowed rounded-xl border border-docs-border bg-white/5 p-6 opacity-60">
+            <div className="mb-4 flex items-start justify-between">
+              <div className="rounded-lg bg-white/5 p-2">
+                <BarChart3 className="h-6 w-6 text-docs-muted" />
               </div>
             </div>
-            <h2 className="text-lg font-semibold mb-1 text-palette-textMuted">Analytics</h2>
-            <p className="text-sm text-palette-textMuted">
-              Traffic sources, reads, and conversion. (Coming Soon)
-            </p>
+            <h2 className="mb-1 text-lg font-semibold text-docs-muted">Analytics</h2>
+            <p className="text-sm text-docs-muted">Traffic sources, reads, and conversion. (Coming Soon)</p>
           </div>
 
           {/* Crawler settings */}
-          <Link href="/admin/crawler-settings" className="group relative block p-6 bg-palette-bgCard border border-palette-border rounded-xl hover:border-palette-primary transition-all duration-300 hover:shadow-cc-theme">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-palette-bgSecondary rounded-lg">
-                <Globe className="w-6 h-6 text-palette-accent" />
+          <Link
+            href="/admin/crawler-settings"
+            className="docs-card group relative block rounded-xl border border-docs-border bg-docs-surface p-6 transition-all duration-300 hover:border-docs-accent/50 hover:shadow-cc-theme"
+          >
+            <div className="mb-4 flex items-start justify-between">
+              <div className="rounded-lg bg-white/5 p-2">
+                <Globe className="h-6 w-6 text-docs-accent" />
               </div>
-              <ArrowRight className="w-5 h-5 text-palette-textMuted group-hover:text-palette-accent transition-colors" />
+              <ArrowRight className="h-5 w-5 text-docs-muted transition-colors group-hover:text-docs-accent" />
             </div>
-            <h2 className="text-lg font-semibold mb-1 group-hover:text-palette-accent transition-colors">Crawler Settings</h2>
-            <p className="text-sm text-palette-textMuted leading-relaxed">
+            <h2 className="mb-1 text-lg font-semibold transition-colors group-hover:text-docs-accent">Crawler Settings</h2>
+            <p className="text-sm leading-relaxed text-docs-muted">
               Configure crawler schedule, sources, keywords, and translation.
             </p>
             <div className="mt-4 flex gap-2">
-              <span className="text-[10px] px-2 py-0.5 bg-palette-bgSecondary rounded text-palette-textMuted">Scheduler</span>
-              <span className="text-[10px] px-2 py-0.5 bg-palette-bgSecondary rounded text-palette-textMuted">Sources</span>
+              <span className="rounded bg-white/5 px-2 py-0.5 text-[10px] text-docs-muted">Scheduler</span>
+              <span className="rounded bg-white/5 px-2 py-0.5 text-[10px] text-docs-muted">Sources</span>
             </div>
           </Link>
 
           {/* System settings (placeholder) */}
-          <div className="p-6 bg-palette-bgSecondary border border-palette-border rounded-xl opacity-60 cursor-not-allowed">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-palette-bgSecondary rounded-lg">
-                <Settings className="w-6 h-6 text-palette-textMuted" />
+          <div className="cursor-not-allowed rounded-xl border border-docs-border bg-white/5 p-6 opacity-60">
+            <div className="mb-4 flex items-start justify-between">
+              <div className="rounded-lg bg-white/5 p-2">
+                <Settings className="h-6 w-6 text-docs-muted" />
               </div>
             </div>
-            <h2 className="text-lg font-semibold mb-1 text-palette-textMuted">System Config</h2>
-            <p className="text-sm text-palette-textMuted">
-              API keys and webhooks. (Coming Soon)
-            </p>
+            <h2 className="mb-1 text-lg font-semibold text-docs-muted">System Config</h2>
+            <p className="text-sm text-docs-muted">API keys and webhooks. (Coming Soon)</p>
           </div>
-
         </div>
       </main>
-      <Footer />
+      <Footer variant="docs" />
     </div>
   );
 }

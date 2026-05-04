@@ -66,7 +66,9 @@ export default function Header({ locale = 'en' }: HeaderProps) {
   const isAdmin = (session?.user as any)?.role === 'ADMIN';
   const isKbDocs = pathname?.includes('/kb');
   const cqShell = isCqMarketingShell(pathname);
-  const isDarkShell = !!isKbDocs || cqShell;
+  const p = pathname ?? '';
+  const isAppShell = p.startsWith('/dashboard') || p.startsWith('/admin');
+  const isDarkShell = !!isKbDocs || cqShell || isAppShell;
 
   const onBlog =
     pathname === '/blog' ||
@@ -76,7 +78,6 @@ export default function Header({ locale = 'en' }: HeaderProps) {
   const onAbout = pathname === '/about' || pathname === `/${locale}/about`;
 
   /** `/en/kb`, `/zh/kb`, or rewritten `/kb`; not `/kb/categories` or `kb-foo` segments */
-  const p = pathname ?? '';
   const onKbCategories = p.includes('/kb/categories');
   const onKbMain =
     !onKbCategories &&

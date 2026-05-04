@@ -104,10 +104,10 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
+      <div className="flex flex-1 items-center justify-center bg-docs-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto"></div>
-          <p className="mt-4 text-palette-textMuted">Loading...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-docs-accent"></div>
+          <p className="mt-4 text-docs-muted">Loading...</p>
         </div>
       </div>
     );
@@ -118,12 +118,12 @@ export default function DashboardPage() {
   const isAdmin = (supabaseSession?.user as any)?.role === 'ADMIN' || (nextAuthSession?.user as any)?.role === 'ADMIN';
 
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
+    <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-grow">
         <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Welcome Section */}
-          <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 mb-8">
+          <div className="docs-card mb-8 rounded-xl border border-docs-border bg-docs-surface p-6">
             <div className="flex items-center gap-4">
               {(session as any)?.image && (
                 <img
@@ -133,11 +133,11 @@ export default function DashboardPage() {
                 />
               )}
               <div>
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-2xl font-bold text-docs-heading">
                   Welcome, {(session as any)?.name || 'User'}!
                 </h1>
-                <p className="text-palette-textMuted">{(session as any)?.email}</p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary mt-2">
+                <p className="text-docs-muted">{(session as any)?.email}</p>
+                <span className="mt-2 inline-flex items-center rounded-full border border-docs-accent/40 bg-docs-green-subtle px-2.5 py-0.5 text-xs font-medium text-docs-accent">
                   {(session as any)?.role || 'USER'}
                 </span>
               </div>
@@ -145,20 +145,20 @@ export default function DashboardPage() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6">
-              <div className="text-sm font-medium text-palette-textMuted mb-1">Articles Read</div>
-              <div className="text-3xl font-bold text-white">12</div>
-              <div className="text-sm text-green-400 mt-2">+3 this week</div>
+          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
+            <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6">
+              <div className="mb-1 text-sm font-medium text-docs-muted">Articles Read</div>
+              <div className="text-3xl font-bold text-docs-heading">12</div>
+              <div className="mt-2 text-sm text-emerald-400">+3 this week</div>
             </div>
-            <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6">
-              <div className="text-sm font-medium text-palette-textMuted mb-1">Bookmarks</div>
-              <div className="text-3xl font-bold text-white">5</div>
-              <div className="text-sm text-blue-400 mt-2">Save for later</div>
+            <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6">
+              <div className="mb-1 text-sm font-medium text-docs-muted">Bookmarks</div>
+              <div className="text-3xl font-bold text-docs-heading">5</div>
+              <div className="mt-2 text-sm text-sky-400">Save for later</div>
             </div>
-            <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6">
-              <div className="text-sm font-medium text-palette-textMuted mb-1">Subscription</div>
-              <div className="text-3xl font-bold text-white">
+            <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6">
+              <div className="mb-1 text-sm font-medium text-docs-muted">Subscription</div>
+              <div className="text-3xl font-bold text-docs-heading">
                 {subscription?.plan === 'BUILDER' ? 'Builder' :
                  subscription?.plan === 'PRO' ? 'Pro' :
                  subscription?.plan === 'ENTERPRISE' ? 'Enterprise' : 'Free'}
@@ -174,7 +174,7 @@ export default function DashboardPage() {
               )}
               {subscription?.status === 'active' || subscription?.status === 'trialing' ? (
                 <div className="mt-3 space-y-2">
-                  <a href="/dashboard/settings" className="text-sm text-palette-primary hover:text-palette-accent font-medium block">
+                  <a href="/dashboard/settings" className="block text-sm font-medium text-docs-accent hover:text-docs-accent-hover">
                     Manage →
                   </a>
                   {(() => {
@@ -207,8 +207,8 @@ export default function DashboardPage() {
                     )}&body=${encodeURIComponent(refundBody)}`;
 
                     return (
-                      <div className="pt-2 border-t border-palette-border">
-                        <div className="text-xs text-palette-textMuted">
+                      <div className="border-t border-docs-border pt-2">
+                        <div className="text-xs text-docs-muted">
                           <span className="text-emerald-400">✓ 7-Day Refund Policy</span>
                           <p className="mt-1">
                             {daysLeft > 0
@@ -219,13 +219,13 @@ export default function DashboardPage() {
                         <div className="mt-3 flex flex-col gap-2">
                           <a
                             href={mailtoHref}
-                            className="inline-flex items-center justify-center rounded-lg bg-palette-bgTertiary text-palette-textPrimary text-sm font-medium px-3 py-2 hover:bg-palette-bgSecondary transition-colors text-center"
+                            className="inline-flex items-center justify-center rounded-lg bg-white/5 px-3 py-2 text-center text-sm font-medium text-docs-heading transition-colors hover:bg-white/10"
                           >
                             Request refund (email support)
                           </a>
                           <a
                             href="/refund"
-                            className="text-xs text-palette-primary hover:text-palette-accent"
+                            className="text-xs text-docs-accent hover:text-docs-accent-hover"
                           >
                             Read full refund policy →
                           </a>
@@ -235,73 +235,82 @@ export default function DashboardPage() {
                   })()}
                 </div>
               ) : (
-                <a href="/pricing" className="text-sm text-palette-primary hover:text-palette-accent mt-2 font-medium">
+                <a href="/pricing" className="mt-2 text-sm font-medium text-docs-accent hover:text-docs-accent-hover">
                   Upgrade →
                 </a>
               )}
             </div>
-            <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6">
-              <div className="text-sm font-medium text-palette-textMuted mb-1">Member Since</div>
-              <div className="text-3xl font-bold text-white">Apr</div>
-              <div className="text-sm text-palette-textMuted mt-2">2026</div>
+            <div className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6">
+              <div className="mb-1 text-sm font-medium text-docs-muted">Member Since</div>
+              <div className="text-3xl font-bold text-docs-heading">Apr</div>
+              <div className="mt-2 text-sm text-docs-muted">2026</div>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <a href="/kb" className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 hover:shadow-cc-theme hover:border-palette-primary transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-palette-bgTertiary flex items-center justify-center mb-3 group-hover:bg-palette-bgTertiary transition-colors">
-                <Icon name="book" size={20} className="text-palette-primary" />
+          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <a
+              href="/kb"
+              className="docs-card group rounded-xl border border-docs-border bg-docs-surface p-6 transition-all hover:border-docs-accent/50 hover:shadow-cc-theme"
+            >
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 transition-colors group-hover:bg-white/10">
+                <Icon name="book" size={20} className="text-docs-accent" />
               </div>
-              <h3 className="font-bold text-white mb-1">Browse Articles</h3>
-              <p className="text-sm text-palette-textMuted">Explore our knowledge base</p>
+              <h3 className="mb-1 font-bold text-docs-heading">Browse Articles</h3>
+              <p className="text-sm text-docs-muted">Explore our knowledge base</p>
             </a>
-            <a href="/dashboard/bookmarks" className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 hover:shadow-cc-theme hover:border-palette-primary transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3 group-hover:bg-amber-500/20 transition-colors">
+            <a
+              href="/dashboard/bookmarks"
+              className="docs-card group rounded-xl border border-docs-border bg-docs-surface p-6 transition-all hover:border-docs-accent/50 hover:shadow-cc-theme"
+            >
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10 transition-colors group-hover:bg-amber-500/20">
                 <Icon name="bookmark" size={20} className="text-amber-400" />
               </div>
-              <h3 className="font-bold text-white mb-1">My Bookmarks</h3>
-              <p className="text-sm text-palette-textMuted">View saved articles</p>
+              <h3 className="mb-1 font-bold text-docs-heading">My Bookmarks</h3>
+              <p className="text-sm text-docs-muted">View saved articles</p>
             </a>
-            <a href="/dashboard/settings" className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 hover:shadow-cc-theme hover:border-palette-primary transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-palette-bgSecondary flex items-center justify-center mb-3 group-hover:bg-palette-bgTertiary transition-colors">
-                <Icon name="settings" size={20} className="text-palette-textMuted" />
+            <a
+              href="/dashboard/settings"
+              className="docs-card group rounded-xl border border-docs-border bg-docs-surface p-6 transition-all hover:border-docs-accent/50 hover:shadow-cc-theme"
+            >
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 transition-colors group-hover:bg-white/10">
+                <Icon name="settings" size={20} className="text-docs-muted" />
               </div>
-              <h3 className="font-bold text-white mb-1">Settings</h3>
-              <p className="text-sm text-palette-textMuted">Manage your account</p>
+              <h3 className="mb-1 font-bold text-docs-heading">Settings</h3>
+              <p className="text-sm text-docs-muted">Manage your account</p>
             </a>
           </div>
 
           {/* Admin Section */}
           {isAdmin && (
-            <div className="bg-palette-bgTertiary rounded-xl border border-palette-primary p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="shield" size={24} className="text-palette-primary" />
-                <h2 className="text-xl font-bold text-white">Admin Panel</h2>
+            <div className="rounded-xl border border-docs-accent/30 bg-docs-surface-alt p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <Icon name="shield" size={24} className="text-docs-accent" />
+                <h2 className="text-xl font-bold text-docs-heading">Admin Panel</h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <a href="/admin" className="bg-palette-bgCard rounded-lg p-4 hover:shadow-cc-theme transition-shadow">
-                  <h3 className="font-bold text-white mb-1">Admin Dashboard</h3>
-                  <p className="text-sm text-palette-textMuted">Manage all content</p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <a href="/admin" className="docs-card rounded-lg border border-docs-border bg-docs-surface p-4 transition-shadow hover:shadow-cc-theme">
+                  <h3 className="mb-1 font-bold text-docs-heading">Admin Dashboard</h3>
+                  <p className="text-sm text-docs-muted">Manage all content</p>
                 </a>
-                <a href="/admin/review" className="bg-palette-bgCard rounded-lg p-4 hover:shadow-cc-theme transition-shadow">
-                  <h3 className="font-bold text-white mb-1">Article Review</h3>
-                  <p className="text-sm text-palette-textMuted">Review & publish articles</p>
+                <a href="/admin/review" className="docs-card rounded-lg border border-docs-border bg-docs-surface p-4 transition-shadow hover:shadow-cc-theme">
+                  <h3 className="mb-1 font-bold text-docs-heading">Article Review</h3>
+                  <p className="text-sm text-docs-muted">Review & publish articles</p>
                 </a>
-                <a href="/admin/articles" className="bg-palette-bgCard rounded-lg p-4 hover:shadow-cc-theme transition-shadow">
-                  <h3 className="font-bold text-white mb-1">Articles</h3>
-                  <p className="text-sm text-palette-textMuted">Create & edit articles</p>
+                <a href="/admin/articles" className="docs-card rounded-lg border border-docs-border bg-docs-surface p-4 transition-shadow hover:shadow-cc-theme">
+                  <h3 className="mb-1 font-bold text-docs-heading">Articles</h3>
+                  <p className="text-sm text-docs-muted">Create & edit articles</p>
                 </a>
-                <a href="/admin/users" className="bg-palette-bgCard rounded-lg p-4 hover:shadow-cc-theme transition-shadow">
-                  <h3 className="font-bold text-white mb-1">Users</h3>
-                  <p className="text-sm text-palette-textMuted">Manage users</p>
+                <a href="/admin/users" className="docs-card rounded-lg border border-docs-border bg-docs-surface p-4 transition-shadow hover:shadow-cc-theme">
+                  <h3 className="mb-1 font-bold text-docs-heading">Users</h3>
+                  <p className="text-sm text-docs-muted">Manage users</p>
                 </a>
               </div>
             </div>
           )}
         </div>
       </main>
-      <Footer />
+      <Footer variant="docs" />
     </div>
   );
 }

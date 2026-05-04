@@ -69,10 +69,10 @@ export default function ArticlesAdminPage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
+      <div className="flex flex-1 items-center justify-center bg-docs-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto"></div>
-          <p className="mt-4 text-palette-textMuted">Loading...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-docs-accent"></div>
+          <p className="mt-4 text-docs-muted">Loading...</p>
         </div>
       </div>
     );
@@ -81,93 +81,93 @@ export default function ArticlesAdminPage() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
+    <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-grow">
-        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mx-auto max-w-site px-4 py-8 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-white">📝 Articles</h1>
-              <p className="text-palette-textMuted mt-1">Create, edit, and manage all articles</p>
+              <h1 className="text-2xl font-bold text-docs-heading">📝 Articles</h1>
+              <p className="mt-1 text-docs-muted">Create, edit, and manage all articles</p>
             </div>
-            <button className="px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors">
+            <button className="rounded-lg bg-docs-accent px-4 py-2 font-medium text-white transition-colors hover:bg-docs-accent-hover">
               + New article
             </button>
           </div>
 
           {/* Articles Table */}
-          <div className="bg-palette-bgCard rounded-xl border border-palette-border overflow-hidden">
-            <table className="min-w-full divide-y divide-palette-border">
-              <thead className="bg-palette-bgSecondary">
+          <div className="docs-card overflow-hidden rounded-xl border border-docs-border bg-docs-surface">
+            <table className="min-w-full divide-y divide-docs-border">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Article
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Category
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Tier
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Score
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-palette-bgCard divide-y divide-palette-border">
+              <tbody className="divide-y divide-docs-border bg-docs-surface">
                 {articles.map((article) => (
-                  <tr key={article.slug} className="hover:bg-palette-bgSecondary transition-colors">
+                  <tr key={article.slug} className="transition-colors hover:bg-white/5">
                     <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-white">{article.titleEn}</div>
-                      <div className="text-xs text-palette-textMuted truncate max-w-xs">{article.slug}</div>
+                      <div className="text-sm font-medium text-docs-heading">{article.titleEn}</div>
+                      <div className="max-w-xs truncate text-xs text-docs-muted">{article.slug}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary">
+                      <span className="inline-flex items-center rounded-full border border-docs-accent/40 bg-docs-green-subtle px-2.5 py-0.5 text-xs font-medium text-docs-accent">
                         {article.categories?.[0]?.Category?.[0]?.name || 'General'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         article.status === 'PUBLISHED' 
-                          ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                          ? 'border border-green-500/20 bg-green-500/10 text-green-400' 
                           : article.status === 'REVIEW'
-                          ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
-                          : 'bg-palette-bgTertiary text-palette-textMuted border border-palette-border'
+                          ? 'border border-yellow-500/20 bg-yellow-500/10 text-yellow-400'
+                          : 'border border-docs-border bg-white/5 text-docs-muted'
                       }`}>
                         {article.status === 'PUBLISHED' ? 'Published' : article.status === 'REVIEW' ? 'In review' : article.status === 'ARCHIVED' ? 'Archived' : 'Draft'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         article.accessLevel === 'pro'
-                          ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                          ? 'border border-purple-500/20 bg-purple-500/10 text-purple-400'
                           : article.accessLevel === 'builder'
-                          ? 'bg-palette-bgTertiary text-palette-primary border border-palette-primary'
-                          : 'bg-palette-bgTertiary text-palette-textMuted border border-palette-border'
+                          ? 'border border-docs-accent/40 bg-docs-green-subtle text-docs-accent'
+                          : 'border border-docs-border bg-white/5 text-docs-muted'
                       }`}>
                         {article.accessLevel === 'pro' ? 'Pro' : article.accessLevel === 'builder' ? 'Builder' : 'Free'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-palette-textSecondary">
+                    <td className="px-6 py-4 text-sm text-docs-secondary">
                       {article.qualityScore ? `${article.qualityScore}/100` : '-'}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
                       <button 
                         onClick={() => handleEdit(article.slug)}
-                        className="text-palette-primary hover:text-palette-accent mr-4 transition-colors"
+                        className="mr-4 text-docs-accent transition-colors hover:text-docs-accent-hover"
                       >
                         Edit
                       </button>
                       <button 
                         onClick={() => handleDelete(article.slug, article.titleEn)}
-                        className="text-red-400 hover:text-red-300 transition-colors"
+                        className="text-red-400 transition-colors hover:text-red-300"
                       >
                         Delete
                       </button>
@@ -178,11 +178,11 @@ export default function ArticlesAdminPage() {
             </table>
 
             {articles.length === 0 && (
-              <div className="text-center py-12">
-                <div className="text-4xl mb-4">📝</div>
-                <h3 className="text-lg font-medium text-white mb-2">No articles yet</h3>
-                <p className="text-palette-textMuted mb-4">Create your first article to get started</p>
-                <button className="px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors">
+              <div className="py-12 text-center">
+                <div className="mb-4 text-4xl">📝</div>
+                <h3 className="mb-2 text-lg font-medium text-docs-heading">No articles yet</h3>
+                <p className="mb-4 text-docs-muted">Create your first article to get started</p>
+                <button className="rounded-lg bg-docs-accent px-4 py-2 font-medium text-white transition-colors hover:bg-docs-accent-hover">
                   Create article
                 </button>
               </div>
@@ -190,7 +190,7 @@ export default function ArticlesAdminPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer variant="docs" />
     </div>
   );
 }

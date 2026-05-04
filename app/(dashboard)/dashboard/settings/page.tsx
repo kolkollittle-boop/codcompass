@@ -115,10 +115,10 @@ export default function SettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
+      <div className="flex flex-1 items-center justify-center bg-docs-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto" />
-          <p className="mt-4 text-palette-textMuted">Loading...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-docs-accent" />
+          <p className="mt-4 text-docs-muted">Loading...</p>
         </div>
       </div>
     );
@@ -152,35 +152,35 @@ export default function SettingsPage() {
         : subscription?.status || '—';
 
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
+    <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-grow">
-        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mx-auto max-w-site px-4 py-8 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-palette-textPrimary">Account Settings</h1>
-            <p className="text-palette-textMuted mt-1">Manage your profile and preferences</p>
+            <h1 className="text-2xl font-bold text-docs-heading">Account Settings</h1>
+            <p className="mt-1 text-docs-muted">Manage your profile and preferences</p>
           </div>
 
           {success && (
-            <div className="mb-6 p-4 border border-palette-success bg-palette-bgSecondary rounded-lg text-palette-success text-sm">
+            <div className="mb-6 rounded-lg border border-emerald-500/40 bg-docs-green-subtle p-4 text-sm text-emerald-400">
               {success}
             </div>
           )}
 
-          <div className="bg-palette-bgCard rounded-xl border border-palette-border p-6 mb-6">
-            <h2 className="text-lg font-bold text-palette-textPrimary mb-4">Profile Information</h2>
-            <div className="flex items-center gap-4 mb-6">
+          <div className="docs-card mb-6 rounded-xl border border-docs-border bg-docs-surface p-6">
+            <h2 className="mb-4 text-lg font-bold text-docs-heading">Profile Information</h2>
+            <div className="mb-6 flex items-center gap-4">
               {displayImage && (
                 <img
                   src={displayImage}
                   alt={displayName}
-                  className="w-20 h-20 rounded-full"
+                  className="h-20 w-20 rounded-full"
                 />
               )}
               <div>
-                <p className="font-medium text-palette-textPrimary">{displayName}</p>
-                <p className="text-sm text-palette-textMuted">{displayEmail}</p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-palette-bgSecondary text-palette-primary border border-palette-primary mt-2">
+                <p className="font-medium text-docs-heading">{displayName}</p>
+                <p className="text-sm text-docs-muted">{displayEmail}</p>
+                <span className="mt-2 inline-flex items-center rounded-full border border-docs-accent/40 bg-docs-green-subtle px-2.5 py-0.5 text-xs font-medium text-docs-accent">
                   {(nextAuthSession?.user as any)?.role ||
                     (supabaseSession?.user as any)?.role ||
                     'USER'}
@@ -190,18 +190,18 @@ export default function SettingsPage() {
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-palette-textSecondary mb-2">
+                <label htmlFor="name" className="mb-2 block text-sm font-medium text-docs-secondary">
                   Display Name
                 </label>
                 <input
                   type="text"
                   id="name"
                   defaultValue={displayName === 'User' ? '' : displayName}
-                  className="w-full px-4 py-3 border border-palette-border rounded-lg focus:ring-2 focus:ring-palette-primary focus:border-palette-primary bg-palette-bgSecondary text-palette-textPrimary placeholder-palette-textMuted"
+                  className="w-full rounded-lg border border-docs-border bg-white/5 px-4 py-3 text-docs-heading placeholder:text-docs-muted focus:border-docs-accent focus:ring-2 focus:ring-docs-accent"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-palette-textSecondary mb-2">
+                <label htmlFor="email" className="mb-2 block text-sm font-medium text-docs-secondary">
                   Email
                 </label>
                 <input
@@ -209,39 +209,39 @@ export default function SettingsPage() {
                   id="email"
                   defaultValue={displayEmail || ''}
                   disabled
-                  className="w-full px-4 py-3 border border-palette-border rounded-lg bg-palette-bgTertiary text-palette-textMuted"
+                  className="w-full rounded-lg border border-docs-border bg-docs-surface-alt px-4 py-3 text-docs-muted"
                 />
-                <p className="text-xs text-palette-textMuted mt-1">Email cannot be changed</p>
+                <p className="mt-1 text-xs text-docs-muted">Email cannot be changed</p>
               </div>
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-6 py-3 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="rounded-lg bg-docs-accent px-6 py-3 font-medium text-white transition-colors hover:bg-docs-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </form>
           </div>
 
-          <div className="bg-palette-bgCard rounded-xl border border-palette-border p-6 mb-6">
-            <h2 className="text-lg font-bold text-palette-textPrimary mb-2">Appearance</h2>
-            <p className="text-sm text-palette-textMuted mb-4">Color palette for supported screens (stored in this browser).</p>
+          <div className="docs-card mb-6 rounded-xl border border-docs-border bg-docs-surface p-6">
+            <h2 className="mb-2 text-lg font-bold text-docs-heading">Appearance</h2>
+            <p className="mb-4 text-sm text-docs-muted">Color palette for supported screens (stored in this browser).</p>
             <ColorThemePicker />
           </div>
 
-          <div className="bg-palette-bgCard rounded-xl border border-palette-border p-6 mb-6">
-            <h2 className="text-lg font-bold text-palette-textPrimary mb-4">Subscription</h2>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-palette-bgSecondary rounded-lg border border-palette-border">
+          <div className="docs-card mb-6 rounded-xl border border-docs-border bg-docs-surface p-6">
+            <h2 className="mb-4 text-lg font-bold text-docs-heading">Subscription</h2>
+            <div className="flex flex-col gap-4 rounded-lg border border-docs-border bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-medium text-palette-textPrimary text-lg">{planLabel}</p>
+                <p className="text-lg font-medium text-docs-heading">{planLabel}</p>
                 {isPaid ? (
                   <>
-                    <p className="text-sm text-palette-textMuted mt-1">
+                    <p className="mt-1 text-sm text-docs-muted">
                       {billingLabel ? `${billingLabel} · ` : ''}
                       Status: {statusLabel}
                     </p>
                     {subscription?.subscription?.nextBilledAt && (
-                      <p className="text-xs text-palette-textMuted mt-1">
+                      <p className="mt-1 text-xs text-docs-muted">
                         Next billing:{' '}
                         {new Date(
                           subscription.subscription.nextBilledAt
@@ -250,16 +250,16 @@ export default function SettingsPage() {
                     )}
                   </>
                 ) : (
-                  <p className="text-sm text-palette-textMuted mt-1">
+                  <p className="mt-1 text-sm text-docs-muted">
                     Upgrade to unlock full articles and premium features.
                   </p>
                 )}
               </div>
-              <div className="flex flex-col sm:items-end gap-2 shrink-0">
+              <div className="flex shrink-0 flex-col gap-2 sm:items-end">
                 {!isPaid ? (
                   <a
                     href="/pricing"
-                    className="px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors text-sm text-center"
+                    className="rounded-lg bg-docs-accent px-4 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-docs-accent-hover"
                   >
                     View plans
                   </a>
@@ -267,13 +267,13 @@ export default function SettingsPage() {
                   <>
                     <a
                       href="/dashboard"
-                      className="px-4 py-2 border border-palette-border text-palette-textSecondary font-medium rounded-lg hover:bg-palette-bgTertiary transition-colors text-sm text-center"
+                      className="rounded-lg border border-docs-border px-4 py-2 text-center text-sm font-medium text-docs-secondary transition-colors hover:bg-white/10"
                     >
                       Dashboard overview
                     </a>
                     <a
                       href="/refund"
-                      className="text-xs text-palette-primary hover:text-palette-accent"
+                      className="text-xs text-docs-accent hover:text-docs-accent-hover"
                     >
                       Refund policy
                     </a>
@@ -283,12 +283,12 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="bg-palette-bgCard rounded-xl border border-red-500/30 p-6">
-            <h2 className="text-lg font-bold text-red-400 mb-4">Danger Zone</h2>
+          <div className="docs-card rounded-xl border border-red-500/30 bg-docs-surface p-6">
+            <h2 className="mb-4 text-lg font-bold text-red-400">Danger Zone</h2>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-palette-textPrimary">Sign Out</p>
-                <p className="text-sm text-palette-textMuted">Sign out of your account</p>
+                <p className="font-medium text-docs-heading">Sign Out</p>
+                <p className="text-sm text-docs-muted">Sign out of your account</p>
               </div>
               <button
                 type="button"
@@ -301,7 +301,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer variant="docs" />
     </div>
   );
 }

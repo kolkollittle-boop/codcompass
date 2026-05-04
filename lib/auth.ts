@@ -2,12 +2,16 @@ import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 
 // 验证必要的环境变量
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  console.error('[Auth] Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET environment variables');
+// 支持两种命名方式：AUTH_GOOGLE_ID/SECRET (v5) 和 GOOGLE_CLIENT_ID/SECRET (legacy)
+const googleClientId = process.env.AUTH_GOOGLE_ID || process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.AUTH_GOOGLE_SECRET || process.env.GOOGLE_CLIENT_SECRET;
+
+if (!googleClientId || !googleClientSecret) {
+  console.error('[Auth] Missing Google OAuth credentials. Set AUTH_GOOGLE_ID/AUTH_GOOGLE_SECRET or GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET');
 }
 
-if (!process.env.NEXTAUTH_SECRET) {
-  console.error('[Auth] Missing NEXTAUTH_SECRET environment variable');
+if (!process.env.AUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
+  console.error('[Auth] Missing AUTH_SECRET or NEXTAUTH_SECRET environment variable');
 }
 
 export const { auth, handlers } = NextAuth({
@@ -15,8 +19,8 @@ export const { auth, handlers } = NextAuth({
   trustHost: true,
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: googleClientId!,
+      clientSecret: googleClientSecret!,
     }),
   ],
   pages: {

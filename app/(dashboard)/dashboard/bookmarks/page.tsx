@@ -23,10 +23,10 @@ export default function BookmarksPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
+      <div className="flex flex-1 items-center justify-center bg-docs-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto"></div>
-          <p className="mt-4 text-palette-textMuted">Loading...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-docs-accent"></div>
+          <p className="mt-4 text-docs-muted">Loading...</p>
         </div>
       </div>
     );
@@ -39,14 +39,14 @@ export default function BookmarksPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
+    <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-grow">
-        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mx-auto max-w-site px-4 py-8 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-white">🔖 My Bookmarks</h1>
-            <p className="text-palette-textMuted mt-1">Your saved articles for later reading</p>
+            <h1 className="text-2xl font-bold text-docs-heading">🔖 My Bookmarks</h1>
+            <p className="mt-1 text-docs-muted">Your saved articles for later reading</p>
           </div>
 
           {/* Bookmarks List */}
@@ -54,25 +54,25 @@ export default function BookmarksPage() {
             {bookmarks.map((bookmark) => (
               <div
                 key={bookmark.id}
-                className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border p-6 hover:shadow-cc-theme hover:border-palette-primary transition-all"
+                className="docs-card rounded-xl border border-docs-border bg-docs-surface p-6 transition-all hover:border-docs-accent/50 hover:shadow-cc-theme"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-palette-bgTertiary text-palette-primary border border-palette-primary">
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="inline-flex items-center rounded-full border border-docs-accent/40 bg-docs-green-subtle px-2.5 py-0.5 text-xs font-medium text-docs-accent">
                         {bookmark.category}
                       </span>
-                      <span className="text-sm text-palette-textMuted">{bookmark.date}</span>
+                      <span className="text-sm text-docs-muted">{bookmark.date}</span>
                     </div>
-                    <h3 className="text-lg font-bold text-white mb-2">
-                      <a href={`/kb/${bookmark.slug}`} className="hover:text-palette-primary transition-colors">
+                    <h3 className="mb-2 text-lg font-bold text-docs-heading">
+                      <a href={`/kb/${bookmark.slug}`} className="transition-colors hover:text-docs-accent">
                         {bookmark.title}
                       </a>
                     </h3>
                   </div>
                   <button
                     onClick={() => handleRemoveBookmark(bookmark.id)}
-                    className="text-palette-textMuted hover:text-red-400 transition-colors"
+                    className="text-docs-muted transition-colors hover:text-red-400"
                     title="Remove bookmark"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,13 +85,13 @@ export default function BookmarksPage() {
           </div>
 
           {bookmarks.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">🔖</div>
-              <h3 className="text-lg font-medium text-white mb-2">No bookmarks yet</h3>
-              <p className="text-palette-textMuted mb-4">Start saving articles to read later</p>
+            <div className="py-12 text-center">
+              <div className="mb-4 text-4xl">🔖</div>
+              <h3 className="mb-2 text-lg font-medium text-docs-heading">No bookmarks yet</h3>
+              <p className="mb-4 text-docs-muted">Start saving articles to read later</p>
               <a
                 href="/kb"
-                className="inline-block px-4 py-2 bg-palette-primary text-white font-medium rounded-lg hover:bg-palette-primary-hover transition-colors"
+                className="inline-block rounded-lg bg-docs-accent px-4 py-2 font-medium text-white transition-colors hover:bg-docs-accent-hover"
               >
                 Browse Articles
               </a>
@@ -99,7 +99,7 @@ export default function BookmarksPage() {
           )}
         </div>
       </main>
-      <Footer />
+      <Footer variant="docs" />
     </div>
   );
 }

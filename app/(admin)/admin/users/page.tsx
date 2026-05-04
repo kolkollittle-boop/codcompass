@@ -26,10 +26,10 @@ export default function UsersAdminPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-palette-bgPrimary">
+      <div className="flex flex-1 items-center justify-center bg-docs-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-palette-primary mx-auto"></div>
-          <p className="mt-4 text-palette-textMuted">Loading...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-docs-accent"></div>
+          <p className="mt-4 text-docs-muted">Loading...</p>
         </div>
       </div>
     );
@@ -50,60 +50,60 @@ export default function UsersAdminPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-palette-bgPrimary text-palette-textPrimary">
+    <div className="flex flex-1 flex-col">
       <Header />
       <main className="flex-grow">
-        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mx-auto max-w-site px-4 py-8 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-palette-textPrimary">👥 Manage Users</h1>
-              <p className="text-palette-textMuted mt-1">View and manage all user accounts</p>
+              <h1 className="text-2xl font-bold text-docs-heading">👥 Manage Users</h1>
+              <p className="mt-1 text-docs-muted">View and manage all user accounts</p>
             </div>
             <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Search users..."
-                className="px-4 py-2 border border-palette-border rounded-lg bg-palette-bgCard text-palette-textPrimary placeholder-palette-textMuted focus:ring-2 focus:ring-palette-primary focus:border-palette-primary"
+                className="rounded-lg border border-docs-border bg-docs-surface px-4 py-2 text-docs-heading placeholder:text-docs-muted focus:border-docs-accent focus:ring-2 focus:ring-docs-accent"
               />
             </div>
           </div>
 
           {/* Users Table */}
-          <div className="bg-palette-bgCard rounded-xl shadow-sm border border-palette-border overflow-hidden">
-            <table className="min-w-full divide-y divide-palette-border">
-              <thead className="bg-palette-bgSecondary">
+          <div className="docs-card overflow-hidden rounded-xl border border-docs-border bg-docs-surface">
+            <table className="min-w-full divide-y divide-docs-border">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     User
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Role
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Joined
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-palette-textMuted uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-docs-muted">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-palette-bgCard divide-y divide-palette-border">
+              <tbody className="divide-y divide-docs-border bg-docs-surface">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-palette-bgSecondary transition-colors">
+                  <tr key={user.id} className="transition-colors hover:bg-white/5">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-palette-bgTertiary flex items-center justify-center text-palette-primary font-bold">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 font-bold text-docs-accent">
                             {user.name?.charAt(0) || 'U'}
                           </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-palette-textPrimary">{user.name}</div>
-                          <div className="text-sm text-palette-textMuted">{user.email}</div>
+                          <div className="text-sm font-medium text-docs-heading">{user.name}</div>
+                          <div className="text-sm text-docs-muted">{user.email}</div>
                         </div>
                       </div>
                     </td>
@@ -111,7 +111,7 @@ export default function UsersAdminPage() {
                       <select
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        className="text-sm border border-palette-border rounded px-2 py-1 bg-palette-bgSecondary text-palette-textPrimary"
+                        className="rounded border border-docs-border bg-white/5 px-2 py-1 text-sm text-docs-heading"
                       >
                         <option value="USER">User</option>
                         <option value="EDITOR">Editor</option>
@@ -119,22 +119,22 @@ export default function UsersAdminPage() {
                       </select>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         user.status === 'active' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
+                          ? 'border border-green-500/20 bg-green-500/10 text-green-400' 
+                          : 'border border-red-500/20 bg-red-500/10 text-red-400'
                       }`}>
                         {user.status === 'active' ? 'Active' : 'Banned'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-palette-textPrimary">
+                    <td className="px-6 py-4 text-sm text-docs-heading">
                       {user.joined}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
                       {user.email !== 'kolkollittle@gmail.com' && (
                         <button
                           onClick={() => handleBanUser(user.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-red-400 hover:text-red-300"
                         >
                           {user.status === 'active' ? 'Ban' : 'Unban'}
                         </button>
@@ -147,7 +147,7 @@ export default function UsersAdminPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer variant="docs" />
     </div>
   );
 }
