@@ -3,10 +3,7 @@ node_modules
 .env.local
 .next
 node_modules
-# Ignore loose notes under docs/, but version the Codcompass 2.0 scaffold
-docs/*
-!docs/Codcompass_2_0/
-!docs/Codcompass_2_0/**
+docs/
 !components/docs/
 .env
 .env.local
