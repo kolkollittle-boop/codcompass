@@ -5,18 +5,31 @@ import Google from 'next-auth/providers/google';
 // 支持两种命名方式：AUTH_GOOGLE_ID/SECRET (v5) 和 GOOGLE_CLIENT_ID/SECRET (legacy)
 const googleClientId = process.env.AUTH_GOOGLE_ID || process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.AUTH_GOOGLE_SECRET || process.env.GOOGLE_CLIENT_SECRET;
+const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
 
 if (!googleClientId || !googleClientSecret) {
   console.error('[Auth] Missing Google OAuth credentials. Set AUTH_GOOGLE_ID/AUTH_GOOGLE_SECRET or GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET');
+  console.error('[Auth] Current AUTH_GOOGLE_ID:', googleClientId ? '***configured***' : 'MISSING');
+  console.error('[Auth] Current AUTH_GOOGLE_SECRET:', googleClientSecret ? '***configured***' : 'MISSING');
 }
 
-if (!process.env.AUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
+if (!authSecret) {
   console.error('[Auth] Missing AUTH_SECRET or NEXTAUTH_SECRET environment variable');
+  console.error('[Auth] Generate one with: openssl rand -base64 32');
 }
+
+console.log('[Auth] Configuration status:', {
+  googleClientId: googleClientId ? 'configured' : 'missing',
+  googleClientSecret: googleClientSecret ? 'configured' : 'missing',
+  authSecret: authSecret ? 'configured' : 'missing',
+  nodeEnv: process.env.NODE_ENV,
+  vercelEnv: process.env.VERCEL_ENV || 'not-vercel',
+});
 
 export const { auth, handlers } = NextAuth({
   // Required for self-hosted production deployment
   trustHost: true,
+  debug: true, // Enable debug logging for troubleshooting
   providers: [
     Google({
       clientId: googleClientId!,
@@ -26,7 +39,7 @@ export const { auth, handlers } = NextAuth({
   pages: {
     signIn: '/login',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: authSecret,
   callbacks: {
     async signIn({ user, account, profile }) {
       // Google OAuth sign in
