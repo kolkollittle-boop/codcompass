@@ -1,5 +1,7 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { prisma } from '@/lib/db';
 
 // 调试日志：输出环境变量状态
 console.log('[Auth] Environment check:', {
@@ -26,6 +28,7 @@ export const { auth, handlers } = NextAuth({
   // Required for production deployment on Vercel
   trustHost: true,
   debug: true,
+  adapter: PrismaAdapter(prisma),
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
