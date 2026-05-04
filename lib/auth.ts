@@ -29,6 +29,36 @@ export const { auth, handlers } = NextAuth({
   trustHost: true,
   debug: true,
   adapter: PrismaAdapter(prisma),
+  // Fix PKCE cookie issues in serverless environment
+  cookies: {
+    pkceCodeVerifier: {
+      name: '__Secure-authjs.pkce.code_verifier',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+    state: {
+      name: '__Secure-authjs.state',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+    nonce: {
+      name: '__Secure-authjs.nonce',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+  },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
