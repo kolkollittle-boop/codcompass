@@ -6,7 +6,8 @@ import Footer from '@/components/Footer';
 import { getPublishedBlogPostBySlug } from '@/lib/blog-queries';
 import { sanitizeBlogHtml } from '@/lib/sanitize-blog-html';
 
-export const revalidate = 120;
+/** Avoid build-time Prisma against DB (tables may not exist until `prisma migrate deploy`). */
+export const dynamic = 'force-dynamic';
 
 interface Props {
   params: Promise<{ slug: string }>;

@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { BlogListClient } from '@/components/blog/BlogListClient';
 import { getBlogCategoriesForNav, getPublishedBlogPostCards } from '@/lib/blog-queries';
 
-export const revalidate = 120;
+/** Avoid build-time Prisma against DB (tables may not exist until `prisma migrate deploy`). */
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Blog | Codcompass',
