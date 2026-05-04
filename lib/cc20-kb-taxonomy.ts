@@ -1,6 +1,7 @@
 /**
- * Codcompass 2.0 KB taxonomy: sections aligned with lib/kb-nav-tree pillars (1.1–5.3).
- * Used by lib/categories.ts (browse/filter UI) and scripts/remap-articles-cc20-categories.ts.
+ * Codcompass 2.0 KB taxonomy: aligned with `Codcompass_Knowledge_Base/` vault layout + lib/kb-nav-tree.ts.
+ * Used only for Knowledge Base articles (`Article` + `Category`)—not blog posts (`BlogPost` + `BlogCategory`).
+ * Slugs stay stable where possible for DB joins; merged lanes use new canonical slugs (run remap script after deploy).
  */
 
 import type { CategoryInfo } from '@/lib/category-types';
@@ -8,13 +9,13 @@ import type { CategoryInfo } from '@/lib/category-types';
 /** Primary section when slug has no explicit mapping. */
 export const CC20_DEFAULT_SECTION_SLUG = 'cc20-4-1-tools-efficiency';
 
-/** Browse/filter categories (second level of the CC20 tree). */
+/** Browse/filter categories (vault-aligned IA). */
 export const CC20_SECTIONS: CategoryInfo[] = [
-  // 01 AI Agents & Automation
+  // ─── AI_Engineering ───
   {
     slug: 'cc20-1-1-ai-agent-development',
-    name: '1.1 AI Agent Development & Orchestration',
-    nameZh: '1.1 AI Agent Development & Orchestration',
+    name: 'AI Agents & Orchestration',
+    nameZh: 'AI Agents & Orchestration',
     description: 'Agents, tooling, orchestration, evaluation',
     descriptionEn: 'Agents, tooling, orchestration, evaluation',
     icon: '🤖',
@@ -22,160 +23,189 @@ export const CC20_SECTIONS: CategoryInfo[] = [
   },
   {
     slug: 'cc20-1-2-enterprise-rag',
-    name: '1.2 Enterprise RAG & Knowledge Engines',
-    nameZh: '1.2 Enterprise RAG & Knowledge Engines',
-    description: 'RAG systems, embeddings, vector retrieval, pipelines',
-    descriptionEn: 'RAG systems, embeddings, vector retrieval, pipelines',
+    name: 'Enterprise RAG & Knowledge Engines',
+    nameZh: 'Enterprise RAG & Knowledge Engines',
+    description: 'Retrieval architecture, grounding economics, pipeline governance',
+    descriptionEn: 'Retrieval architecture, grounding economics, pipeline governance',
     icon: '🤖',
     color: 'from-purple-500 to-indigo-600',
   },
   {
     slug: 'cc20-1-3-local-llm',
-    name: '1.3 Local LLM Deployment & Optimization',
-    nameZh: '1.3 Local LLM Deployment & Optimization',
-    description: 'On-device LLMs, fine-tuning, quantization, cost/performance',
-    descriptionEn: 'On-device LLMs, fine-tuning, quantization, cost/performance',
+    name: 'Local LLM Deployment & Optimization',
+    nameZh: 'Local LLM Deployment & Optimization',
+    description: 'Sovereign inference, hardware co-design, quantization trade-offs',
+    descriptionEn: 'Sovereign inference, hardware co-design, quantization trade-offs',
     icon: '🤖',
     color: 'from-fuchsia-500 to-pink-600',
   },
   {
     slug: 'cc20-1-4-ai-productization',
-    name: '1.4 AI Productization & Commercialization',
-    nameZh: '1.4 AI Productization & Commercialization',
-    description: 'Shipping AI products and GTM',
-    descriptionEn: 'Shipping AI products and GTM',
+    name: 'AI Productionization & Commercialization',
+    nameZh: 'AI Productionization & Commercialization',
+    description: 'SLIs, packaging, margin risk, and durable AI products',
+    descriptionEn: 'SLIs, packaging, margin risk, and durable AI products',
     icon: '🤖',
     color: 'from-indigo-500 to-blue-600',
   },
-  // 02 Enterprise Architecture
+  // ─── System_Evolution ───
   {
     slug: 'cc20-2-1-architecture-transformation',
-    name: '2.1 Architecture Transformation',
-    nameZh: '2.1 Architecture Transformation',
-    description: 'Modernization, migrations, microservices, cloud-native',
-    descriptionEn: 'Modernization, migrations, microservices, cloud-native',
+    name: 'Architecture Modernization & Transformation',
+    nameZh: 'Architecture Modernization & Transformation',
+    description: 'Strangler paths, migration portfolios, reversible bets',
+    descriptionEn: 'Strangler paths, migration portfolios, reversible bets',
     icon: '🏗️',
     color: 'from-slate-500 to-zinc-600',
   },
   {
-    slug: 'cc20-2-2-dotnet-csharp',
-    name: '2.2 .NET / C# Advanced Development',
-    nameZh: '2.2 .NET / C# Advanced Development',
-    description: 'High-performance .NET stacks and patterns',
-    descriptionEn: 'High-performance .NET stacks and patterns',
+    slug: 'cc20-2-scalable-backend-systems',
+    name: 'Scalable Backend Systems',
+    nameZh: 'Scalable Backend Systems',
+    description: 'Application platforms, data planes, integration, performance ceilings',
+    descriptionEn: 'Application platforms, data planes, integration, performance ceilings',
     icon: '🏗️',
-    color: 'from-blue-600 to-violet-600',
-  },
-  {
-    slug: 'cc20-2-3-data-architecture',
-    name: '2.3 Data Architecture & Intelligent Systems',
-    nameZh: '2.3 Data Architecture & Intelligent Systems',
-    description: 'Databases, data lakes, industrial integration',
-    descriptionEn: 'Databases, data lakes, industrial integration',
-    icon: '🏗️',
-    color: 'from-cyan-600 to-blue-700',
+    color: 'from-blue-600 to-cyan-700',
   },
   {
     slug: 'cc20-2-4-devops-iac',
-    name: '2.4 DevOps & Infrastructure as Code',
-    nameZh: '2.4 DevOps & Infrastructure as Code',
-    description: 'CI/CD, containers, observability, IaC',
-    descriptionEn: 'CI/CD, containers, observability, IaC',
+    name: 'DevOps & Infrastructure as Code',
+    nameZh: 'DevOps & Infrastructure as Code',
+    description: 'Delivery trust, declarative estates, operational platforms',
+    descriptionEn: 'Delivery trust, declarative estates, operational platforms',
     icon: '🏗️',
     color: 'from-orange-600 to-red-600',
   },
-  // 03 One-Person Business
+  // ─── Platform_Product_Engineering ───
+  {
+    slug: 'cc20-3-3-one-person-os',
+    name: 'One-Person Business Operating System',
+    nameZh: 'One-Person Business Operating System',
+    description: 'Finance rhythm, ops automation, workflow systems under constraint',
+    descriptionEn: 'Finance rhythm, ops automation, workflow systems under constraint',
+    icon: '💰',
+    color: 'from-lime-600 to-green-700',
+  },
   {
     slug: 'cc20-3-1-digital-asset-matrix',
-    name: '3.1 Digital Asset & Product Matrix',
-    nameZh: '3.1 Digital Asset & Product Matrix',
-    description: 'Product portfolio and app matrix',
-    descriptionEn: 'Product portfolio and app matrix',
+    name: 'Automated Product Delivery',
+    nameZh: 'Automated Product Delivery',
+    description: 'Product matrices, reusable delivery rails, packaging leverage',
+    descriptionEn: 'Product matrices, reusable delivery rails, packaging leverage',
     icon: '💰',
     color: 'from-amber-500 to-yellow-600',
   },
   {
     slug: 'cc20-3-2-growth-traffic',
-    name: '3.2 Growth & Traffic Systems',
-    nameZh: '3.2 Growth & Traffic Systems',
-    description: 'GEO, SEO, content automation',
-    descriptionEn: 'GEO, SEO, content automation',
+    name: 'Digital Operations Automation',
+    nameZh: 'Digital Operations Automation',
+    description: 'GEO/SEO loops, measurable acquisition, automation guardrails',
+    descriptionEn: 'GEO/SEO loops, measurable acquisition, automation guardrails',
     icon: '💰',
     color: 'from-emerald-500 to-teal-600',
   },
-  {
-    slug: 'cc20-3-3-one-person-os',
-    name: '3.3 One-Person Company Operating System',
-    nameZh: '3.3 One-Person Company Operating System',
-    description: 'Finance, ops automation, personal workflows',
-    descriptionEn: 'Finance, ops automation, personal workflows',
-    icon: '💰',
-    color: 'from-lime-600 to-green-700',
-  },
-  {
-    slug: 'cc20-3-4-personal-branding',
-    name: '3.4 Personal Branding & Monetization',
-    nameZh: '3.4 Personal Branding & Monetization',
-    description: 'Brand and revenue as a solo operator',
-    descriptionEn: 'Brand and revenue as a solo operator',
-    icon: '💰',
-    color: 'from-rose-500 to-orange-500',
-  },
-  // 04 Developer Productivity
+  // ─── Developer_Mastery ───
   {
     slug: 'cc20-4-1-tools-efficiency',
-    name: '4.1 Tools & Efficiency Stack',
-    nameZh: '4.1 Tools & Efficiency Stack',
-    description: 'Frameworks, IDEs, templates, everyday delivery',
-    descriptionEn: 'Frameworks, IDEs, templates, everyday delivery',
+    name: 'Productivity & Workflow Engineering',
+    nameZh: 'Productivity & Workflow Engineering',
+    description: 'Environment design, templates, leverage without fragility',
+    descriptionEn: 'Environment design, templates, leverage without fragility',
     icon: '📦',
     color: 'from-sky-500 to-blue-600',
   },
   {
     slug: 'cc20-4-2-code-quality',
-    name: '4.2 Code Quality & Best Practices',
-    nameZh: '4.2 Code Quality & Best Practices',
-    description: 'Security, performance, clean architecture',
-    descriptionEn: 'Security, performance, clean architecture',
+    name: 'Systematic Learning & Methodology',
+    nameZh: 'Systematic Learning & Methodology',
+    description: 'Security bar, performance hygiene, repeatable craft',
+    descriptionEn: 'Security bar, performance hygiene, repeatable craft',
     icon: '📦',
     color: 'from-teal-500 to-cyan-600',
   },
   {
     slug: 'cc20-4-3-reusable-components',
-    name: '4.3 Reusable Components & Libraries',
-    nameZh: '4.3 Reusable Components & Libraries',
-    description: 'Shared libraries and component systems',
-    descriptionEn: 'Shared libraries and component systems',
+    name: 'Cognitive & Architectural Thinking',
+    nameZh: 'Cognitive & Architectural Thinking',
+    description: 'Boundaries, libraries, composability as architecture',
+    descriptionEn: 'Boundaries, libraries, composability as architecture',
     icon: '📦',
     color: 'from-indigo-500 to-sky-600',
   },
-  // 05 Insights
+  // ─── Cross_Cutting_Concerns ───
   {
-    slug: 'cc20-5-1-industry-insights',
-    name: '5.1 Industry Trends & CIO Insights',
-    nameZh: '5.1 Industry Trends & CIO Insights',
-    description: 'Leadership and market perspective',
-    descriptionEn: 'Leadership and market perspective',
-    icon: '📖',
-    color: 'from-neutral-500 to-stone-600',
+    slug: 'cc20-cross-security-compliance',
+    name: 'Security & Compliance',
+    nameZh: 'Security & Compliance',
+    description: 'Trust boundaries, evidence-ready controls, least privilege lifecycle',
+    descriptionEn: 'Trust boundaries, evidence-ready controls, least privilege lifecycle',
+    icon: '🛡️',
+    color: 'from-red-700 to-rose-900',
   },
   {
+    slug: 'cc20-cross-cost-sustainability',
+    name: 'Cost Engineering & Sustainability',
+    nameZh: 'Cost Engineering & Sustainability',
+    description: 'Unit economics, capacity guardrails, operational sustainability',
+    descriptionEn: 'Unit economics, capacity guardrails, operational sustainability',
+    icon: '⚖️',
+    color: 'from-emerald-700 to-teal-900',
+  },
+  {
+    slug: 'cc20-cross-observability',
+    name: 'Observability & Intelligent Monitoring',
+    nameZh: 'Observability & Intelligent Monitoring',
+    description: 'SLOs, signals-to-decisions, alert hygiene and narrative traces',
+    descriptionEn: 'SLOs, signals-to-decisions, alert hygiene and narrative traces',
+    icon: '📡',
+    color: 'from-sky-700 to-blue-900',
+  },
+  // ─── Insights_Methodology ───
+  {
     slug: 'cc20-5-2-book-notes',
-    name: '5.2 Book Notes & Mental Models',
-    nameZh: '5.2 Book Notes & Mental Models',
-    description: 'Reading notes and thinking tools',
-    descriptionEn: 'Reading notes and thinking tools',
+    name: 'Book Reviews',
+    nameZh: 'Book Reviews',
+    description: 'Compressed canon, mechanisms over slogans, transfer notes',
+    descriptionEn: 'Compressed canon, mechanisms over slogans, transfer notes',
     icon: '📖',
     color: 'from-stone-500 to-neutral-700',
   },
   {
-    slug: 'cc20-5-3-case-studies',
-    name: '5.3 Case Studies & Project Retrospectives',
-    nameZh: '5.3 Case Studies & Project Retrospectives',
-    description: 'Real projects and vertical cases',
-    descriptionEn: 'Real projects and vertical cases',
+    slug: 'cc20-5-deep-dives',
+    name: 'Deep Dives',
+    nameZh: 'Deep Dives',
+    description: 'Strategy signals, cases, field notes, vertical realism',
+    descriptionEn: 'Strategy signals, cases, field notes, vertical realism',
     icon: '📖',
-    color: 'from-zinc-600 to-neutral-800',
+    color: 'from-neutral-500 to-stone-600',
+  },
+  {
+    slug: 'cc20-insights-research-notes',
+    name: 'Research Notes',
+    nameZh: 'Research Notes',
+    description: 'Versioned hypotheses, replication-aware sourcing',
+    descriptionEn: 'Versioned hypotheses, replication-aware sourcing',
+    icon: '📖',
+    color: 'from-zinc-700 to-stone-900',
+  },
+  // ─── Archive / References ───
+  {
+    slug: 'cc20-archive',
+    name: 'Archive',
+    nameZh: 'Archive',
+    description: 'Superseded paths kept for traceability—not active recommendation',
+    descriptionEn: 'Superseded paths kept for traceability—not active recommendation',
+    icon: '🗄️',
+    color: 'from-zinc-600 to-zinc-900',
+  },
+  {
+    slug: 'cc20-references',
+    name: 'References',
+    nameZh: 'References',
+    description: 'Standards, papers, specs—pinned evidence for claims',
+    descriptionEn: 'Standards, papers, specs—pinned evidence for claims',
+    icon: '🔗',
+    color: 'from-slate-600 to-neutral-900',
   },
 ];
 
@@ -183,11 +213,19 @@ const T = {
   aiAgents: 'cc20-1-1-ai-agent-development',
   rag: 'cc20-1-2-enterprise-rag',
   localLlm: 'cc20-1-3-local-llm',
+  aiProd: 'cc20-1-4-ai-productization',
   arch: 'cc20-2-1-architecture-transformation',
-  dataArch: 'cc20-2-3-data-architecture',
+  scalableBackend: 'cc20-2-scalable-backend-systems',
   devops: 'cc20-2-4-devops-iac',
+  onePersonOs: 'cc20-3-3-one-person-os',
+  autoProduct: 'cc20-3-1-digital-asset-matrix',
+  digitalOps: 'cc20-3-2-growth-traffic',
   tools: 'cc20-4-1-tools-efficiency',
-  quality: 'cc20-4-2-code-quality',
+  methodology: 'cc20-4-2-code-quality',
+  cognitive: 'cc20-4-3-reusable-components',
+  deepDives: 'cc20-5-deep-dives',
+  bookReviews: 'cc20-5-2-book-notes',
+  researchNotes: 'cc20-insights-research-notes',
 } as const;
 
 /** Explicit article slug → CC20 section slug (Published KB content). */
@@ -198,11 +236,11 @@ const ARTICLE_CC20_SECTION: Record<string, string> = {
   'ai-fine-tuning-guide': T.localLlm,
   'ai-agents-langchain': T.aiAgents,
 
-  // ─── Data / DB ───
-  'postgresql-performance': T.dataArch,
-  'database-design-patterns': T.dataArch,
-  'redis-caching-strategies': T.dataArch,
-  'mongodb-vs-postgresql': T.dataArch,
+  // ─── Scalable backend / data ───
+  'postgresql-performance': T.scalableBackend,
+  'database-design-patterns': T.scalableBackend,
+  'redis-caching-strategies': T.scalableBackend,
+  'mongodb-vs-postgresql': T.scalableBackend,
 
   // ─── DevOps ───
   'docker-compose-guide': T.devops,
@@ -210,20 +248,18 @@ const ARTICLE_CC20_SECTION: Record<string, string> = {
   'linux-essentials-devops': T.devops,
   'monitoring-observability': T.devops,
 
-  // ─── Security / API hardening (quality lane) ───
-  'web-security-essentials': T.quality,
-  'jwt-authentication': T.quality,
-  'api-security-guide': T.quality,
-  'oauth2-guide': T.quality,
+  // ─── Methodology lane (security, TS, Node craft) ───
+  'web-security-essentials': T.methodology,
+  'jwt-authentication': T.methodology,
+  'api-security-guide': T.methodology,
+  'oauth2-guide': T.methodology,
+  'typescript-generics-advanced': T.methodology,
+  'typescript-migration-guide': T.methodology,
+  'typescript-narrowing': T.methodology,
+  'nodejs-best-practices': T.methodology,
+  'nodejs-streams': T.methodology,
 
-  // ─── Advanced TS / patterns (quality) ───
-  'typescript-generics-advanced': T.quality,
-  'typescript-migration-guide': T.quality,
-  'typescript-narrowing': T.quality,
-  'nodejs-best-practices': T.quality,
-  'nodejs-streams': T.quality,
-
-  // ─── Legacy KB nav slugs (previous sidebar) ───
+  // ─── Legacy KB nav slugs ───
   'rag-intro': T.rag,
   'rag-architecture': T.rag,
   'rag-indexing': T.rag,
@@ -240,18 +276,18 @@ const ARTICLE_CC20_SECTION: Record<string, string> = {
   microservices: T.arch,
   'api-design': T.arch,
   caching: T.arch,
-  auth: T.quality,
-  'data-privacy': T.quality,
-  'rate-limiting': T.quality,
+  auth: T.methodology,
+  'data-privacy': T.methodology,
+  'rate-limiting': T.methodology,
   monitoring: T.devops,
   'ci-cd': T.devops,
   'config-mgmt': T.devops,
 
   // ─── Prisma seed samples ───
-  'typescript-generics-mastery': T.quality,
+  'typescript-generics-mastery': T.methodology,
 
-  // ─── Growth / SEO aligned ───
-  'nextjs-seo-optimization': 'cc20-3-2-growth-traffic',
+  // ─── Growth / SEO ───
+  'nextjs-seo-optimization': T.digitalOps,
 };
 
 /** Resolve CC20 section slug for a KB article slug. */

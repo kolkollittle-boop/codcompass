@@ -5,6 +5,9 @@ node_modules
 node_modules
 docs/
 !components/docs/
+
+# Personal Obsidian / Markdown vault (not part of the web app build)
+Codcompass_2.0/
 .env
 .env.local
 .next/

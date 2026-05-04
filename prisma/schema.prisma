@@ -93,6 +93,8 @@ model Subscription {
   @@index([paddleSubscriptionId])
 }
 
+/// Knowledge Base: structured tutorials, guides, and reference material (Codcompass taxonomy).
+/// Distinct from `BlogPost`, which holds practitioner experience-style articles.
 model Article {
   id             String               @id @default(cuid())
   slug           String               @unique
@@ -172,6 +174,7 @@ model ArticleTranslation {
   @@index([isReviewed])
 }
 
+/// Knowledge Base taxonomy only (`cc20-*`, legacy crawled categories). Not used by marketing blog.
 model Category {
   id          String     @id @default(cuid())
   slug        String     @unique
@@ -187,6 +190,47 @@ model Category {
 
   @@index([slug])
   @@index([parentId])
+}
+
+/// Blog categories: lightweight grouping for experience posts (separate from KB `Category`).
+model BlogCategory {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  nameEn      String
+  description String?
+  sortOrder   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  posts       BlogPost[]
+
+  @@index([slug])
+}
+
+/// Blog posts: experience notes, lessons learned, and third-party practitioner perspectives.
+/// Not KB reference material—use `Article` for curated knowledge-base content.
+model BlogPost {
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  title          String
+  contentHtml    String       @db.Text
+  excerpt        String?
+  /// Original author or contributor name (often someone outside core KB editorial).
+  author         String?
+  readingMinutes Int          @default(5)
+  isPublished    Boolean      @default(false)
+  publishedAt    DateTime?
+  viewCount      Int          @default(0)
+  seoTitle       String?
+  seoDescription String?
+  tags           String[]     @default([])
+  categoryId     String
+  category       BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([slug])
+  @@index([isPublished, publishedAt])
+  @@index([categoryId])
 }
 
 model Tag {

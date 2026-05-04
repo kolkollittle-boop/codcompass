@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getPublishedArticles, getArticleCount, supabaseAdmin } from '@/lib/supabase';
 import { getArticleContent, type Locale } from '@/lib/i18n';
 import { Icon } from '@/components/ui';
-import { CATEGORIES, categoryBySlug } from '@/lib/categories';
+import { categoryBySlug } from '@/lib/categories';
 import type { Metadata } from 'next';
 
 interface KbIndexPageProps {
@@ -11,7 +11,6 @@ interface KbIndexPageProps {
   }>;
   searchParams: Promise<{
     page?: string;
-    category?: string;
   }>;
 }
 
@@ -24,11 +23,13 @@ export async function generateMetadata({ params }: KbIndexPageProps): Promise<Me
   
   return {
     title: 'Knowledge Base - Technical Tutorials & Guides',
-    description: 'Browse our comprehensive library of technical tutorials covering React, TypeScript, Next.js, AI/ML, and DevOps. Expert insights and production-ready code examples.',
+    description:
+      'Structured knowledge base: tutorials, guides, and reference material organized by topic—not informal blog opinion pieces.',
     keywords: ['React tutorials', 'TypeScript guides', 'Next.js tutorials', 'AI/ML tutorials', 'DevOps guides', 'code examples', 'technical tutorials'],
     openGraph: {
       title: 'Knowledge Base - Technical Tutorials & Guides',
-      description: 'Browse our comprehensive library of technical tutorials covering React, TypeScript, Next.js, AI/ML, and DevOps.',
+      description:
+        'Structured tutorials and reference documentation—canonical knowledge for builders.',
       url: `https://www.codcompass.com/${locale}/kb`,
       siteName: 'Codcompass',
       type: 'website',
@@ -39,8 +40,7 @@ export async function generateMetadata({ params }: KbIndexPageProps): Promise<Me
 const translations = {
   en: {
     title: 'Knowledge Base',
-    subtitle: 'Curated technical tutorials and expert insights for developers',
-    allTopics: 'All Topics',
+    subtitle: 'Structured tutorials and reference knowledge—organized for learning and lookup',
     premium: 'Premium',
     trending: 'Trending',
     read: 'read',
@@ -82,19 +82,13 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
   
   // Get current page from URL
   const currentPage = parseInt(resolvedSearchParams.page || '1') || 1;
-  const categoryFilter = resolvedSearchParams.category;
   const itemsPerPage = 12;
-  
-  // Fetch total count (optionally filtered by category)
-  const totalArticles = await getArticleCount(categoryFilter);
-  
-  // Fetch articles from Supabase with pagination
+
+  const totalArticles = await getArticleCount();
+
   const offset = (currentPage - 1) * itemsPerPage;
   const dbArticles = await getPublishedArticles(1000, 0, locale); // fetch all for now to get accurate count
-  const filteredDbArticles = categoryFilter
-    ? dbArticles.filter((a: any) => a.categories?.some((c: any) => c.Category?.slug === categoryFilter))
-    : dbArticles;
-  const paginatedArticles = filteredDbArticles.slice(offset, offset + itemsPerPage);
+  const paginatedArticles = dbArticles.slice(offset, offset + itemsPerPage);
 
   // Map articles with locale-aware content
   const articles = paginatedArticles.length > 0 
@@ -170,36 +164,6 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
             <p className="mt-4 text-lg text-zinc-500">
               {t.subtitle}
             </p>
-            <div className="mt-6 flex justify-center gap-2 flex-wrap">
-              <Link
-                href={`/${locale}/kb`}
-                className={`rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
-                  !categoryFilter
-                    ? 'border-docs-border-hover bg-white/10 text-white'
-                    : 'border-docs-border bg-docs-surface text-zinc-500 hover:border-docs-border-hover hover:text-zinc-300'
-                }`}
-              >
-                {t.allTopics}
-              </Link>
-              {CATEGORIES.map((cat) => {
-                const slug = cat.slug;
-                const isActive = categoryFilter === slug;
-                const label = cat.name;
-                return (
-                  <Link
-                    key={slug}
-                    href={`/${locale}/kb?category=${slug}`}
-                    className={`rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'border-docs-border-hover bg-white/10 text-white'
-                        : 'border-docs-border bg-docs-surface text-zinc-500 hover:border-docs-border-hover hover:text-zinc-300'
-                    }`}
-                  >
-                    {label}
-                  </Link>
-                );
-              })}
-            </div>
           </div>
 
           <div className="space-y-6">
@@ -273,7 +237,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 {/* Previous button */}
                 {currentPage > 1 && (
                   <Link
-                    href={`/${locale}/kb?page=${currentPage - 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
+                    href={`/${locale}/kb?page=${currentPage - 1}`}
                     className="docs-card inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-white/[0.03]"
                   >
                     <Icon name="chevron-left" size={16} />
@@ -297,7 +261,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                           <span className="px-2 text-zinc-600">...</span>
                         )}
                         <Link
-                          href={`/${locale}/kb?page=${page}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
+                          href={`/${locale}/kb?page=${page}`}
                           className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                             page === currentPage
                               ? 'bg-white text-black'
@@ -313,7 +277,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 {/* Next button */}
                 {currentPage < Math.ceil(totalArticles / itemsPerPage) && (
                   <Link
-                    href={`/${locale}/kb?page=${currentPage + 1}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
+                    href={`/${locale}/kb?page=${currentPage + 1}`}
                     className="docs-card inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-white/[0.03]"
                   >
                     Next
