@@ -282,7 +282,7 @@ export async function getArticleCount(categorySlug?: string): Promise<number> {
     return count ?? 0;
   }
 
-  // Count via join table
+  // Count published articles linked to this category via join table
   const { data: category } = await supabaseAdmin
     .from('Category')
     .select('id')
@@ -290,15 +290,26 @@ export async function getArticleCount(categorySlug?: string): Promise<number> {
     .single();
   if (!category) return 0;
 
+  // Query Article table: filter isPublished AND categories array contains the category id
   const { count, error } = await supabaseAdmin
-    .from('_ArticleToCategory')
-    .select('A', { count: 'exact', head: true })
-    .eq('B', category.id);
-  if (error) { console.error('[getArticleCount] Join error:', error); return 0; }
+    .from('Article')
+    .select('*', { count: 'exact', head: true })
+    .eq('isPublished', true)
+    .contains('categories', [category.id]);
+  if (error) {
+    console.error('[getArticleCount] Category filter error:', error);
+    // Fallback: query join table directly (legacy behavior)
+    const { count: joinCount, error: joinError } = await supabaseAdmin
+      .from('_ArticleToCategory')
+      .select('A', { count: 'exact', head: true })
+      .eq('B', category.id);
+    if (joinError) { console.error('[getArticleCount] Join error:', joinError); return 0; }
+    return joinCount ?? 0;
+  }
   return count ?? 0;
 }
 
-/** Get counts per category slug. */
+/** Get counts per category slug (only published articles). */
 export async function getCategoryCounts(): Promise<Record<string, number>> {
   if (!supabaseAdmin) return {};
 
@@ -310,11 +321,21 @@ export async function getCategoryCounts(): Promise<Record<string, number>> {
   const counts: Record<string, number> = {};
   await Promise.all(
     categories.map(async (cat: any) => {
-      const { count } = await supabaseAdmin
-        .from('_ArticleToCategory')
-        .select('A', { count: 'exact', head: true })
-        .eq('B', cat.id);
-      counts[cat.slug] = count ?? 0;
+      const { count, error } = await supabaseAdmin
+        .from('Article')
+        .select('*', { count: 'exact', head: true })
+        .eq('isPublished', true)
+        .contains('categories', [cat.id]);
+      if (error) {
+        // Fallback: query join table directly
+        const { count: joinCount } = await supabaseAdmin
+          .from('_ArticleToCategory')
+          .select('A', { count: 'exact', head: true })
+          .eq('B', cat.id);
+        counts[cat.slug] = joinCount ?? 0;
+      } else {
+        counts[cat.slug] = count ?? 0;
+      }
     })
   );
   return counts;
