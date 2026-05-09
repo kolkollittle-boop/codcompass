@@ -15,7 +15,7 @@ export async function GET() {
     const totalArticles = await prisma.article.count({ where: { status: 'PUBLISHED' } });
     const totalCategories = await prisma.category.count();
     const totalUsers = await prisma.user.count();
-    const activeSubscriptions = await prisma.user.count({ where: { subscriptionStatus: 'active' } });
+    const activeSubscriptions = await prisma.user.count({ where: { subscriptionStatus: 'ACTIVE' } });
 
     return NextResponse.json({
       totalViews: 0,

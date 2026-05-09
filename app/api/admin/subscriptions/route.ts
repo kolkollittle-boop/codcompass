@@ -17,8 +17,8 @@ export async function GET() {
     });
 
     const totalSubscribers = users.filter(u => u.planType && u.planType !== 'FREE').length;
-    const activeSubscriptions = users.filter(u => u.subscriptionStatus === 'active').length;
-    const canceledSubscriptions = users.filter(u => u.subscriptionStatus === 'canceled' || u.subscriptionStatus === 'inactive').length;
+    const activeSubscriptions = users.filter(u => u.subscriptionStatus === 'ACTIVE').length;
+    const canceledSubscriptions = users.filter(u => u.subscriptionStatus === 'CANCELED' || u.subscriptionStatus === 'INACTIVE').length;
 
     // Simple MRR/ARR calculation (placeholder pricing)
     const planPrices: Record<string, number> = { FREE: 0, BUILDER: 9, PRO: 29, ENTERPRISE: 99 };
@@ -28,7 +28,7 @@ export async function GET() {
     for (const u of users) {
       const plan = u.planType?.toUpperCase() || 'FREE';
       const price = planPrices[plan] || 0;
-      if (u.subscriptionStatus === 'active') {
+      if (u.subscriptionStatus === 'ACTIVE') {
         mrr += price;
         if (!byPlan[plan]) byPlan[plan] = { count: 0, revenue: 0 };
         byPlan[plan].count++;

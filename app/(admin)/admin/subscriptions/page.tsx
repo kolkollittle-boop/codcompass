@@ -126,7 +126,7 @@ export default function SubscriptionsPage() {
                     <td className="px-6 py-4 text-sm text-docs-heading">{s.userEmail}</td>
                     <td className="px-6 py-4 text-sm text-docs-heading">{s.plan}</td>
                     <td className="px-6 py-4">
-                      <span className={`rounded-full px-2 py-0.5 text-xs ${s.status === 'active' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>{s.status}</span>
+                      <span className={`rounded-full px-2 py-0.5 text-xs ${s.status?.toUpperCase() === 'ACTIVE' ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400'}`}>{s.status || 'none'}</span>
                     </td>
                     <td className="px-6 py-4 text-sm text-docs-accent">${s.amount} {s.currency}</td>
                     <td className="px-6 py-4 text-sm text-docs-muted">{s.startDate}</td>
