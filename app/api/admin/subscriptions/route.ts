@@ -18,7 +18,7 @@ export async function GET() {
 
     const totalSubscribers = users.filter(u => u.planType && u.planType !== 'FREE').length;
     const activeSubscriptions = users.filter(u => u.subscriptionStatus === 'ACTIVE').length;
-    const canceledSubscriptions = users.filter(u => u.subscriptionStatus === 'CANCELED' || u.subscriptionStatus === 'INACTIVE').length;
+    const canceledSubscriptions = users.filter(u => u.subscriptionStatus === 'INACTIVE').length;
 
     // Simple MRR/ARR calculation (placeholder pricing)
     const planPrices: Record<string, number> = { FREE: 0, BUILDER: 9, PRO: 29, ENTERPRISE: 99 };
