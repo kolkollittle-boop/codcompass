@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient({ datasources: [{ url: process.env.DATABASE_URL }] })
+const prisma = new PrismaClient({ datasources: { db: { url: process.env.DATABASE_URL } } })
 async function main() {
   const articles = await prisma.article.findMany({
     select: { id: true, titleEn: true, descriptionEn: true },
