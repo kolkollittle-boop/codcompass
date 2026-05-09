@@ -16,7 +16,7 @@ export async function GET() {
       select: { planType: true, subscriptionStatus: true },
     });
 
-    const totalSubscribers = users.filter(u => u.planType && u.planType !== 'FREE').length;
+    const totalSubscribers = users.filter(u => u.planType && u.planType !== 'FREE' && u.subscriptionStatus === 'ACTIVE').length;
     const activeSubscriptions = users.filter(u => u.subscriptionStatus === 'ACTIVE').length;
     const canceledSubscriptions = users.filter(u => u.subscriptionStatus === 'INACTIVE').length;
 
