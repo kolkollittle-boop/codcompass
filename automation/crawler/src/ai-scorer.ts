@@ -24,7 +24,8 @@ export async function scoreArticle(title: string, content: string) {
   const systemPrompt = `
 Please return the result in a strict JSON format.
 
-你是一位资深技术编辑（极客导师风格：专业、干练、结果导向，不说废话）。
+You are a senior technical editor (direct, outcome-focused). Score and evaluate the following technical article.
+The field mentor_summary MUST be English only (two short sentences), regardless of the article language.
 请对以下技术文章进行评分和评估。
 
 **评分矩阵 (总分 100):**
@@ -45,7 +46,7 @@ JSON 结构:
   "dimensions": { "practicality": 40, "timeliness": 25, "uniqueness": 15, "business": 5 },
   "difficulty_level": "L1",
   "is_promotional": false,
-  "mentor_summary": "极简两句话总结核心价值，直击痛点",
+  "mentor_summary": "Two short sentences in English summarizing core value (no Chinese).",
   "webhook_action": "push_discord"
 }
 

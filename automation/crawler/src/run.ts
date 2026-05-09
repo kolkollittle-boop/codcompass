@@ -1,13 +1,15 @@
+import { CrawlerUiConfig } from './crawler-ui-config.js';
+
 /**
  * Codcompass 爬虫 2.0 — 对齐 docs「架构重组：本地-云端双轨制」「断点续爬」：
  * - 本地 SQLite：CrawlTasks / RawMaterials / SyncLogs
- * - 可选 HTTP_PROXY（Clash/Surge）
+ * - 代理池轮换（PROXY_POOL_URLS）：请求失败时自动切换代理出口
  * - 仅通过 Ingest API 推送；AI ≥80 且未关闭 CRAWLER_PUSH 时才请求线上
  */
 import { scoreArticle } from './ai-scorer';
 import { ingestArticle } from './ingest';
 import { getCrawlerIngestSiteBaseUrl } from './ingest-site-url.js';
-import { restructureArticle } from './article-restructurer';
+import { restructureArticle, generateExcerpt, extractTags } from './article-restructurer';
 import { routeArticleSemantic } from './semantic-router';
 import { computeSimHash } from './simhash';
 import {
@@ -21,8 +23,9 @@ import {
   openCrawlerDb,
   saveRawMaterial,
   upsertPendingTask,
+  taskIdFromUrl,
 } from './local-sqlite';
-import { enableHttpProxyFromEnv } from './proxy-env';
+import { enableHttpProxyFromEnv, initProxyPoolOnce, getProxyPoolStatus } from './proxy-env';
 import { savePendingPush } from './local-store';
 import { extractReadabilityContentHtml } from './readability-html';
 import { fetchRemoteSimhashList, remoteSimhashConflict } from './simhash-remote';
@@ -37,6 +40,28 @@ import {
   readCrawlerUiConfig,
   titleMatchesKeywordBlacklist,
 } from './crawler-ui-config.js';
+import {
+  fetchCategoryStats,
+  calculateCategoryGaps,
+  allCategoriesFilled,
+  getMostNeededCategory,
+  getCategoryCrawlerSummary,
+  printCategoryGaps,
+} from './category-crawler.js';
+import {
+  fetchRoadmapSh,
+  fetchRefactoringGuru,
+  fetchVercelBlog,
+  fetchCloudflareBlog,
+  fetchInfoQ,
+  fetchAnthropicCookbook,
+  webArticleToDevToFormat,
+} from './web-crawler.js';
+import {
+  fetchMultipleRssSources,
+  PREMIUM_RSS_SOURCES,
+  type RssSourceConfig,
+} from './rss-crawler.js';
 
 const CRAWLER_PUSH = !['false', '0', 'no'].includes(String(process.env.CRAWLER_PUSH ?? 'true').toLowerCase());
 
@@ -46,6 +71,7 @@ type RunCounters = {
   qualified: number;
   kbPushed: number;
   blogPushed: number;
+  categoryMode: boolean;
 };
 
 function siteLabelFromConfig(): string {
@@ -128,28 +154,65 @@ function articleToMarkdown(fullArticle: DevToArticle): { markdown: string; image
 async function fetchArticlesFromDevTo(): Promise<DevToArticle[]> {
   const allArticles: DevToArticle[] = [];
   const { tags, articlesPerTag } = getDevtoFetchOptions();
+  const adv = getCrawlerAdvancedForRun();
+  const maxArticlesPerRun = adv.maxArticlesPerRun > 0 ? adv.maxArticlesPerRun : 2000;
+  const perPage = Math.min(30, Math.max(5, articlesPerTag));
+  const delayBetweenPages = 1000;
 
   for (const tag of tags) {
-    console.log(`📚 Fetching articles from Dev.to with tag: ${tag}`);
-    const url = `${DEVTO_API_URL}?tag=${encodeURIComponent(tag)}&per_page=${articlesPerTag}&sort_by=public_reactions_count`;
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Accept: 'application/json',
-          'User-Agent': 'CodcompassKB/1.0 (educational crawler)',
-        },
-      });
-      if (!response.ok) {
-        console.warn(`⚠️ Failed to fetch ${tag}: ${response.status}`);
-        continue;
-      }
-      const articles: DevToArticle[] = await response.json();
-      console.log(`✅ Got ${articles.length} articles for tag: ${tag}`);
-      allArticles.push(...articles);
-      await new Promise((r) => setTimeout(r, 1000));
-    } catch (error) {
-      console.error(`❌ Error fetching ${tag}:`, error);
+    if (allArticles.length >= maxArticlesPerRun) {
+      console.log(`📊 Reached maxArticlesPerRun (${maxArticlesPerRun}), stopping fetch`);
+      break;
     }
+
+    let page = 1;
+    let fetchedForTag = 0;
+    const remainingSlots = maxArticlesPerRun - allArticles.length;
+    const maxPagesForTag = Math.min(20, Math.ceil(remainingSlots / perPage));
+
+    console.log(`📚 Fetching articles from Dev.to with tag: ${tag} (max ${maxPagesForTag} pages)`);
+
+    while (page <= maxPagesForTag) {
+      const url = `${DEVTO_API_URL}?tag=${encodeURIComponent(tag)}&per_page=${perPage}&sort_by=public_reactions_count&page=${page}`;
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Accept: 'application/json',
+            'User-Agent': 'CodcompassKB/1.0 (educational crawler)',
+          },
+        });
+        if (!response.ok) {
+          console.warn(`⚠️ Failed to fetch ${tag} page ${page}: ${response.status}`);
+          if (response.status === 429) {
+            console.log(`⏳ Rate limited, waiting 5s...`);
+            await new Promise((r) => setTimeout(r, 5000));
+            continue;
+          }
+          break;
+        }
+        const articles: DevToArticle[] = await response.json();
+        if (articles.length === 0) {
+          console.log(`✅ No more articles for tag: ${tag}`);
+          break;
+        }
+        console.log(`✅ Got ${articles.length} articles for tag: ${tag} (page ${page})`);
+        allArticles.push(...articles);
+        fetchedForTag += articles.length;
+        page++;
+
+        if (allArticles.length >= maxArticlesPerRun) {
+          console.log(`📊 Reached maxArticlesPerRun (${maxArticlesPerRun})`);
+          break;
+        }
+
+        await new Promise((r) => setTimeout(r, delayBetweenPages));
+      } catch (error) {
+        console.error(`❌ Error fetching ${tag} page ${page}:`, error);
+        break;
+      }
+    }
+
+    console.log(`📊 Tag ${tag}: fetched ${fetchedForTag} articles total`);
   }
 
   const seen = new Set<string>();
@@ -172,64 +235,15 @@ async function fetchFullArticleJson(articleId: number): Promise<DevToArticle | n
   return response.json();
 }
 
-async function translateToChinese(title: string, content: string): Promise<string> {
-  try {
-    const MAX_CHUNK_SIZE = 3000;
-    if (content.length <= MAX_CHUNK_SIZE) return await translateChunk(title, content);
-    const chunks: string[] = [];
-    for (let i = 0; i < content.length; i += MAX_CHUNK_SIZE) {
-      const chunk = content.substring(i, i + MAX_CHUNK_SIZE);
-      const isLast = i + MAX_CHUNK_SIZE >= content.length;
-      const translated = await translateChunk(isLast ? title : `（续）`, chunk);
-      if (translated) chunks.push(translated);
-      await new Promise((r) => setTimeout(r, 1000));
-    }
-    return chunks.join('\n\n---\n\n');
-  } catch (error) {
-    console.error(`❌ Translation error:`, error);
-    return '';
-  }
-}
-
-async function translateChunk(title: string, content: string): Promise<string> {
-  const response = await fetch('https://coding.dashscope.aliyuncs.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: 'qwen3.5-plus',
-      messages: [
-        {
-          role: 'system',
-          content: `你是一位专业的技术翻译家，擅长将英文技术文章翻译成流畅的中文。
-请保持以下要求：
-1. 技术术语保持英文（如 React, TypeScript, API 等）
-2. 代码块不要翻译
-3. 保持 Markdown 格式不变
-4. 只翻译文本内容
-5. 输出翻译后的中文内容，不要添加额外说明`,
-        },
-        {
-          role: 'user',
-          content: `请将以下文章翻译成中文：\n\n标题：${title}\n\n内容：${content}`,
-        },
-      ],
-    }),
-  });
-  if (!response.ok) return '';
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content || '';
-}
-
 async function processDbTask(
   db: BetterSqlite3.Database,
   task: CrawlTaskRow,
   idx: number,
   total: number,
   SCORE_THRESHOLD: number,
-  runCounters: RunCounters
+  runCounters: RunCounters,
+  categoryGaps: import('./category-crawler').CategoryGapInfo[] = [],
+  mostNeededCategory: string | null = null
 ): Promise<{ success: boolean; skipped: boolean }> {
   console.log(`\n[${idx + 1}/${total}] task=${task.status} ${task.url}`);
 
@@ -239,19 +253,35 @@ async function processDbTask(
     runCounters.processed += 1;
 
     if (task.status === 'PENDING') {
-      const extId = task.external_id ? Number(task.external_id) : NaN;
-      if (!Number.isFinite(extId)) {
-        markTaskStatus(db, task.id, 'FAILED', 'missing external_id');
-        return { success: false, skipped: true };
+      // 检查是否是非 Dev.to 文章（web-crawler 已经抓取了完整内容）
+      const isWebArticle = task.external_id && !/^\d+$/.test(task.external_id);
+      
+      if (isWebArticle) {
+        // 非 Dev.to 文章：内容已经在登记时保存到 raw_materials，直接标记为 CRAWLED
+        markTaskCrawled(db, task.id);
+        // 从 raw_materials 读取内容
+        const raw = getRawBody(db, task.id);
+        if (!raw) {
+          bumpRetry(db, task.id, 'raw_materials missing for web article');
+          return { success: false, skipped: true };
+        }
+        fullArticle = JSON.parse(raw) as DevToArticle;
+      } else {
+        // Dev.to 文章：需要调用 API 获取完整内容
+        const extId = task.external_id ? Number(task.external_id) : NaN;
+        if (!Number.isFinite(extId)) {
+          markTaskStatus(db, task.id, 'FAILED', 'missing external_id');
+          return { success: false, skipped: true };
+        }
+        const json = await fetchFullArticleJson(extId);
+        if (!json) {
+          bumpRetry(db, task.id, 'Dev.to full article fetch failed');
+          return { success: false, skipped: true };
+        }
+        saveRawMaterial(db, task.id, JSON.stringify(json));
+        markTaskCrawled(db, task.id);
+        fullArticle = json;
       }
-      const json = await fetchFullArticleJson(extId);
-      if (!json) {
-        bumpRetry(db, task.id, 'Dev.to full article fetch failed');
-        return { success: false, skipped: true };
-      }
-      saveRawMaterial(db, task.id, JSON.stringify(json));
-      markTaskCrawled(db, task.id);
-      fullArticle = json;
     } else {
       const raw = getRawBody(db, task.id);
       if (!raw) {
@@ -303,6 +333,7 @@ async function processDbTask(
     }
 
     const eligible = scoreVal >= SCORE_THRESHOLD;
+    const isFeatured = scoreVal >= 80; // 80+ is featured, 60-79 is indexed
 
     if (!eligible) {
       insertSyncLog(db, {
@@ -327,13 +358,58 @@ async function processDbTask(
     const tv = validateRouteAgainstTaxonomy(route);
     if (!tv.ok) tv.warnings.forEach((w) => console.warn(`[taxonomy] ${w}`));
 
+    // ─── 分类爬虫模式：优先路由到最需要的分类 ──────────────────────────────
+    let finalKbSectionSlug = route.kb_section_slug;
+    if (runCounters.categoryMode && mostNeededCategory && route.type === 'KB') {
+      // 如果 AI 路由的结果是 KB 类型，且有分类目标，优先使用最需要的分类
+      // 但前提是 AI 路由的分类与最需要的分类在同一个大类下，或者 AI 路由的置信度较低
+      const neededGap = categoryGaps.find(g => g.slug === mostNeededCategory);
+      if (neededGap && neededGap.gap > 0) {
+        // 检查 AI 路由的分类是否与最需要的分类相关
+        // 简单策略：如果 AI 路由的分类没有达到目标，就使用 AI 的分类
+        // 否则，尝试将文章路由到最需要的分类
+        const aiCategoryGap = categoryGaps.find(g => g.slug === route.kb_section_slug);
+        if (aiCategoryGap && aiCategoryGap.gap <= 0 && route.confidence < 0.9) {
+          // AI 路由的分类已达标，且置信度不高，尝试使用最需要的分类
+          console.log(`🎯 分类爬虫：AI 路由 ${route.kb_section_slug} 已达标，尝试切换到 ${mostNeededCategory}`);
+          finalKbSectionSlug = mostNeededCategory;
+        } else if (!aiCategoryGap || aiCategoryGap.gap > 0) {
+          // AI 路由的分类还有缺口，保持 AI 的分类
+          console.log(`🎯 分类爬虫：保持 AI 路由 ${route.kb_section_slug}（缺口 ${aiCategoryGap?.gap ?? 'N/A'}）`);
+        }
+      }
+    }
+
     console.log(
-      `🧭 → ${route.type} | KB: ${route.kb_section_slug ?? '-'} | Blog: ${route.blog_category_slug ?? '-'} | conf: ${route.confidence}`
+      `🧭 → ${route.type} | KB: ${finalKbSectionSlug ?? '-'} | Blog: ${route.blog_category_slug ?? '-'} | conf: ${route.confidence}`
     );
 
-    const restructured = await restructureArticle(fullArticle.title, markdown, evaluation);
+    let contentSourceMd: string;
+    let diffLevel: string;
+    let excerptStr: string;
+    let tagsForPost: string[];
+    let readingMinutesVal: number;
+    let expectedOutcomeStr: string;
 
-    let contentMd = restructured.content;
+    if (route.type === 'BLOG') {
+      // 博客保持原文（英文源站），不走重构模型，避免正文/摘要被译成中文
+      contentSourceMd = markdown;
+      excerptStr = generateExcerpt(markdown);
+      tagsForPost = extractTags(markdown, fullArticle.title);
+      readingMinutesVal = Math.max(1, Math.ceil((markdown.length / 1000) * 5));
+      expectedOutcomeStr = '';
+      diffLevel = evaluation.difficulty_level || 'L2';
+    } else {
+      const restructured = await restructureArticle(fullArticle.title, markdown, evaluation);
+      contentSourceMd = restructured.content;
+      excerptStr = restructured.excerpt;
+      tagsForPost = restructured.tags;
+      readingMinutesVal = restructured.readingTimeMinutes;
+      expectedOutcomeStr = restructured.expectedOutcome;
+      diffLevel = restructured.difficultyLevel;
+    }
+
+    let contentMd = contentSourceMd;
     const { markdown: mdAfterR2, urlMap: r2UrlMap } = await rewriteMarkdownImagesToR2(
       contentMd,
       task.id
@@ -341,32 +417,33 @@ async function processDbTask(
     contentMd = mdAfterR2;
     images = images.map((u) => r2UrlMap[u] || u);
 
-    const chinesePreview = await translateToChinese(restructured.title, contentMd);
-    const simhash = computeSimHash(`${restructured.title}\n${contentMd}`);
+    const chinesePreview = '';
+    const simhash = computeSimHash(`${fullArticle.title}\n${contentMd}`);
 
     const ingestPayload = {
-      title: restructured.title,
+      title: fullArticle.title,
       content: contentMd,
       sourceUrl: fullArticle.url,
       score: scoreVal,
       dimensions: evaluation.dimensions,
-      difficulty_level: restructured.difficultyLevel,
+      difficulty_level: diffLevel,
       is_promotional: evaluation.is_promotional,
-      mentor_summary: evaluation.mentor_summary,
+      mentor_summary: route.type === 'BLOG' ? '' : evaluation.mentor_summary,
       chinese_preview: chinesePreview,
       images,
-      tags: restructured.tags,
-      reading_time_minutes: restructured.readingTimeMinutes,
-      expected_outcome: restructured.expectedOutcome,
-      excerpt: restructured.excerpt,
+      tags: tagsForPost,
+      reading_time_minutes: readingMinutesVal,
+      expected_outcome: expectedOutcomeStr,
+      excerpt: excerptStr,
       articleType: route.type,
-      kbSectionSlug: route.kb_section_slug ?? undefined,
+      kbSectionSlug: finalKbSectionSlug ?? undefined,
       blogCategorySlug: route.blog_category_slug ?? undefined,
       routingConfidence: route.confidence,
       routingReasoning: route.reasoning,
       routerKeywords: route.keywords,
       simhash,
       sourceAuthor: fullArticle.user?.name,
+      is_featured: isFeatured, // Add is_featured field based on score
     };
 
     const classificationJson = JSON.stringify({
@@ -439,7 +516,20 @@ async function processDbTask(
         ingest_payload_json: JSON.stringify(ingestPayload),
       });
       markTaskStatus(db, task.id, 'COMPLETED', null);
-      if (route.type === 'KB') runCounters.kbPushed += 1;
+      if (route.type === 'KB') {
+        runCounters.kbPushed += 1;
+        // 更新分类缺口
+        if (runCounters.categoryMode && finalKbSectionSlug) {
+          const gap = categoryGaps.find(g => g.slug === finalKbSectionSlug);
+          if (gap) {
+            gap.currentCount += 1;
+            gap.gap = Math.max(0, gap.targetCount - gap.currentCount);
+          }
+          // 重新排序缺口
+          categoryGaps.sort((a, b) => b.gap - a.gap);
+          mostNeededCategory = getMostNeededCategory(categoryGaps);
+        }
+      }
       else if (route.type === 'BLOG') runCounters.blogPushed += 1;
       console.log(`✅ 已同步线上`);
       return { success: true, skipped: false };
@@ -468,6 +558,162 @@ async function processDbTask(
   }
 }
 
+/**
+ * 从所有数据源抓取文章，登记到 SQLite
+ */
+async function discoverArticlesFromAllSources(
+  sqlite: BetterSqlite3.Database,
+  config: CrawlerUiConfig,
+  runCounters: RunCounters
+): Promise<number> {
+  const enabledSources = config.sources.filter((s: { enabled: boolean }) => s.enabled);
+  console.log(`📡 启用的数据源: ${enabledSources.map((s: { label: string }) => s.label).join(', ')}`);
+
+  const adv = getCrawlerAdvancedForRun();
+  let discovered: DevToArticle[] = [];
+
+  // 先抓取其他数据源，最后处理 Dev.to（避免 Dev.to 大量文章占用过多 API 配额）
+  const otherSources = [
+    { key: 'Roadmap', fn: fetchRoadmapSh },
+    { key: 'Refactoring', fn: fetchRefactoringGuru },
+    { key: 'Vercel', fn: fetchVercelBlog },
+    { key: 'Cloudflare', fn: fetchCloudflareBlog },
+    { key: 'InfoQ', fn: fetchInfoQ },
+    { key: 'Anthropic', fn: fetchAnthropicCookbook },
+    { key: 'RSS', fn: () => fetchMultipleRssSources(PREMIUM_RSS_SOURCES) },
+  ];
+
+  // 处理常规数据源
+  for (const src of otherSources) {
+    if (enabledSources.some((s: { label: string }) => s.label.includes(src.key))) {
+      console.log(`\n🔍 开始抓取 ${src.key}...`);
+      try {
+        const articles = await src.fn();
+        discovered.push(...articles.map(a => webArticleToDevToFormat(a)));
+        console.log(`✅ ${src.key} 完成: ${articles.length} 篇`);
+      } catch (e: any) {
+        console.warn(`⚠️ ${src.key} 抓取失败: ${e.message}`);
+      }
+    }
+  }
+
+  // 处理 RSS 数据源（根据配置中的 siteUrl 匹配）
+  const rssSources = enabledSources.filter((s: import('./crawler-ui-config.js').CrawlerSourceRow) => s.type === 'rss');
+  if (rssSources.length > 0) {
+    console.log(`\n📡 开始抓取 RSS 数据源 (${rssSources.length} 个)...`);
+    const rssConfigs: import('./rss-crawler.js').RssSourceConfig[] = rssSources.map((s: import('./crawler-ui-config.js').CrawlerSourceRow) => ({
+      label: s.label,
+      feedUrl: s.siteUrl || '',
+      maxArticles: s.articlesPerTag || 20,
+    }));
+    try {
+      const rssArticles = await fetchMultipleRssSources(rssConfigs);
+      discovered.push(...rssArticles.map(a => webArticleToDevToFormat(a)));
+      console.log(`✅ RSS 完成: ${rssArticles.length} 篇`);
+    } catch (e: any) {
+      console.warn(`⚠️ RSS 抓取失败: ${e.message}`);
+    }
+  }
+
+  // 最后处理 Dev.to（限制数量，避免占用过多 API 配额）
+  const devtoSource = enabledSources.find((s: { type: string }) => s.type === 'devto');
+  if (devtoSource) {
+    console.log('\n🔍 开始抓取 Dev.to...');
+    const devtoArticles = await fetchArticlesFromDevTo();
+    // 限制 Dev.to 文章数量，为其他数据源留出配额
+    const maxDevtoArticles = Math.floor(adv.maxArticlesPerRun * 0.5) || 100;
+    const limitedDevtoArticles = devtoArticles.slice(0, maxDevtoArticles);
+    discovered.push(...limitedDevtoArticles);
+    console.log(`✅ Dev.to 完成: ${limitedDevtoArticles.length} 篇（原始 ${devtoArticles.length} 篇）`);
+  }
+
+  // 过滤黑名单和限制数量
+  discovered = discovered.filter(
+    (a) => !titleMatchesKeywordBlacklist(a.title, adv.keywordBlacklist)
+  );
+  if (adv.maxArticlesPerRun > 0 && discovered.length > adv.maxArticlesPerRun) {
+    discovered = discovered.slice(0, adv.maxArticlesPerRun);
+  }
+
+  console.log(`\n📊 本轮发现 ${discovered.length} 篇文章（所有数据源）→ 登记 crawl_tasks`);
+  
+  // 登记到 SQLite（upsert 会自动跳过已存在的 URL）
+  for (const a of discovered) {
+    // 更精确地匹配数据源标签
+    let sourceLabel = 'unknown';
+    const urlLower = a.url.toLowerCase();
+    
+    for (const s of enabledSources) {
+      const labelLower = (s.label || '').toLowerCase();
+      
+      // Dev.to 直接匹配域名
+      if (s.type === 'devto' && urlLower.includes('dev.to')) {
+        sourceLabel = s.label;
+        break;
+      }
+      
+      // RSS 类型：直接匹配 siteUrl（feedUrl）
+      if (s.type === 'rss' && s.siteUrl) {
+        const siteUrlLower = (s.siteUrl || '').toLowerCase();
+        // 匹配 feed URL 或域名
+        if (urlLower.includes(siteUrlLower.replace('https://', '').split('/')[0])) {
+          sourceLabel = s.label;
+          break;
+        }
+      }
+      
+      // 提取 label 的多个关键词进行匹配（去掉括号和中文描述）
+      // 如 "Vercel Blog" → ["vercel", "blog"]
+      // "Anthropic Cookbook" → ["anthropic", "cookbook"]
+      const coreLabel = labelLower.split(/[（(]/)[0].trim();
+      const keywords = coreLabel.split(/\s+/).filter((k: string) => k.length > 2);
+      
+      // 检查 URL 是否包含任意一个关键词
+      for (const keyword of keywords) {
+        if (urlLower.includes(keyword)) {
+          sourceLabel = s.label;
+          break;
+        }
+      }
+      if (sourceLabel !== 'unknown') break;
+      
+      // 额外检查：对于 GitHub 仓库，匹配 github.com/用户名/仓库名
+      if (s.extractTemplate === 'github_trending' && urlLower.includes('github.com')) {
+        // 从 siteUrl 提取仓库名
+        const siteUrlLower = (s.siteUrl || '').toLowerCase();
+        if (siteUrlLower && urlLower.includes(siteUrlLower.replace('https://', ''))) {
+          sourceLabel = s.label;
+          break;
+        }
+      }
+    }
+    upsertPendingTask(sqlite, { url: a.url, source: sourceLabel, externalId: String(a.id) });
+    
+    // 对于非 Dev.to 文章（web-crawler 已经抓取了完整内容），立即保存原始内容到 raw_materials
+    if ((a as any)._isWebArticle) {
+      const taskId = taskIdFromUrl(a.url);
+      const rawContent = JSON.stringify({
+        id: a.id,
+        title: a.title,
+        description: a.description,
+        url: a.url,
+        user: a.user,
+        published_at: a.published_at,
+        positive_reactions_count: a.positive_reactions_count,
+        reading_time_minutes: a.reading_time_minutes,
+        body_html: a.body_html,
+        body_markdown: a.body_markdown,
+        cover_image: a.cover_image,
+        _isWebArticle: true,
+      });
+      saveRawMaterial(sqlite, taskId, rawContent);
+    }
+  }
+
+  runCounters.discovered += discovered.length;
+  return discovered.length;
+}
+
 async function main() {
   const startedAt = new Date().toISOString();
   const runCounters: RunCounters = {
@@ -476,6 +722,7 @@ async function main() {
     qualified: 0,
     kbPushed: 0,
     blogPushed: 0,
+    categoryMode: false,
   };
   let exitCode: number | null = 0;
   let db: BetterSqlite3.Database | null = null;
@@ -504,36 +751,89 @@ async function main() {
   );
   console.log(`📡 PUSH=${CRAWLER_PUSH} · THRESHOLD=${process.env.CRAWLER_SCORE_THRESHOLD ?? '70'}\n`);
 
+  // ─── 分类爬虫模式 ──────────────────────────────────────────────────────
+  const config = readCrawlerUiConfig();
+  const categoryTargets = config.categoryTargets || {};
+  const hasCategoryTargets = Object.keys(categoryTargets).length > 0;
+  
+  let categoryGaps: import('./category-crawler').CategoryGapInfo[] = [];
+  let mostNeededCategory: string | null = null;
+
+  if (hasCategoryTargets && CRAWLER_PUSH) {
+    console.log('📋 检测到分类目标配置，启动分类爬虫模式...');
+    runCounters.categoryMode = true;
+
+    // 获取线上分类统计
+    const stats = await fetchCategoryStats(
+      config.advanced.ingestBaseUrlHint || '',
+      process.env.INGEST_SECRET || ''
+    );
+
+    // 计算缺口
+    categoryGaps = calculateCategoryGaps(stats, categoryTargets);
+    printCategoryGaps(categoryGaps);
+    console.log(getCategoryCrawlerSummary(categoryGaps));
+
+    // 注意：不再因为"达标"而停止运行
+    // 用户要求持续运行，直到推送到正式环境 KB 和 Blog 的数量达标
+    if (allCategoriesFilled(categoryGaps)) {
+      console.log('⚠️ 所有分类都已达到目标数量，但继续运行以推送更多文章');
+    }
+
+    mostNeededCategory = getMostNeededCategory(categoryGaps);
+    console.log(`🎯 当前最需要填充的分类: ${mostNeededCategory}`);
+    console.log('');
+  }
+
   try {
+    // 初始化代理池（支持多代理轮换）
+    initProxyPoolOnce();
     await enableHttpProxyFromEnv();
+    
+    // 打印代理池状态
+    const proxyStatus = getProxyPoolStatus();
+    if (proxyStatus.total > 0) {
+      console.log(`[代理池] 状态: ${proxyStatus.healthy}/${proxyStatus.total} 可用`);
+    }
 
     const sqlite = openCrawlerDb();
     db = sqlite;
-    const SCORE_THRESHOLD = Number(process.env.CRAWLER_SCORE_THRESHOLD ?? 70);
+    const SCORE_THRESHOLD = Number(process.env.CRAWLER_SCORE_THRESHOLD ?? 60); // Changed from 70 to 60
     const adv = getCrawlerAdvancedForRun();
     const CONCURRENCY = Math.min(8, Math.max(1, adv.maxConcurrency));
 
-    let discovered = await fetchArticlesFromDevTo();
-    discovered = discovered.filter(
-      (a) => !titleMatchesKeywordBlacklist(a.title, adv.keywordBlacklist)
-    );
-    if (adv.maxArticlesPerRun > 0 && discovered.length > adv.maxArticlesPerRun) {
-      discovered = discovered.slice(0, adv.maxArticlesPerRun);
-    }
-    runCounters.discovered = discovered.length;
-    console.log(`\n📊 Discovered ${discovered.length} unique Dev.to URLs → 登记 crawl_tasks`);
-    for (const a of discovered) {
-      upsertPendingTask(sqlite, { url: a.url, source: 'devto', externalId: String(a.id) });
-    }
+    // 持续运行直到达到推送目标（KB 和 Blog 数量）
+    const targetKbPushed = Number(process.env.TARGET_KB_PUSHED || 0);
+    const targetBlogPushed = Number(process.env.TARGET_BLOG_PUSHED || 0);
+    const maxRounds = Number(process.env.MAX_CRAWL_ROUNDS || 5);
+    let round = 0;
 
     let successCount = 0;
     let skippedCount = 0;
     let failCount = 0;
     let processedTotal = 0;
 
-    while (true) {
+    while (round < maxRounds) {
+      round++;
+      console.log(`\n${'='.repeat(50)}`);
+      console.log(`🔄 第 ${round} 轮抓取...`);
+      console.log(`${'='.repeat(50)}`);
+
+      // 每轮都重新抓取所有数据源的新文章
+      const discoveredCount = await discoverArticlesFromAllSources(sqlite, config, runCounters);
+      if (discoveredCount === 0) {
+        console.log('⚠️ 本轮没有发现新文章，等待下一轮...');
+        await new Promise((r) => setTimeout(r, 10000));
+        continue;
+      }
+
+      // 处理可解决的任务
       const batch = listResolvableTasks(sqlite, CONCURRENCY * 8);
-      if (batch.length === 0) break;
+      if (batch.length === 0) {
+        console.log('⚠️ 没有可处理的任务，等待下一轮...');
+        await new Promise((r) => setTimeout(r, 10000));
+        continue;
+      }
 
       for (let i = 0; i < batch.length; i += CONCURRENCY) {
         const slice = batch.slice(i, i + CONCURRENCY);
@@ -542,7 +842,7 @@ async function main() {
 
         const results = await Promise.all(
           slice.map((task, j) =>
-            processDbTask(sqlite, task, i + j, batch.length, SCORE_THRESHOLD, runCounters)
+            processDbTask(sqlite, task, i + j, batch.length, SCORE_THRESHOLD, runCounters, categoryGaps, mostNeededCategory)
           )
         );
 
@@ -553,9 +853,30 @@ async function main() {
         });
 
         if (i + CONCURRENCY < batch.length) {
-          await new Promise((r) => setTimeout(r, 5000));
+          await new Promise((r) => setTimeout(r, 2000));
         }
       }
+
+      // 检查是否达到推送目标
+      if (targetKbPushed > 0 && runCounters.kbPushed >= targetKbPushed) {
+        console.log(`✅ KB 推送目标已达成 (${runCounters.kbPushed}/${targetKbPushed})`);
+      }
+      if (targetBlogPushed > 0 && runCounters.blogPushed >= targetBlogPushed) {
+        console.log(`✅ Blog 推送目标已达成 (${runCounters.blogPushed}/${targetBlogPushed})`);
+      }
+
+      // 如果两个目标都达成，停止运行
+      if ((targetKbPushed === 0 || runCounters.kbPushed >= targetKbPushed) &&
+          (targetBlogPushed === 0 || runCounters.blogPushed >= targetBlogPushed)) {
+        console.log('🎯 所有推送目标已达成，停止运行');
+        break;
+      }
+
+      console.log(`📊 当前进度: KB=${runCounters.kbPushed}/${targetKbPushed || '∞'}, Blog=${runCounters.blogPushed}/${targetBlogPushed || '∞'}`);
+    }
+
+    if (round >= maxRounds) {
+      console.log(`⚠️ 已达到最大轮次限制 (${maxRounds})`);
     }
 
     console.log('\n' + '='.repeat(50));
@@ -564,6 +885,10 @@ async function main() {
     console.log(`⏭️ Skipped (local SQLite): ${skippedCount}`);
     console.log(`❌ Failed / retry: ${failCount}`);
     console.log(`📊 Tasks touched this run: ${processedTotal}`);
+    console.log(`📊 Total discovered: ${runCounters.discovered}`);
+    console.log(`📊 Total qualified: ${runCounters.qualified}`);
+    console.log(`📊 KB pushed: ${runCounters.kbPushed}`);
+    console.log(`📊 Blog pushed: ${runCounters.blogPushed}`);
   } catch (e) {
     exitCode = 1;
     console.error('❌ Crawler run failed:', e);

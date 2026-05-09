@@ -132,16 +132,25 @@ export default function Header({ locale = 'en' }: HeaderProps) {
       <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between gap-2">
           <div className="flex min-w-0 items-center">
-            <div className="flex flex-shrink-0 items-center">
+            <div className="flex flex-shrink-0 items-center gap-2">
               <Link
                 href={'/' as any}
-                className={cn(
-                  'text-xl font-bold tracking-tight sm:text-2xl',
-                  isDarkShell ? 'text-docs-heading' : 'text-palette-primary',
-                )}
+                className="flex items-center gap-2"
                 onClick={() => setMobileOpen(false)}
               >
-                Codcompass
+                <img
+                  src="/logo.png"
+                  alt="Codcompass"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
+                />
+                <span
+                  className={cn(
+                    'text-xl font-bold tracking-tight sm:text-2xl',
+                    isDarkShell ? 'text-docs-heading' : 'text-palette-primary',
+                  )}
+                >
+                  Codcompass
+                </span>
               </Link>
             </div>
             <nav className="ml-6 hidden items-center space-x-5 lg:flex xl:space-x-6">
@@ -412,9 +421,20 @@ export default function Header({ locale = 'en' }: HeaderProps) {
             isDarkShell ? 'border-docs-border' : 'border-palette-border',
           )}
         >
-          <span className={cn('text-sm font-semibold', isDarkShell ? 'text-docs-heading' : 'text-palette-textPrimary')}>
-            Menu
-          </span>
+          <Link
+            href={'/' as any}
+            className="flex items-center gap-2"
+            onClick={() => setMobileOpen(false)}
+          >
+            <img
+              src="/logo.png"
+              alt="Codcompass"
+              className="h-7 w-7"
+            />
+            <span className={cn('text-sm font-semibold', isDarkShell ? 'text-docs-heading' : 'text-palette-textPrimary')}>
+              Codcompass
+            </span>
+          </Link>
           <button
             type="button"
             className={cn(

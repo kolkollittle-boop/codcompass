@@ -8,6 +8,7 @@ const excludedPaths = [
   '/favicon.ico',
   '/robots.txt',
   '/sitemap.xml',
+  '/logo.png',
   '/api/',
   '/_next/',
   '/static/',

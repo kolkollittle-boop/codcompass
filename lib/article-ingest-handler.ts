@@ -12,6 +12,11 @@ const supabase = createClient(
 
 marked.setOptions({ gfm: true });
 
+/** Remove non-ASCII characters (e.g. CJK) — ensures descriptionEn stays English. */
+function stripNonAscii(s: string): string {
+  return s.replace(/[^\x00-\x7F]/g, '').trim();
+}
+
 function generateSlug(text: string) {
   return text
     .toLowerCase()
@@ -173,6 +178,8 @@ export async function articleIngestHandler(body: Record<string, unknown>): Promi
           ? body.simHash
           : '';
 
+    const isFeatured = body.is_featured || (typeof aiScore === 'number' && aiScore >= 80); // Support is_featured field or derive from score
+
     const faqItems = parseFaqItems(body.faq);
 
     if (!title || !content) {
@@ -207,38 +214,42 @@ export async function articleIngestHandler(body: Record<string, unknown>): Promi
       );
       const tagList = [...new Set([...tags, ...routerKeywords].map(String))].slice(0, 24);
 
+      // Blog：摘要/SEO 只用正文派生的 excerpt，不回退 mentor_summary（评分模型可能输出中文）
+      const excerptTrimmed = stripNonAscii(typeof excerpt === 'string' ? excerpt.trim() : '');
+      const blogSeoDescription = excerptTrimmed
+        ? `${excerptTrimmed.slice(0, 280)}\n\nSource: ${sourceUrl}`
+        : `Source: ${sourceUrl}`;
+
       const post = await prisma.blogPost.upsert({
         where: { slug },
         create: {
           slug,
           title,
           contentHtml: html,
-          excerpt: excerpt || mentorSummary || null,
+          excerpt: excerptTrimmed || null,
           author: (body.sourceAuthor ?? body.author) as string | null,
           readingMinutes: Math.max(1, Number(readingTimeMinutes) || 5),
           tags: tagList,
           categoryId: category.id,
           isPublished: published,
+          isFeatured: Boolean(isFeatured), // Add isFeatured field to blog posts
           publishedAt: published ? new Date() : null,
           seoTitle: title,
-          seoDescription: mentorSummary
-            ? `${mentorSummary}\n\nSource: ${sourceUrl}`
-            : `Source: ${sourceUrl}`,
+          seoDescription: blogSeoDescription,
         },
         update: {
           title,
           contentHtml: html,
-          excerpt: excerpt || mentorSummary || null,
+          excerpt: excerptTrimmed || null,
           author: (body.sourceAuthor ?? body.author) as string | null,
           readingMinutes: Math.max(1, Number(readingTimeMinutes) || 5),
           tags: tagList,
           categoryId: category.id,
           isPublished: published,
+          isFeatured: Boolean(isFeatured), // Add isFeatured field to blog posts
           publishedAt: published ? new Date() : null,
           seoTitle: title,
-          seoDescription: mentorSummary
-            ? `${mentorSummary}\n\nSource: ${sourceUrl}`
-            : `Source: ${sourceUrl}`,
+          seoDescription: blogSeoDescription,
         },
       });
 
@@ -269,8 +280,9 @@ export async function articleIngestHandler(body: Record<string, unknown>): Promi
     const status = resolveKbStatus(aiScore, Boolean(isPromotional), routingConfidence);
     console.log('[Ingest] KB status:', status);
 
-    const execSummary =
-      (mentorSummary || excerpt || '').replace(/\s+/g, ' ').trim().slice(0, 160) || title.slice(0, 160);
+    const execSummary = stripNonAscii(
+      (mentorSummary || excerpt || '').replace(/\s+/g, ' ').trim().slice(0, 160) || title.slice(0, 160)
+    );
 
     const geoJsonLd = buildTechArticleGeoJsonLd({
       title,
@@ -299,6 +311,7 @@ export async function articleIngestHandler(body: Record<string, unknown>): Promi
       routerKeywords: Array.isArray(routerKeywords) ? routerKeywords : [],
       simhash: simhash || null,
       manual_review: manualReview,
+      is_featured: Boolean(isFeatured), // Add is_featured to qualityDetails
       geoJsonLd,
       ...(faqGeo ? { faqGeoJsonLd: faqGeo } : {}),
     };
@@ -355,6 +368,7 @@ export async function articleIngestHandler(body: Record<string, unknown>): Promi
             qualityDetails: qualityDetailsData,
             status,
             isPublished: vis.isPublished,
+            isFeatured: Boolean(isFeatured), // Add isFeatured to Article update
             publishedAt: vis.publishedAt,
             updatedAt: new Date().toISOString(),
           })
@@ -398,6 +412,7 @@ export async function articleIngestHandler(body: Record<string, unknown>): Promi
         createdAt: new Date().toISOString(),
         isPremium: difficultyLevel !== 'L1',
         isPublished: visNew.isPublished,
+        isFeatured: Boolean(isFeatured), // Add isFeatured to Article
         publishedAt: visNew.publishedAt,
       })
       .select();
@@ -420,7 +435,14 @@ export async function articleIngestHandler(body: Record<string, unknown>): Promi
 
     return NextResponse.json({ success: true, status, destination: 'kb', data }, { status: 201 });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : String(error);
+    let message: string;
+    if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === 'object' && error !== null && 'message' in error) {
+      message = String((error as Record<string, unknown>).message);
+    } else {
+      message = String(error);
+    }
     console.error('[Ingest Error]', error);
     return NextResponse.json({ error: message }, { status: 500 });
   }

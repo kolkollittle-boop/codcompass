@@ -91,6 +91,8 @@ export type CrawlerUiConfig = {
   schedule: CrawlerSchedule;
   advanced: CrawlerPanelAdvanced;
   sources: CrawlerSourceRow[];
+  /** 知识库分类目标数量配置 */
+  categoryTargets?: Record<string, number>;
   lastRun?: {
     at: string;
     exitCode: number | null;

@@ -130,7 +130,8 @@ model Article {
   seriesOrder     Int?                 // 专题中的顺序
   blueprintUrl    String?              // Production Blueprint 下载链接
   blueprintName   String?              // Blueprint 文件名
-  
+  isFeatured      Boolean?             // Whether this article is featured (score >= 80)
+
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
   translations   ArticleTranslation[]
@@ -218,6 +219,7 @@ model BlogPost {
   author         String?
   readingMinutes Int          @default(5)
   isPublished    Boolean      @default(false)
+  isFeatured     Boolean?     // Whether this blog post is featured (score >= 80)
   publishedAt    DateTime?
   viewCount      Int          @default(0)
   seoTitle       String?

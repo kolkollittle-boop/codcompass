@@ -71,6 +71,7 @@ type CrawlerUiConfig = {
   };
   advanced: CrawlerPanelAdvanced;
   sources: CrawlerSourceRow[];
+  categoryTargets?: Record<string, number>;
   lastRun?: {
     at: string;
     exitCode: number | null;
@@ -126,6 +127,36 @@ function RefSitesBlock({
 
 const STORAGE_SECRET = 'local_crawler_ui_secret';
 
+/** 默认 KB 分类列表（用于未加载统计数据时显示） */
+const DEFAULT_KB_SECTIONS: Array<{ slug: string; name: string }> = [
+  // AI 与机器学习
+  { slug: 'ai-agents', name: 'AI Agents' },
+  { slug: 'rag', name: 'RAG' },
+  { slug: 'llm-fine-tuning', name: 'LLM Fine-tuning' },
+  { slug: 'ml-ops', name: 'MLOps' },
+  { slug: 'ai-safety', name: 'AI Safety' },
+  // 前端开发
+  { slug: 'frontend-architecture', name: 'Frontend Architecture' },
+  { slug: 'react-patterns', name: 'React Patterns' },
+  { slug: 'web-performance', name: 'Web Performance' },
+  { slug: 'web-accessibility', name: 'Web Accessibility' },
+  // 后端与基础设施
+  { slug: 'backend-architecture', name: 'Backend Architecture' },
+  { slug: 'api-design', name: 'API Design' },
+  { slug: 'database-engineering', name: 'Database Engineering' },
+  { slug: 'cloud-native', name: 'Cloud Native' },
+  { slug: 'devops-sre', name: 'DevOps/SRE' },
+  // 软件工程实践
+  { slug: 'system-design', name: 'System Design' },
+  { slug: 'testing-quality', name: 'Testing & Quality' },
+  { slug: 'code-review', name: 'Code Review' },
+  { slug: 'tech-debt', name: 'Tech Debt' },
+  // 产品与商业
+  { slug: 'tech-strategy', name: 'Tech Strategy' },
+  { slug: 'product-management', name: 'Product Management' },
+  { slug: 'startup-engineering', name: 'Startup Engineering' },
+];
+
 function headersWithSecret(secret: string): HeadersInit {
   const h: Record<string, string> = { 'Content-Type': 'application/json' };
   if (secret.trim()) h['x-local-crawler-secret'] = secret.trim();
@@ -161,7 +192,12 @@ type CrawlLibraryRow = {
 
 function formatBeijingDateTime(iso: string): string {
   if (!iso) return '—';
-  const d = new Date(iso);
+  // SQLite datetime 格式: 'YYYY-MM-DD HH:MM:SS' (UTC)，需要添加 'Z' 后缀
+  let normalized = iso;
+  if (!iso.includes('T') && !iso.includes('Z') && !iso.includes('+')) {
+    normalized = iso + 'Z';
+  }
+  const d = new Date(normalized);
   if (Number.isNaN(d.getTime())) return iso;
   return new Intl.DateTimeFormat('zh-CN', {
     timeZone: 'Asia/Shanghai',
@@ -229,6 +265,24 @@ export default function LocalCrawlerConsolePage() {
   const [libraryQ, setLibraryQ] = useState('');
   const [libraryStatus, setLibraryStatus] = useState('');
   const [libraryLoading, setLibraryLoading] = useState(false);
+  const [crawlerMode, setCrawlerMode] = useState<'scheduled' | 'target' | 'category'>('scheduled');
+  const [targetArticleCount, setTargetArticleCount] = useState(200);
+  const [targetDistribution, setTargetDistribution] = useState<'even' | 'priority' | 'custom'>('even');
+  const [categoryStats, setCategoryStats] = useState<Array<{
+    slug: string;
+    name: string;
+    nameEn: string;
+    publishedCount: number;
+    totalWithStatus: number;
+  }>>([]);
+  const [categoryStatsLoading, setCategoryStatsLoading] = useState(false);
+  const [categoryStatsErr, setCategoryStatsErr] = useState<string | null>(null);
+  const [uniformCategoryTarget, setUniformCategoryTarget] = useState(20);
+  const [crawlerRunning, setCrawlerRunning] = useState(false);
+  const [crawlerStatus, setCrawlerStatus] = useState<'idle' | 'running' | 'completed' | 'error'>('idle');
+  const [crawlerStatusMsg, setCrawlerStatusMsg] = useState('');
+  const [crawlerLogs, setCrawlerLogs] = useState<string[]>([]);
+  const [autoRefreshLogs, setAutoRefreshLogs] = useState(false);
 
   const loadRunHistory = useCallback(async () => {
     setHistoryErr(null);
@@ -280,9 +334,62 @@ export default function LocalCrawlerConsolePage() {
     }
   }, [libraryQ, libraryStatus]);
 
+  const refreshCrawlerLogs = useCallback(async () => {
+    try {
+      const r = await fetch('/api/local-only/config', { cache: 'no-store' });
+      if (!r.ok) return;
+      const j = await r.json();
+      if (j?.ok && j?.config?.lastRun) {
+        const lastRun = j.config.lastRun;
+        const logs: string[] = [];
+        if (lastRun.stdoutTail) logs.push('[stdout]', lastRun.stdoutTail);
+        if (lastRun.stderrTail) logs.push('[stderr]', lastRun.stderrTail);
+        if (logs.length > 0) {
+          setCrawlerLogs(logs);
+          setCrawlerStatusMsg(`最后更新: ${formatBeijingDateTime(lastRun.at)}`);
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }, []); // formatBeijingDateTime is a regular function, not a state dependency
+
+  const loadCategoryStats = useCallback(async () => {
+    setCategoryStatsErr(null);
+    setCategoryStatsLoading(true);
+    try {
+      const headers: HeadersInit = {};
+      if (secret) headers['x-local-crawler-secret'] = secret;
+      const r = await fetch('/api/local-only/category-stats', { cache: 'no-store', headers });
+      if (!r.ok) {
+        setCategoryStatsErr(r.status === 401 ? '认证失败' : `加载失败 ${r.status}`);
+        return;
+      }
+      const j = await r.json();
+      if (j?.success && Array.isArray(j.categories)) {
+        setCategoryStats(j.categories);
+      } else {
+        setCategoryStatsErr('响应格式异常');
+      }
+    } catch {
+      setCategoryStatsErr('网络错误');
+    } finally {
+      setCategoryStatsLoading(false);
+    }
+  }, [secret]);
+
   useEffect(() => {
     setSecret(typeof window !== 'undefined' ? localStorage.getItem(STORAGE_SECRET) ?? '' : '');
   }, []);
+
+  // 爬虫运行时自动刷新日志
+  useEffect(() => {
+    if (!crawlerRunning) return;
+    const interval = setInterval(() => {
+      void refreshCrawlerLogs();
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [crawlerRunning, refreshCrawlerLogs]);
 
   const persistSecret = (v: string) => {
     setSecret(v);
@@ -347,6 +454,9 @@ export default function LocalCrawlerConsolePage() {
   const runCrawler = async () => {
     setRunning(true);
     setRunResult(null);
+    setCrawlerRunning(true);
+    setCrawlerStatus('running');
+    setCrawlerStatusMsg('爬虫启动中...');
     try {
       const r = await fetch('/api/local-only/run', {
         method: 'POST',
@@ -359,6 +469,16 @@ export default function LocalCrawlerConsolePage() {
         stdoutTail: String(j.stdoutTail ?? ''),
         stderrTail: String(j.stderrTail ?? ''),
       });
+      if (j.ok) {
+        setCrawlerStatus('completed');
+        setCrawlerStatusMsg(`完成 - 退出码: ${j.exitCode ?? '未知'}`);
+        // 更新日志
+        if (j.stdoutTail) setCrawlerLogs(prev => [...prev, '[stdout]', j.stdoutTail]);
+        if (j.stderrTail) setCrawlerLogs(prev => [...prev, '[stderr]', j.stderrTail]);
+      } else {
+        setCrawlerStatus('error');
+        setCrawlerStatusMsg('执行失败');
+      }
       await load();
       await loadRunHistory();
       await loadLibrary();
@@ -369,8 +489,11 @@ export default function LocalCrawlerConsolePage() {
         stdoutTail: '',
         stderrTail: '请求失败（可能超时，请在终端执行 npm run crawler:local）',
       });
+      setCrawlerStatus('error');
+      setCrawlerStatusMsg('请求失败');
     } finally {
       setRunning(false);
+      setCrawlerRunning(false);
     }
   };
 
@@ -469,7 +592,7 @@ export default function LocalCrawlerConsolePage() {
     });
   };
 
-  const tagsString = (tags: string[]) => tags.join(', ');
+  const tagsString = (tags: string[] | undefined) => (tags || []).join(', ');
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
@@ -826,6 +949,250 @@ export default function LocalCrawlerConsolePage() {
               <h2 className="text-lg font-medium text-neutral-200 border-b border-neutral-800 pb-2">
                 任务调度与自动化（文档 §66–72）
               </h2>
+              
+              {/* 爬虫状态显示 */}
+              <div className={`rounded-lg border p-3 space-y-2 ${
+                crawlerStatus === 'running' ? 'border-cyan-800/40 bg-cyan-950/20' :
+                crawlerStatus === 'completed' ? 'border-emerald-800/40 bg-emerald-950/20' :
+                crawlerStatus === 'error' ? 'border-red-800/40 bg-red-950/20' :
+                'border-neutral-800 bg-black/20'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${
+                      crawlerStatus === 'running' ? 'bg-cyan-400 animate-pulse' :
+                      crawlerStatus === 'completed' ? 'bg-emerald-400' :
+                      crawlerStatus === 'error' ? 'bg-red-400' :
+                      'bg-neutral-500'
+                    }`} />
+                    <span className="text-xs font-medium text-neutral-200">
+                      爬虫状态: {
+                        crawlerStatus === 'running' ? '运行中' :
+                        crawlerStatus === 'completed' ? '已完成' :
+                        crawlerStatus === 'error' ? '错误' :
+                        '空闲'
+                      }
+                    </span>
+                    {crawlerStatusMsg && (
+                      <span className="text-[10px] text-neutral-400">{crawlerStatusMsg}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void refreshCrawlerLogs()}
+                      className="text-[10px] rounded border border-neutral-700 px-2 py-1 hover:bg-neutral-800 text-neutral-400"
+                    >
+                      刷新日志
+                    </button>
+                    {crawlerStatus !== 'idle' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCrawlerStatus('idle');
+                          setCrawlerStatusMsg('');
+                          setCrawlerRunning(false);
+                          setCrawlerLogs([]);
+                        }}
+                        className="text-[10px] rounded border border-neutral-700 px-2 py-1 hover:bg-neutral-800 text-neutral-400"
+                      >
+                        重置状态
+                      </button>
+                    )}
+                  </div>
+                </div>
+                {/* 日志显示 */}
+                {crawlerLogs.length > 0 && (
+                  <details open className="text-xs">
+                    <summary className="cursor-pointer text-neutral-400 hover:text-neutral-300">
+                      最近日志 ({crawlerLogs.length} 条)
+                    </summary>
+                    <pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words bg-black/40 p-2 rounded text-[10px] text-neutral-400 font-mono">
+                      {crawlerLogs.join('\n')}
+                    </pre>
+                  </details>
+                )}
+              </div>
+              
+              {/* 爬虫模式选择 */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-medium text-neutral-400 uppercase tracking-wide">爬虫模式</h3>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className={`flex items-start gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${crawlerMode === 'scheduled' ? 'border-cyan-600/70 bg-cyan-950/20' : 'border-neutral-800 bg-black/25'}`}>
+                    <input
+                      type="radio"
+                      name="crawlerMode"
+                      checked={crawlerMode === 'scheduled'}
+                      onChange={() => setCrawlerMode('scheduled')}
+                      className="mt-0.5"
+                    />
+                    <div>
+                      <span className="text-sm font-medium text-neutral-200">定时爬虫</span>
+                      <p className="text-xs text-neutral-500 mt-1">按固定时间间隔自动执行，适合持续监控新文章</p>
+                    </div>
+                  </label>
+                  <label className={`flex items-start gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${crawlerMode === 'target' ? 'border-violet-600/70 bg-violet-950/20' : 'border-neutral-800 bg-black/25'}`}>
+                    <input
+                      type="radio"
+                      name="crawlerMode"
+                      checked={crawlerMode === 'target'}
+                      onChange={() => setCrawlerMode('target')}
+                      className="mt-0.5"
+                    />
+                    <div>
+                      <span className="text-sm font-medium text-neutral-200">目标数量爬虫</span>
+                      <p className="text-xs text-neutral-500 mt-1">按达标数量计算，完成目标数量为止，适合批量抓取</p>
+                    </div>
+                  </label>
+                  <label className={`flex items-start gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${crawlerMode === 'category' ? 'border-emerald-600/70 bg-emerald-950/20' : 'border-neutral-800 bg-black/25'}`}>
+                    <input
+                      type="radio"
+                      name="crawlerMode"
+                      checked={crawlerMode === 'category'}
+                      onChange={() => setCrawlerMode('category')}
+                      className="mt-0.5"
+                    />
+                    <div>
+                      <span className="text-sm font-medium text-neutral-200">知识库分类爬虫</span>
+                      <p className="text-xs text-neutral-500 mt-1">按 KB 分类目标数量推送，智能路由到缺口最大的分类</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {crawlerMode === 'target' && (
+                <div className="rounded-lg border border-violet-800/40 bg-violet-950/20 p-4 space-y-3">
+                  <h3 className="text-xs font-medium text-violet-300">目标数量设置</h3>
+                  <div className="flex flex-wrap items-end gap-3">
+                    <label className="block space-y-1">
+                      <span className="text-xs text-neutral-500">目标文章数量</span>
+                      <input
+                        type="number"
+                        min={10}
+                        max={5000}
+                        value={targetArticleCount}
+                        onChange={(e) => setTargetArticleCount(Math.max(10, Math.min(5000, Number(e.target.value) || 100)))}
+                        className="w-28 rounded-lg border border-neutral-700 bg-black/40 px-3 py-2 font-mono text-sm"
+                      />
+                    </label>
+                    <label className="block space-y-1">
+                      <span className="text-xs text-neutral-500">按数据源分配</span>
+                      <select
+                        value={targetDistribution}
+                        onChange={(e) => setTargetDistribution(e.target.value as 'even' | 'priority' | 'custom')}
+                        className="w-32 rounded-lg border border-neutral-700 bg-black/40 px-2 py-2 text-xs"
+                      >
+                        <option value="even">平均分配</option>
+                        <option value="priority">按优先级分配</option>
+                        <option value="custom">自定义（待实现）</option>
+                      </select>
+                    </label>
+                    <span className="text-xs text-neutral-500">
+                      当前已启用 {config.sources.filter(s => s.enabled).length} 个数据源
+                    </span>
+                  </div>
+                  <p className="text-xs text-neutral-500">
+                    爬虫会持续运行直到达到目标数量，每个数据源按策略分配抓取量。
+                    当前配置单次上限 <code className="text-neutral-400">{config.advanced.maxArticlesPerRun}</code> 篇。
+                  </p>
+                </div>
+              )}
+
+              {crawlerMode === 'category' && config && (
+                <div className="rounded-lg border border-emerald-800/40 bg-emerald-950/20 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-medium text-emerald-300">知识库分类目标设置</h3>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-neutral-500">统一填充:</span>
+                        <input
+                          type="number"
+                          min={0}
+                          max={200}
+                          value={uniformCategoryTarget}
+                          onChange={(e) => setUniformCategoryTarget(Math.max(0, Math.min(200, Number(e.target.value) || 0)))}
+                          className="w-16 rounded border border-neutral-700 bg-neutral-950 px-1.5 py-1 text-center text-xs"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            // 一键填充：将所有分类设置为目标数量
+                            // 使用当前显示的分类列表（可能是 API 返回的或默认的）
+                            const targets: Record<string, number> = {};
+                            const currentCats = categoryStats.length > 0 ? categoryStats : DEFAULT_KB_SECTIONS;
+                            currentCats.forEach((cat) => {
+                              targets[cat.slug] = uniformCategoryTarget;
+                            });
+                            setConfig({ ...config, categoryTargets: targets });
+                          }}
+                          className="rounded-lg border border-cyan-700/80 bg-cyan-950/50 px-3 py-1.5 text-xs font-medium text-cyan-100 hover:bg-cyan-900/40"
+                        >
+                          一键填充
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => void loadCategoryStats()}
+                        disabled={categoryStatsLoading}
+                        className="rounded-lg border border-emerald-700/80 bg-emerald-950/50 px-3 py-1.5 text-xs font-medium text-emerald-100 hover:bg-emerald-900/40 disabled:opacity-50"
+                      >
+                        {categoryStatsLoading ? '加载中...' : '刷新线上统计'}
+                      </button>
+                    </div>
+                  </div>
+                  {categoryStatsErr && (
+                    <p className="text-xs text-red-400">{categoryStatsErr}</p>
+                  )}
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {/* 如果有统计数据，使用 API 返回的分类列表；否则使用默认分类列表 */}
+                    {(categoryStats.length > 0 ? categoryStats : DEFAULT_KB_SECTIONS).map((cat) => {
+                      const slug = cat.slug;
+                      const name = cat.name;
+                      const publishedCount = 'publishedCount' in cat ? (cat.publishedCount as number) : 0;
+                      const target = config.categoryTargets?.[slug] || 0;
+                      const gap = Math.max(0, target - publishedCount);
+                      return (
+                        <div key={slug} className="flex items-center gap-3 rounded-md border border-neutral-800 bg-black/20 p-2">
+                          <div className="flex-1 min-w-0">
+                            <span className="text-xs font-medium text-neutral-200">{name}</span>
+                            <span className="text-[10px] text-neutral-500 ml-1">({slug})</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs">
+                            {categoryStats.length > 0 && (
+                              <>
+                                <span className="text-neutral-400">已发布: {publishedCount}</span>
+                                <span className="text-neutral-500">/</span>
+                              </>
+                            )}
+                            <input
+                              type="number"
+                              min={0}
+                              max={200}
+                              value={target}
+                              onChange={(e) => {
+                                const newTargets = { ...(config.categoryTargets || {}) };
+                                newTargets[slug] = Math.max(0, Number(e.target.value) || 0);
+                                setConfig({ ...config, categoryTargets: newTargets });
+                              }}
+                              className="w-16 rounded border border-neutral-700 bg-neutral-950 px-1.5 py-1 text-center text-xs"
+                            />
+                            {categoryStats.length > 0 && (
+                              <span className={`text-xs ${gap > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                                {gap > 0 ? `还需 ${gap}` : '✅'}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs text-neutral-500">
+                    分类爬虫会根据目标数量与线上已发布数量的差值，智能选择最需要填充的分类进行路由。
+                    当所有分类都达到目标数量时，爬虫会自动停止。
+                  </p>
+                </div>
+              )}
+
               <p className="text-xs text-neutral-500">
                 <code className="text-neutral-400">{scheduleCmd}</code> 按下方「数值 + 单位」等待后再次执行{' '}
                 <code className="text-neutral-400">run.ts</code>；修改后保存，调度进程下一轮会重新读取。并发上限在「爬虫核心配置」中设置。

@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { ArrowRight, FileText, Users, BarChart3, Settings, ShieldCheck, Globe } from 'lucide-react';
+import { ArrowRight, FileText, Users, BarChart3, Settings, ShieldCheck, Globe, CreditCard } from 'lucide-react';
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
@@ -70,27 +70,50 @@ export default function AdminPage() {
             </div>
           </Link>
 
-          {/* User management (placeholder) */}
-          <div className="cursor-not-allowed rounded-xl border border-docs-border bg-white/5 p-6 opacity-60">
+          {/* User management */}
+          <Link
+            href="/admin/users"
+            className="docs-card group relative block rounded-xl border border-docs-border bg-docs-surface p-6 transition-all duration-300 hover:border-docs-accent/50 hover:shadow-cc-theme"
+          >
             <div className="mb-4 flex items-start justify-between">
               <div className="rounded-lg bg-white/5 p-2">
-                <Users className="h-6 w-6 text-docs-muted" />
+                <Users className="h-6 w-6 text-docs-accent" />
               </div>
+              <ArrowRight className="h-5 w-5 text-docs-muted transition-colors group-hover:text-docs-accent" />
             </div>
-            <h2 className="mb-1 text-lg font-semibold text-docs-muted">User Management</h2>
-            <p className="text-sm text-docs-muted">Manage subscriptions, roles, and credits. (Coming Soon)</p>
-          </div>
+            <h2 className="mb-1 text-lg font-semibold transition-colors group-hover:text-docs-accent">User Management</h2>
+            <p className="text-sm leading-relaxed text-docs-muted">Manage subscriptions, roles, and credits.</p>
+          </Link>
 
-          {/* Analytics (placeholder) */}
-          <div className="cursor-not-allowed rounded-xl border border-docs-border bg-white/5 p-6 opacity-60">
+          {/* Subscriptions */}
+          <Link
+            href="/admin/subscriptions"
+            className="docs-card group relative block rounded-xl border border-docs-border bg-docs-surface p-6 transition-all duration-300 hover:border-docs-accent/50 hover:shadow-cc-theme"
+          >
             <div className="mb-4 flex items-start justify-between">
               <div className="rounded-lg bg-white/5 p-2">
-                <BarChart3 className="h-6 w-6 text-docs-muted" />
+                <CreditCard className="h-6 w-6 text-docs-accent" />
               </div>
+              <ArrowRight className="h-5 w-5 text-docs-muted transition-colors group-hover:text-docs-accent" />
             </div>
-            <h2 className="mb-1 text-lg font-semibold text-docs-muted">Analytics</h2>
-            <p className="text-sm text-docs-muted">Traffic sources, reads, and conversion. (Coming Soon)</p>
-          </div>
+            <h2 className="mb-1 text-lg font-semibold transition-colors group-hover:text-docs-accent">Subscriptions</h2>
+            <p className="text-sm leading-relaxed text-docs-muted">Monitor revenue, manage plans, track subscriber growth.</p>
+          </Link>
+
+          {/* Analytics */}
+          <Link
+            href="/admin/analytics"
+            className="docs-card group relative block rounded-xl border border-docs-border bg-docs-surface p-6 transition-all duration-300 hover:border-docs-accent/50 hover:shadow-cc-theme"
+          >
+            <div className="mb-4 flex items-start justify-between">
+              <div className="rounded-lg bg-white/5 p-2">
+                <BarChart3 className="h-6 w-6 text-docs-accent" />
+              </div>
+              <ArrowRight className="h-5 w-5 text-docs-muted transition-colors group-hover:text-docs-accent" />
+            </div>
+            <h2 className="mb-1 text-lg font-semibold transition-colors group-hover:text-docs-accent">Analytics</h2>
+            <p className="text-sm leading-relaxed text-docs-muted">Traffic sources, article views, and user engagement.</p>
+          </Link>
 
           {/* Crawler settings */}
           <Link

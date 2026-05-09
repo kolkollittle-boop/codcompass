@@ -149,6 +149,10 @@ export function getRawBody(db: Database.Database, taskId: string): string | unde
   return row?.raw_body;
 }
 
+export function updateSyncLogStatus(db: Database.Database, syncLogId: number, status: string, note?: string | null): void {
+  db.prepare(`UPDATE sync_logs SET sync_status = ?, note = COALESCE(?, note), updated_at = datetime('now') WHERE id = ?`).run(status, note, syncLogId);
+}
+
 export function insertSyncLog(db: Database.Database, row: {
   task_id: string;
   processed_content: string | null;
