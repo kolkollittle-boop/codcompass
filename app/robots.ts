@@ -24,9 +24,25 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'GPTBot',
-        disallow: ['/'],
+        allow: '/',
       },
-    ],
+      {
+        userAgent: 'Google-Extended',
+        allow: '/',
+      },
+      {
+        userAgent: 'PerplexityBot',
+        allow: '/',
+      },
+      {
+        userAgent: 'ClaudeBot',
+        allow: '/',
+      },
+      {
+        userAgent: 'Cohere-Web',
+        allow: '/',
+      },
+    ]
     sitemap: 'https://www.codcompass.com/sitemap.xml',
   };
 }

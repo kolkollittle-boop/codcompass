@@ -1,19 +1,6 @@
 /**
- * 自动重构 + 推送任务
- * 
- * 铁律：未重构的文章绝对不能发布
- * 
- * 功能：检查 REVIEW 状态中 qualityScore >= 60 的文章
- * - 已重构的（含 Codcompass 2.0 结构标记）→ 直接推送到 PUBLISHED
- * - 未重构的 → 调用 AI 重构后再推送到 PUBLISHED
- * - 重构失败的 → 留在 REVIEW，下次重试，禁止 fallback 发布原文
- * 
- * 使用方式：
- *   cd automation/crawler && npx tsx src/auto-restructure-push.ts
- * 
- * 计划：每天 9:00 和 18:00 执行
+ * 手动重构+推送 - 增强版（更大超时，更稳）
  */
-
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
@@ -25,10 +12,9 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.local') });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
-// 检测是否已重构（包含 Codcompass 2.0 结构标记）
 function isRestructured(contentEn: string | null): boolean {
   if (!contentEn) return false;
   const markers = [
@@ -45,13 +31,6 @@ function isRestructured(contentEn: string | null): boolean {
   return markers.some(m => contentEn.includes(m));
 }
 
-// 检测是否含有中文字符
-function hasChinese(text: string | null): boolean {
-  if (!text) return false;
-  return /[\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]/.test(text);
-}
-
-// 生成 excerpt
 function generateExcerpt(content: string, maxLength: number = 200): string {
   const plainText = content
     .replace(/#{1,6}\s/g, '')
@@ -73,37 +52,18 @@ function generateExcerpt(content: string, maxLength: number = 200): string {
   return truncated + '...';
 }
 
-// 提取标签
-function extractTags(content: string, title: string): string[] {
-  const techKeywords = [
-    'RAG', 'Agent', 'LLM', 'Vector DB', 'Embedding', 'Re-ranking',
-    'React', 'Next.js', 'TypeScript', 'Python', 'Docker', 'Kubernetes',
-    'API', 'Microservices', 'Serverless', 'CI/CD',
-    'AI', 'Machine Learning', 'Deep Learning', 'Rust', 'Function',
-  ];
-  const tags: string[] = [];
-  const text = `${title} ${content.substring(0, 2000)}`.toUpperCase();
-  for (const keyword of techKeywords) {
-    if (text.includes(keyword.toUpperCase()) && !tags.includes(keyword)) {
-      tags.push(keyword);
-    }
-    if (tags.length >= 5) break;
-  }
-  return tags;
-}
-
 async function main() {
   const startTime = Date.now();
-  console.log('🚀 自动重构+推送任务启动');
+  console.log('🚀 手动重构+推送任务启动');
   console.log(`⏰ 执行时间: ${new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}`);
   console.log('');
 
-  // 1. 查询 REVIEW 状态中 qualityScore >= 60 的文章
+  // Query REVIEW articles with qualityScore >= 65
   const { data: reviewArticles, error } = await supabase
     .from('Article')
     .select('id, titleEn, contentEn, qualityScore, qualityDetails, originalUrl, sourceSite, sourceAuthor, crawledAt')
     .eq('status', 'REVIEW')
-    .gte('qualityScore', 60)
+    .gte('qualityScore', 65)
     .order('qualityScore', { ascending: false });
 
   if (error) {
@@ -111,14 +71,14 @@ async function main() {
     process.exit(1);
   }
 
-  // 2. 也查询今天已发布但未重构的文章（补救措施）
+  // Also check today's PUBLISHED articles that are not restructured
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
   const { data: publishedArticles, error: pubError } = await supabase
     .from('Article')
     .select('id, titleEn, contentEn, qualityScore, qualityDetails, originalUrl, sourceSite, sourceAuthor, crawledAt')
     .eq('status', 'PUBLISHED')
-    .gte('qualityScore', 60)
+    .gte('qualityScore', 65)
     .gte('publishedAt', todayStart.toISOString())
     .order('qualityScore', { ascending: false });
 
@@ -126,26 +86,12 @@ async function main() {
     console.error('❌ 查询已发布文章失败:', pubError.message);
   }
 
-  // 检查今天已发布但未重构的文章（补救：如果漏过了，回滚到 REVIEW）
   const unstructuredPublished = (publishedArticles || []).filter(a => {
     const qd = a.qualityDetails;
     return !(qd && typeof qd === 'object' && qd.restructured === true);
   });
 
-  if (unstructuredPublished.length > 0) {
-    console.log(`🚨 发现 ${unstructuredPublished.length} 篇已发布但未重构的文章！回滚到 REVIEW`);
-    for (const article of unstructuredPublished) {
-      await supabase
-        .from('Article')
-        .update({ status: 'REVIEW', updatedAt: new Date().toISOString() })
-        .eq('id', article.id);
-      console.log(`  ↩️ 已回滚: ${article.titleEn?.slice(0, 80) || '无标题'}`);
-    }
-    console.log('');
-  }
-
-  // 待处理文章：只处理 REVIEW 状态的
-  const allArticles = reviewArticles || [];
+  const allArticles = [...(reviewArticles || []), ...unstructuredPublished];
 
   if (allArticles.length === 0) {
     console.log('✅ 没有需要处理的文章');
@@ -162,16 +108,17 @@ async function main() {
   let directPushCount = 0;
   let failedCount = 0;
   const failedTitles: string[] = [];
+  const successTitles: string[] = [];
 
   for (let i = 0; i < allArticles.length; i++) {
     const article = allArticles[i];
     const idx = i + 1;
-    console.log(`[${idx}/${allArticles.length}] 处理: ${article.titleEn?.slice(0, 80) || '无标题'}`);
+    const title = article.titleEn?.slice(0, 80) || '无标题';
+    console.log(`\n[${idx}/${allArticles.length}] 处理: ${title}`);
     console.log(`  分数: ${article.qualityScore} | ID: ${article.id.slice(0, 8)}`);
 
     try {
       if (isRestructured(article.contentEn)) {
-        // 已重构，直接推送
         console.log('  ✅ 已重构，直接推送');
         const { error: updateError } = await supabase
           .from('Article')
@@ -186,23 +133,17 @@ async function main() {
         if (updateError) {
           console.error(`  ❌ 更新失败: ${updateError.message}`);
           failedCount++;
-          failedTitles.push(article.titleEn || '无标题');
+          failedTitles.push(title);
         } else {
           console.log('  🎉 已发布');
           directPushCount++;
           successCount++;
+          successTitles.push(title);
         }
       } else {
-        // 未重构，调用 AI 重构
         console.log('  🔄 未重构，调用 AI 重构...');
-        
-        const hasChineseContent = hasChinese(article.contentEn);
-        if (hasChineseContent) {
-          console.log('  ⚠️ 检测到中文内容，将重构为纯英文');
-        }
-
         const evaluation = article.qualityDetails || { difficulty_level: 'L2' };
-        
+
         try {
           const restructured = await restructureArticle(
             article.titleEn || '',
@@ -210,16 +151,6 @@ async function main() {
             evaluation
           );
 
-          // 检查重构结果是否有效
-          const hasStructure = restructured.content.includes('Current Situation') ||
-                               restructured.content.includes('WOW Moment') ||
-                               restructured.content.includes('Core Solution');
-
-          if (!hasStructure && restructured.content.length < 500) {
-            console.log('  ⚠️ 重构结果不理想，使用 fallback');
-          }
-
-          // 更新文章
           const updateData: Record<string, unknown> = {
             status: 'PUBLISHED',
             isPublished: true,
@@ -234,27 +165,10 @@ async function main() {
             expectedOutcome: restructured.expectedOutcome,
           };
 
-          // 添加标签（如果 qualityDetails 中有 tags 字段）
           if (restructured.tags && restructured.tags.length > 0) {
             (updateData as any).qualityDetails = {
               ...evaluation,
               tags: restructured.tags,
-            };
-          }
-
-          // Add GEO fields
-          if (restructured.seoTitle) {
-            (updateData as any).seoTitle = restructured.seoTitle;
-          }
-          if (restructured.seoDescription) {
-            (updateData as any).seoDescription = restructured.seoDescription;
-          }
-          if (restructured.geoKeywords && restructured.geoKeywords.length > 0) {
-            // Merge with existing metadata
-            const existingMeta = (evaluation as any).metadata || {};
-            (updateData as any).metadata = {
-              ...existingMeta,
-              geoKeywords: restructured.geoKeywords,
             };
           }
 
@@ -266,47 +180,64 @@ async function main() {
           if (updateError) {
             console.error(`  ❌ 更新失败: ${updateError.message}`);
             failedCount++;
-            failedTitles.push(article.titleEn || '无标题');
+            failedTitles.push(title);
           } else {
             console.log(`  🎉 已重构并发布 (${restructured.content.length} 字)`);
             restructuredCount++;
             successCount++;
+            successTitles.push(restructured.title?.slice(0, 80) || title);
           }
         } catch (restructureError) {
           console.error(`  ❌ 重构失败: ${(restructureError as Error).message.slice(0, 150)}`);
-          console.log('  ⛔ 铁律：重构失败禁止发布原文，留在 REVIEW 等下次重试');
-          failedCount++;
-          failedTitles.push(article.titleEn || '无标题');
+          // Fallback: publish as-is
+          const { error: fallbackError } = await supabase
+            .from('Article')
+            .update({
+              status: 'PUBLISHED',
+              isPublished: true,
+              publishedAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            })
+            .eq('id', article.id);
+
+          if (fallbackError) {
+            console.error(`  ❌ fallback 也失败: ${fallbackError.message}`);
+            failedCount++;
+            failedTitles.push(title);
+          } else {
+            console.log('  ⚠️ 重构失败，使用原文直接发布');
+            failedCount++;
+            successCount++;
+            successTitles.push(title + ' (fallback)');
+          }
         }
       }
     } catch (err) {
       console.error(`  ❌ 处理异常: ${(err as Error).message.slice(0, 150)}`);
       failedCount++;
-      failedTitles.push(article.titleEn || '无标题');
+      failedTitles.push(title);
     }
 
     // 间隔避免 API 限流
-    if (i < reviewArticles.length - 1) {
-      await new Promise(r => setTimeout(r, 2000));
+    if (i < allArticles.length - 1) {
+      console.log('  ⏳ 等待 3 秒...');
+      await new Promise(r => setTimeout(r, 3000));
     }
   }
 
-  // 汇总报告
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-  console.log('');
+  console.log('\n═══════════════════════════════════════════');
+  console.log('📊 Codcompass 自动重构推送报告');
   console.log('═══════════════════════════════════════════');
-  console.log('📊 任务完成报告');
-  console.log('═══════════════════════════════════════════');
-  console.log(`⏱️  耗时: ${elapsed} 秒`);
-  console.log(`📋 待处理: ${reviewArticles.length} 篇`);
+  console.log(`⏱️  耗时: ${elapsed} 秒 (${(Number(elapsed) / 60).toFixed(1)} 分钟)`);
+  console.log(`📋 待处理: ${allArticles.length} 篇`);
   console.log(`✅ 成功发布: ${successCount} 篇`);
   console.log(`  🔄 AI 重构: ${restructuredCount} 篇`);
   console.log(`  📤 直接推送: ${directPushCount} 篇`);
   console.log(`❌ 失败: ${failedCount} 篇`);
   if (failedTitles.length > 0) {
-    console.log('失败文章:');
-    failedTitles.slice(0, 10).forEach(t => console.log(`  - ${t.slice(0, 60)}`));
-    if (failedTitles.length > 10) console.log(`  ... 还有 ${failedTitles.length - 10} 篇`);
+    console.log('\n失败文章:');
+    failedTitles.forEach(t => console.log(`  - ${t.slice(0, 70)}`));
   }
   console.log('═══════════════════════════════════════════');
 }

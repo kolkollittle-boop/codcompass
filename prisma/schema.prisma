@@ -23,9 +23,9 @@ model User {
   updatedAt          DateTime              @updatedAt
   lastLoginAt        DateTime?
   accounts           Account[]
-  sessions           Session[]
   views              ArticleView[]
   bookmarks          Bookmark[]
+  sessions           Session[]
   subscriptions      Subscription[]
   feedbacks          TranslationFeedback[]
 
@@ -37,7 +37,6 @@ model User {
 model Account {
   id                String   @id @default(cuid())
   userId            String
-  type              String
   provider          String
   providerAccountId String
   access_token      String?
@@ -48,6 +47,7 @@ model Account {
   id_token          String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  type              String
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -72,21 +72,21 @@ model Subscription {
   userId               String
   /// Paddle subscription id (Prisma maps to legacy DB column `lemonSqueezyId`)
   paddleSubscriptionId String             @unique @map("lemonSqueezyId")
-  orderId        Int
-  variantId      Int
-  status         SubscriptionStatus @default(INACTIVE)
-  planType       PlanType
-  price          Int
-  currency       String             @default("USD")
-  renewsAt       DateTime?
-  endsAt         DateTime?
-  cancelledAt    DateTime?
-  trialStart     DateTime?
-  trialEnd       DateTime?
-  metadata       Json?
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  user           User               @relation(fields: [userId], references: [id])
+  orderId              Int
+  variantId            Int
+  status               SubscriptionStatus @default(INACTIVE)
+  planType             PlanType
+  price                Int
+  currency             String             @default("USD")
+  renewsAt             DateTime?
+  endsAt               DateTime?
+  cancelledAt          DateTime?
+  trialStart           DateTime?
+  trialEnd             DateTime?
+  metadata             Json?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  user                 User               @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([status])
@@ -96,50 +96,47 @@ model Subscription {
 /// Knowledge Base: structured tutorials, guides, and reference material (Codcompass taxonomy).
 /// Distinct from `BlogPost`, which holds practitioner experience-style articles.
 model Article {
-  id             String               @id @default(cuid())
-  slug           String               @unique
-  originalUrl    String?
-  titleEn        String
-  contentEn      String
-  descriptionEn  String?
-  excerptEn      String?
-  sourceSite     String?
-  sourceAuthor   String?
-  crawledAt      DateTime?
-  status         ArticleStatus        @default(DRAFT)
-  isPublished    Boolean              @default(false)
-  isPremium      Boolean              @default(true)
-  accessLevel    String               @default("free")
-  publishedAt    DateTime?
-  viewCount      Int                  @default(0)
-  likeCount      Int                  @default(0)
-  qualityScore   Int?
-  qualityDetails Json?
-  metadata       Json?
-  seoTitle       String?
-  seoDescription String?
-  canonicalUrl   String?
-  publishedBy    String?
-  editedAt       DateTime?
-  
-  // Codcompass 2.0 新增字段
-  difficultyLevel String?              // L1, L2, L3, L4
-  readingTime     Int?                 // 预计阅读时间（分钟）
-  expectedOutcome String?              // 预期收益短句
-  seriesId        String?              // 所属专题 ID
-  seriesOrder     Int?                 // 专题中的顺序
-  blueprintUrl    String?              // Production Blueprint 下载链接
-  blueprintName   String?              // Blueprint 文件名
-  isFeatured      Boolean?             // Whether this article is featured (score >= 80)
-
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
-  translations   ArticleTranslation[]
-  views          ArticleView[]
-  bookmarks      Bookmark[]
-  categories     Category[]           @relation("ArticleToCategory")
-  tags           Tag[]                @relation("ArticleToTag")
-  series         ArticleSeries?       @relation(fields: [seriesId], references: [id])
+  id              String               @id @default(dbgenerated("gen_random_uuid()"))
+  slug            String               @unique
+  originalUrl     String?
+  titleEn         String
+  contentEn       String
+  descriptionEn   String?
+  excerptEn       String?
+  sourceSite      String?
+  sourceAuthor    String?
+  crawledAt       DateTime?
+  status          ArticleStatus        @default(DRAFT)
+  isPublished     Boolean              @default(false)
+  isPremium       Boolean              @default(true)
+  publishedAt     DateTime?
+  viewCount       Int                  @default(0)
+  likeCount       Int                  @default(0)
+  qualityScore    Int?
+  qualityDetails  Json?
+  seoTitle        String?
+  seoDescription  String?
+  canonicalUrl    String?
+  publishedBy     String?
+  editedAt        DateTime?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  difficultyLevel String?
+  readingTime     Int?
+  expectedOutcome String?
+  seriesId        String?
+  seriesOrder     Int?
+  blueprintUrl    String?
+  blueprintName   String?
+  accessLevel     String               @default("free")
+  isFeatured      Boolean?
+  metadata        Json?
+  series          ArticleSeries?       @relation(fields: [seriesId], references: [id])
+  translations    ArticleTranslation[]
+  views           ArticleView[]
+  bookmarks       Bookmark[]
+  categories      Category[]           @relation("ArticleToCategory")
+  tags            Tag[]                @relation("ArticleToTag")
 
   @@index([slug])
   @@index([status])
@@ -148,6 +145,7 @@ model Article {
   @@index([sourceSite])
   @@index([seriesId])
   @@index([difficultyLevel])
+  @@index([status], map: "idx_articles_status")
 }
 
 model ArticleTranslation {
@@ -213,22 +211,22 @@ model BlogPost {
   id             String       @id @default(cuid())
   slug           String       @unique
   title          String
-  contentHtml    String       @db.Text
+  contentHtml    String
   excerpt        String?
   /// Original author or contributor name (often someone outside core KB editorial).
   author         String?
   readingMinutes Int          @default(5)
   isPublished    Boolean      @default(false)
-  isFeatured     Boolean?     // Whether this blog post is featured (score >= 80)
   publishedAt    DateTime?
   viewCount      Int          @default(0)
   seoTitle       String?
   seoDescription String?
   tags           String[]     @default([])
   categoryId     String
-  category       BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  isFeatured     Boolean?
+  category       BlogCategory @relation(fields: [categoryId], references: [id])
 
   @@index([slug])
   @@index([isPublished, publishedAt])
@@ -291,14 +289,14 @@ model TranslationFeedback {
 }
 
 model CrawlerConfig {
-  id                     String   @id @default(cuid())
-  schedule               String   @default("0 * * * *")
-  enabled                Boolean  @default(true)
-  sources                Json     @default("[]")
-  translateContent       Boolean  @default(true)
-  translateTargetLanguages Json   @default("[\"zh\"]")
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  id                       String   @id @default(cuid())
+  schedule                 String   @default("0 * * * *")
+  enabled                  Boolean  @default(true)
+  sources                  Json     @default("[]")
+  translateContent         Boolean  @default(true)
+  translateTargetLanguages Json     @default("[\"zh\"]")
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
 
   @@index([enabled])
 }
@@ -320,20 +318,19 @@ model CrawlerJob {
   @@index([createdAt])
 }
 
-// Codcompass 2.0 新增：专题路径模型
 model ArticleSeries {
-  id          String    @id @default(cuid())
-  slug        String    @unique
-  title       String
-  titleEn     String
-  description String?
-  totalParts  Int       @default(1)
-  estimatedTime Int?    // 总预计学习时间（分钟）
-  order       Int       @default(0)
-  isPublished Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  articles    Article[]
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  title         String
+  titleEn       String
+  description   String?
+  totalParts    Int       @default(1)
+  estimatedTime Int?
+  order         Int       @default(0)
+  isPublished   Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  articles      Article[]
 
   @@index([slug])
   @@index([isPublished])

@@ -27,6 +27,10 @@ interface RestructureResult {
   tags: string[];
   readingTimeMinutes: number;
   expectedOutcome: string;
+  // GEO (Generative Engine Optimization)
+  seoTitle: string;
+  seoDescription: string;
+  geoKeywords: string[];
 }
 
 /**
@@ -290,6 +294,10 @@ function buildRestructureResult(
     tags: extractTags(restructuredContent, extractedTitle),
     readingTimeMinutes: Math.ceil(restructuredContent.length / 1000 * 5),
     expectedOutcome: extractExpectedOutcome(restructuredContent),
+    // GEO fields
+    seoTitle: generateSeoTitle(extractedTitle),
+    seoDescription: generateSeoDescription(restructuredContent, extractedTitle),
+    geoKeywords: generateGeoKeywords(restructuredContent, extractedTitle),
   };
 }
 
@@ -306,6 +314,9 @@ function createFallbackResult(
     tags: extractTags(originalContent, originalTitle),
     readingTimeMinutes: Math.ceil(originalContent.length / 1000 * 5),
     expectedOutcome: '',
+    seoTitle: generateSeoTitle(originalTitle),
+    seoDescription: generateSeoDescription(originalContent, originalTitle),
+    geoKeywords: generateGeoKeywords(originalContent, originalTitle),
   };
 }
 
@@ -387,4 +398,99 @@ export function generateExcerpt(content: string, maxLength: number = 200): strin
   }
 
   return truncated + '...';
+}
+
+// ============================================================
+// GEO (Generative Engine Optimization) helpers
+// ============================================================
+
+/**
+ * Generate SEO-optimized title for search engines and AI crawlers
+ */
+export function generateSeoTitle(title: string): string {
+  // Remove leading markdown heading markers
+  const clean = title.replace(/^#\s+/, '').trim();
+  // Ensure it's under 60 chars (Google title display limit)
+  if (clean.length <= 60) return clean;
+  // Truncate at word boundary
+  const truncated = clean.substring(0, 57);
+  const lastSpace = truncated.lastIndexOf(' ');
+  return (lastSpace > 30 ? truncated.substring(0, lastSpace) : truncated) + '...';
+}
+
+/**
+ * Generate SEO description (150-160 chars optimal for Google snippet)
+ */
+export function generateSeoDescription(content: string, title: string): string {
+  const plainText = content
+    .replace(/#{1,6}\s/g, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\|[^|]+\|/g, '') // Remove table rows
+    .replace(/-\s\[\s?\]/g, '') // Remove checkbox lines
+    .trim();
+
+  // Take first meaningful paragraph
+  const paragraphs = plainText.split('\n\n').filter(p => p.trim().length > 50);
+  const firstPara = paragraphs[0] || plainText;
+
+  // Extract first sentence that mentions key tech
+  const sentences = firstPara.split(/[.!?]+/).filter(s => s.trim().length > 20);
+
+  for (const sentence of sentences) {
+    const s = sentence.trim();
+    if (s.length >= 80 && s.length <= 160) {
+      return s + '.';
+    }
+    if (s.length > 160) {
+      return s.substring(0, 157) + '...';
+    }
+  }
+
+  // Fallback: truncate the first paragraph
+  const fallback = firstPara.substring(0, 157);
+  const lastSpace = fallback.lastIndexOf(' ');
+  return (lastSpace > 80 ? fallback.substring(0, lastSpace) : fallback) + '...';
+}
+
+/**
+ * Generate GEO keywords for AI engine indexing
+ */
+export function generateGeoKeywords(content: string, title: string): string[] {
+  // Extended keyword list for GEO
+  const geoKeywords = [
+    // Frameworks & Languages
+    'Next.js', 'Next.js 15', 'Next.js 14', 'React', 'TypeScript', 'JavaScript',
+    'Python', 'Rust', 'Go', 'Node.js', 'Deno', 'Bun',
+    // AI & ML
+    'AI', 'Machine Learning', 'LLM', 'GPT', 'Claude', 'RAG',
+    'Vector Database', 'Embeddings', 'Prompt Engineering', 'Fine-tuning',
+    // Backend & Database
+    'Supabase', 'PostgreSQL', 'MongoDB', 'Redis', 'GraphQL', 'REST API',
+    'Prisma', 'Drizzle ORM', 'tRPC', 'FastAPI', 'Express',
+    // DevOps & Cloud
+    'Docker', 'Kubernetes', 'AWS', 'Vercel', 'Cloudflare', 'CI/CD',
+    'GitHub Actions', 'Terraform', 'Serverless', 'Microservices',
+    // Frontend
+    'Tailwind CSS', 'shadcn/ui', 'Framer Motion', 'Zustand', 'Redux',
+    'React Query', 'TanStack', 'SWR',
+    // Best Practices
+    'Best Practices', 'Tutorial', 'Guide', 'How To', 'Production Ready',
+    'Code Examples', 'Architecture', 'Design Patterns', 'Performance',
+    'Security', 'Authentication', 'Deployment', 'Testing',
+  ];
+
+  const text = `${title} ${content.substring(0, 5000)}`.toUpperCase();
+  const keywords: string[] = [];
+
+  for (const keyword of geoKeywords) {
+    if (text.includes(keyword.toUpperCase()) && !keywords.includes(keyword)) {
+      keywords.push(keyword);
+    }
+    if (keywords.length >= 15) break;
+  }
+
+  return keywords;
 }

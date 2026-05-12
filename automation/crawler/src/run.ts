@@ -392,13 +392,14 @@ async function processDbTask(
     let expectedOutcomeStr: string;
 
     if (route.type === 'BLOG') {
-      // 博客保持原文（英文源站），不走重构模型，避免正文/摘要被译成中文
-      contentSourceMd = markdown;
-      excerptStr = generateExcerpt(markdown);
-      tagsForPost = extractTags(markdown, fullArticle.title);
-      readingMinutesVal = Math.max(1, Math.ceil((markdown.length / 1000) * 5));
-      expectedOutcomeStr = '';
-      diffLevel = evaluation.difficulty_level || 'L2';
+    // 博客也走重构（版权安全 + 内容清洗），但保留原文核心信息
+    const restructured = await restructureArticle(fullArticle.title, markdown, evaluation);
+    contentSourceMd = restructured.content;
+    excerptStr = restructured.excerpt;
+    tagsForPost = restructured.tags;
+    readingMinutesVal = restructured.readingTimeMinutes;
+    expectedOutcomeStr = restructured.expectedOutcome;
+    diffLevel = restructured.difficultyLevel;
     } else {
       const restructured = await restructureArticle(fullArticle.title, markdown, evaluation);
       contentSourceMd = restructured.content;
