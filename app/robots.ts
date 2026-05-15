@@ -12,12 +12,6 @@ export default function robots(): MetadataRoute.Robots {
           '/login',
           '/signup',
           '/dashboard/',
-          '/search',
-          '/patients/',
-          '/conductor:',
-          '/opt/',
-          '/mnt/',
-          '/local-only/',
           '/auth/',
           '/checkout/',
         ],
@@ -42,7 +36,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: 'Cohere-Web',
         allow: '/',
       },
-    ]
+    ],
     sitemap: 'https://www.codcompass.com/sitemap.xml',
   };
 }

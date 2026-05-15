@@ -11,7 +11,7 @@ import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { restructureArticle } from './article-restructurer.js';
+import { restructureArticle, generateSeoTitle, generateSeoDescription } from './article-restructurer.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.local') });
@@ -105,6 +105,10 @@ async function main() {
     try {
       if (isRestructured(article.contentEn)) {
         console.log('  ✅ 已重构，直接发布');
+        // Generate SEO fields if missing
+        const seoTitle = generateSeoTitle(article.titleEn || '');
+        const seoDescription = generateSeoDescription(article.contentEn || '', article.titleEn || '');
+
         const { error: updateError } = await supabase
           .from('Article')
           .update({
@@ -112,6 +116,8 @@ async function main() {
             isPublished: true,
             publishedAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
+            seoTitle,
+            seoDescription,
           })
           .eq('id', article.id);
 
@@ -155,10 +161,17 @@ async function main() {
             difficultyLevel: restructured.difficultyLevel,
             readingTime: restructured.readingTimeMinutes,
             expectedOutcome: restructured.expectedOutcome,
+            seoTitle: restructured.seoTitle || generateSeoTitle(restructured.title),
+            seoDescription: restructured.seoDescription || generateSeoDescription(restructured.content, restructured.title),
           };
 
           if (restructured.tags?.length) {
             updateData.qualityDetails = { ...evaluation, tags: restructured.tags };
+          }
+
+          if (restructured.geoKeywords?.length) {
+            const existingMeta = (updateData as any).metadata || {};
+            updateData.metadata = { ...existingMeta, geoKeywords: restructured.geoKeywords };
           }
 
           const { error: updateError } = await supabase
