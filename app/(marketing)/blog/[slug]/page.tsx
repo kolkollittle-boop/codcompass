@@ -61,7 +61,7 @@ export default async function BlogDetailPage({ params }: Props) {
           </header>
 
           <div
-            className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-docs-heading prose-p:text-docs-body prose-p:leading-relaxed prose-a:text-docs-accent prose-code:text-docs-secondary prose-li:text-docs-body"
+            className="prose prose-lg prose-invert max-w-none prose-headings:font-bold prose-headings:text-docs-heading prose-p:text-docs-body prose-p:leading-relaxed prose-a:text-docs-accent prose-code:text-docs-secondary prose-code:bg-docs-code prose-li:text-docs-body prose-pre:bg-docs-code prose-pre:border prose-pre:border-docs-border"
             dangerouslySetInnerHTML={{ __html: safe }}
           />
         </article>
