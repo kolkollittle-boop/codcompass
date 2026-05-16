@@ -26,7 +26,7 @@ const pricingPlans: PricingPlanV2[] = [
   {
     name: 'Base',
     price: '$4.99',
-    yearlyPrice: '$49',
+    originalPrice: '$9.99',
     description: 'Full access to all 635+ curated tutorials and expert insights.',
     features: [
       'Full article access (KB + Blog)',
@@ -43,7 +43,7 @@ const pricingPlans: PricingPlanV2[] = [
   {
     name: 'Pro',
     price: '$14.99',
-    yearlyPrice: '$149',
+    originalPrice: '$29',
     description: 'AI-powered Q&A, code review, and everything in Base.',
     features: [
       'Everything in Base, plus:',

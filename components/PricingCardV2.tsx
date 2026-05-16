@@ -5,6 +5,7 @@ interface PricingPlanV2 {
   name: string;
   price: string;
   originalPrice?: string;
+  yearlyPrice?: string;
   description: string;
   features: string[];
   cta: string;
@@ -62,6 +63,11 @@ export default function PricingCardV2({ plan }: { plan: PricingPlanV2 }) {
           )}
           <span className="text-sm text-zinc-500">/month</span>
         </div>
+        {plan.yearlyPrice && (
+          <p className="mt-1 text-sm text-zinc-400">
+            or <span className="text-white font-medium">{plan.yearlyPrice}</span>/year
+          </p>
+        )}
         {plan.valueProof && (
           <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-docs-accent">
             <Check className="w-3.5 h-3.5" />
