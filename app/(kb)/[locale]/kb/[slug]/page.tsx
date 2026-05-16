@@ -1,11 +1,10 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import PaywallV2 from '@/components/PaywallV2';
 import HeaderMetaCard from '@/components/HeaderMetaCard';
 import PathNavigator from '@/components/PathNavigator';
 import ProductionBundle from '@/components/ProductionBundle';
 import { getArticleBySlug, incrementViewCount, getSeriesArticles } from '@/lib/supabase';
-import { getKbUserAccessLevel } from '@/lib/kb-access';
+import { auth } from '@/lib/auth';
 import { recordUserArticleViewIfAuthenticated } from '@/lib/article-view';
 import { getArticleContent, type Locale } from '@/lib/i18n';
 import ArticleBookmarkButton from '@/components/ArticleBookmarkButton';
@@ -13,7 +12,7 @@ import ArticleReadTracker from '@/components/ArticleReadTracker';
 import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Lock } from 'lucide-react';
 import { DocsBreadcrumbs } from '@/components/docs/DocsBreadcrumbs';
 import { articleMarkdownComponents } from '@/lib/article-markdown';
 
@@ -145,17 +144,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const proseArticle =
     'prose prose-lg prose-invert max-w-none prose-a:no-underline prose-p:leading-relaxed prose-p:break-words prose-pre:whitespace-pre-wrap prose-pre:break-words';
 
-  const userAccessLevel = await getKbUserAccessLevel();
-  const articleAccessLevel = String(
-    dbArticle.accessLevel || (dbArticle.isPremium ? 'pro' : 'free')
-  ).toLowerCase();
-  const hasPremiumArticleAccess =
-    articleAccessLevel === 'free' ||
-    (articleAccessLevel === 'builder' &&
-      (userAccessLevel === 'builder' || userAccessLevel === 'pro')) ||
-    (articleAccessLevel === 'pro' && userAccessLevel === 'pro');
-  const showProductionBundleAsPaid =
-    userAccessLevel === 'builder' || userAccessLevel === 'pro';
+  // Login wall: logged-in users see full content, guests see preview + login prompt
+  const session = await auth();
+  const isLoggedIn = !!session?.user;
+  const showProductionBundleAsPaid = isLoggedIn;
 
   return (
     <div className="min-h-0 text-zinc-400">
@@ -201,32 +193,48 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </header>
 
             <div id="docs-content" className="space-y-8">
-              <div className={proseArticle}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                  {freeContent}
-                </ReactMarkdown>
-              </div>
-
-            {hasPremiumArticleAccess ? (
-              <div className={`${proseArticle} mt-8`}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                  {premiumContent}
-                </ReactMarkdown>
-              </div>
-            ) : (
-              <>
-                <PaywallV2 variant="overlay" locale={locale} copyVersion="C" />
-                <div className="relative mt-10">
-                  <div className="pointer-events-none select-none opacity-30 blur-md" aria-hidden="true">
-                    <div className={proseArticle}>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                        {premiumContent}
-                      </ReactMarkdown>
+              {isLoggedIn ? (
+                /* Logged-in: show full content */
+                <div className={proseArticle}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                    {content.content}
+                  </ReactMarkdown>
+                </div>
+              ) : (
+                /* Guest: preview + login wall */
+                <>
+                  <div className={proseArticle}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                      {freeContent}
+                    </ReactMarkdown>
+                  </div>
+                  <div className="relative mt-10">
+                    <div className="pointer-events-none select-none opacity-20 blur-lg" aria-hidden="true">
+                      <div className={proseArticle}>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                          {premiumContent}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-docs-bg via-docs-bg/95 to-transparent">
+                      <div className="text-center max-w-md px-6">
+                        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand/10">
+                          <Lock className="h-6 w-6 text-brand" />
+                        </div>
+                        <h3 className="mb-2 text-xl font-semibold text-white">Members Only</h3>
+                        <p className="mb-6 text-zinc-500">Sign in to read the full article. Free registration.</p>
+                        <Link
+                          href="/login"
+                          className="inline-flex items-center rounded-lg bg-docs-accent px-6 py-2.5 font-medium text-docs-bg shadow-lg shadow-docs-accent/20 transition hover:bg-docs-accent-hover"
+                        >
+                          Sign In / Register
+                        </Link>
+                        <p className="mt-3 text-xs text-zinc-600">Supports Google, GitHub, and email</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
             </div>
 
             <ProductionBundle
