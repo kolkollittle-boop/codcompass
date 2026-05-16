@@ -5,8 +5,8 @@ import { Check, Shield, Clock, ArrowRight } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pricing - Codcompass',
-  description: 'Flexible pricing for developers. 7-day trial on all plans. Builder $9.99/mo, Pro $29/mo, or Enterprise—yearly billing saves more.',
+  title: 'Pricing - Codcompass | Mid-Year Sale 🎉',
+  description: 'Mid-Year Sale! Base $4.99/mo, Pro $14.99/mo. Limited-time pricing. 7-day trial on all plans.',
   keywords: ['developer subscription', 'tech tutorials pricing', 'AI knowledge base', 'developer tools pricing'],
   openGraph: {
     title: 'Pricing - Codcompass',
@@ -24,39 +24,41 @@ export const metadata: Metadata = {
 
 const pricingPlans: PricingPlanV2[] = [
   {
-    name: 'Builder',
-    price: '$9.99',
-    description: 'For individual developers who want full access to tutorials and expert insights.',
+    name: 'Base',
+    price: '$4.99',
+    yearlyPrice: '$49',
+    description: 'Full access to all 635+ curated tutorials and expert insights.',
     features: [
-      'Full article access',
+      'Full article access (KB + Blog)',
       'Advanced search & filtering',
-      'Save articles for later',
+      'Bookmark & save articles',
       'Monthly newsletter',
       'Email support',
     ],
     cta: 'Subscribe Now',
-    ctaHref: '/checkout?plan=builder&billing=yearly',
+    ctaHref: '/checkout?plan=base&billing=yearly',
     icon: 'sparkles',
-    valueProof: 'Save 10+ hours/week on research',
+    valueProof: 'Less than a cup of coffee per month',
   },
   {
     name: 'Pro',
-    price: '$29',
-    description: 'For developers who need AI-powered tools and team collaboration features.',
+    price: '$14.99',
+    yearlyPrice: '$149',
+    description: 'AI-powered Q&A, code review, and everything in Base.',
     features: [
-      'Everything in Builder, plus:',
-      'AI Q&A (RAG-powered)',
-      'Code review with AI',
+      'Everything in Base, plus:',
+      'AI Q&A Assistant (RAG-powered)',
+      'AI Code Review',
       'Early access to new content',
-      'Team collaboration',
       'Priority support',
+      'Production Bundle downloads',
     ],
     cta: 'Subscribe Now',
     ctaHref: '/checkout?plan=pro&billing=yearly',
     highlighted: true,
-    badge: 'Most Popular',
+    badge: '🎉 Mid-Year Sale — 50% Off',
     icon: 'zap',
-    valueProof: 'Save $71/year with yearly billing',
+    valueProof: 'Save $30/year with yearly billing',
     refundGuarantee: true,
   },
   {
@@ -117,9 +119,9 @@ export default function PricingPage() {
         <section className="relative overflow-hidden px-4 py-20 text-center sm:py-24">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(23,178,100,0.14),transparent)]" />
           <div className="relative z-10 mx-auto max-w-site">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-docs-accent/25 bg-docs-green-subtle px-4 py-2 text-sm font-medium text-docs-accent">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400">
               <Clock className="h-4 w-4" />
-              7-day trial on all plans
+              🎉 Mid-Year Sale — Save up to 50% — Limited Time
             </div>
             <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-docs-heading sm:text-5xl lg:text-6xl">
               Simple, transparent
@@ -163,12 +165,12 @@ export default function PricingPage() {
             <p className="mb-12 text-lg text-docs-body">Thousands of developers use it for learning and production reference.</p>
             <div className="grid gap-8 sm:grid-cols-3">
               <div className="docs-card rounded-2xl border border-docs-border bg-docs-bg p-6">
-                <div className="mb-2 text-4xl font-bold text-docs-accent">10K+</div>
-                <div className="text-sm text-docs-muted">Curated articles</div>
+                <div className="mb-2 text-4xl font-bold text-docs-accent">635+</div>
+                <div className="text-sm text-docs-muted">Curated & refactored articles</div>
               </div>
               <div className="docs-card rounded-2xl border border-docs-border bg-docs-bg p-6">
-                <div className="mb-2 text-4xl font-bold text-docs-accent">25K+</div>
-                <div className="text-sm text-docs-muted">Monthly readers</div>
+                <div className="mb-2 text-4xl font-bold text-docs-accent">33</div>
+                <div className="text-sm text-docs-muted">Technical categories</div>
               </div>
               <div className="docs-card rounded-2xl border border-docs-border bg-docs-bg p-6">
                 <div className="mb-2 text-4xl font-bold text-docs-accent">4.9/5</div>

@@ -14,16 +14,16 @@ declare global {
 
 const plans = [
   {
-    id: 'builder',
-    name: 'Builder',
-    monthlyPrice: '$9.99',
-    yearlyPrice: '$99',
-    yearlySavings: 'Save $20.88/year',
-    description: 'Full article access, advanced search, and more.',
+    id: 'base',
+    name: 'Base',
+    monthlyPrice: '$4.99',
+    yearlyPrice: '$49',
+    yearlySavings: 'Save $10/year',
+    description: 'Full access to 635+ curated tutorials and expert insights.',
     features: [
-      'Full article access',
+      'Full article access (KB + Blog)',
       'Advanced search & filtering',
-      'Save articles for later',
+      'Bookmark & save articles',
       'Monthly newsletter',
       'Email support',
     ],
@@ -31,17 +31,17 @@ const plans = [
   {
     id: 'pro',
     name: 'Pro',
-    monthlyPrice: '$29',
-    yearlyPrice: '$299',
-    yearlySavings: 'Save $49/year',
-    description: 'Everything in Builder, plus AI Q&A, code review, and team features.',
+    monthlyPrice: '$14.99',
+    yearlyPrice: '$149',
+    yearlySavings: 'Save $30/year',
+    description: 'AI Q&A, code review, and everything in Base.',
     features: [
-      'Everything in Builder',
-      'AI Q&A (RAG-powered)',
-      'Code review with AI',
+      'Everything in Base',
+      'AI Q&A Assistant (RAG-powered)',
+      'AI Code Review',
       'Early access to new content',
-      'Team collaboration',
       'Priority support',
+      'Production Bundle downloads',
     ],
     popular: true,
   },
@@ -177,7 +177,7 @@ export function CheckoutContent() {
                     : 'text-palette-textMuted hover:text-white'
                 }`}
               >
-                Yearly <span className="text-green-400 text-xs">(-33%)</span>
+                Yearly <span className="text-green-400 text-xs">(-17%)</span>
               </a>
             </div>
 

@@ -36,7 +36,7 @@ export default function HomePage() {
       {/* Top promo bar */}
       <div className="bg-docs-green-dark py-2.5 text-center text-sm font-medium text-docs-accent">
         <Link href="/pricing" className="underline-offset-2 hover:underline hover:text-docs-accent-hover">
-          7-day free trial on all plans · Builder $9.99/mo, Pro $29/mo · View pricing →
+          🎉 Mid-Year Sale — Base $4.99/mo, Pro $14.99/mo — View pricing →
         </Link>
       </div>
 
@@ -57,10 +57,10 @@ export default function HomePage() {
               Every flagship article ships with a <strong className="text-docs-heading">Production Blueprint</strong>
               : deployable code, pitfall checklists, and architecture callouts. Start with a{' '}
               <strong className="text-docs-accent">7-day free trial</strong>—then{' '}
-              <strong className="text-docs-heading">Builder</strong> at <strong className="text-docs-heading">$9.99/mo</strong>{' '}
-              or <strong className="text-docs-heading">Pro</strong> at <strong className="text-docs-heading">$29/mo</strong>
-              {' '}(save with yearly: <strong className="text-docs-heading">$99/yr</strong> Builder,{' '}
-              <strong className="text-docs-heading">$299/yr</strong> Pro).
+              <strong className="text-docs-heading">Base</strong> at <strong className="text-docs-heading">$4.99/mo</strong>{' '}
+              or <strong className="text-docs-heading">Pro</strong> at <strong className="text-docs-heading">$14.99/mo</strong>
+              {' '}(save with yearly: <strong className="text-docs-heading">$49/yr</strong> Base,{' '}
+              <strong className="text-docs-heading">$149/yr</strong> Pro).
             </p>
             <div className="mt-8 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-center sm:gap-4 xl:justify-start">
               <Link
@@ -68,7 +68,7 @@ export default function HomePage() {
                 className="inline-flex items-center justify-center gap-2 rounded-md bg-docs-accent px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-docs-accent-hover"
               >
                 <Icon name="zap" size={18} />
-                Subscribe to Pro · $299/year
+                Subscribe to Pro · $149/year
               </Link>
               <Link
                 href="/pricing"
@@ -146,7 +146,7 @@ export default function HomePage() {
               Ready to Turn Knowledge Into Real Production?
             </h2>
             <p className="text-lg text-palette-textMuted mb-8">
-              <strong className="text-white">Pro $29/mo</strong> ($299/yr) · <strong className="text-white">Builder $9.99/mo</strong> ($99/yr)
+              <strong className="text-white">Pro $14.99/mo</strong> ($149/yr) · <strong className="text-white">Base $4.99/mo</strong> ($49/yr)
               {' — '}
               <span className="text-palette-textSecondary">7-day free trial, then billed on the plan you choose.</span>
             </p>
@@ -155,7 +155,7 @@ export default function HomePage() {
                 href="/checkout?plan=pro&billing=yearly"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-palette-primary text-white font-semibold hover:bg-palette-primary-hover transition-all shadow-lg shadow-cc-theme"
               >
-                Get Pro · $299/year
+                Get Pro · $149/year
                 <Icon name="arrow-right" size={18} />
               </Link>
               <Link

@@ -131,8 +131,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     }
   }
 
-  // Split content into free (first 40%) and premium (remaining 60%)
-  const freeContentLength = Math.floor(content.content.length * 0.4);
+  // Split content: first 25% is free preview for non-logged-in users
+  const freeContentLength = Math.floor(content.content.length * 0.25);
   const freeContent = content.content.slice(0, freeContentLength);
   const premiumContent = content.content.slice(freeContentLength);
 
@@ -218,18 +218,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     </div>
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-docs-bg via-docs-bg/95 to-transparent">
                       <div className="text-center max-w-md px-6">
-                        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand/10">
-                          <Lock className="h-6 w-6 text-brand" />
+                        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10">
+                          <Lock className="h-6 w-6 text-amber-400" />
                         </div>
-                        <h3 className="mb-2 text-xl font-semibold text-white">Members Only</h3>
-                        <p className="mb-6 text-zinc-500">Sign in to read the full article. Free registration.</p>
+                        <h3 className="mb-2 text-xl font-semibold text-white">🎉 Mid-Year Sale — Unlock Full Article</h3>
+                        <p className="mb-2 text-zinc-400">Base plan from just <span className="text-white font-bold">$4.99/mo</span> or <span className="text-white font-bold">$49/yr</span></p>
+                        <p className="mb-4 text-zinc-500">Sign in to read the full article and unlock all 635+ tutorials.</p>
                         <Link
                           href="/login"
                           className="inline-flex items-center rounded-lg bg-docs-accent px-6 py-2.5 font-medium text-docs-bg shadow-lg shadow-docs-accent/20 transition hover:bg-docs-accent-hover"
                         >
-                          Sign In / Register
+                          Sign In / Register — Start Free Trial
                         </Link>
-                        <p className="mt-3 text-xs text-zinc-600">Supports Google, GitHub, and email</p>
+                        <p className="mt-3 text-xs text-zinc-600">7-day free trial · Cancel anytime · 30-day money-back</p>
                       </div>
                     </div>
                   </div>

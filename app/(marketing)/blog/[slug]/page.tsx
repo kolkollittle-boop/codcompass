@@ -83,16 +83,17 @@ export default async function BlogDetailPage({ params }: Props) {
               />
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-docs-bg via-docs-bg/90 to-transparent">
                 <div className="text-center max-w-md px-6">
-                  <div className="mb-4 text-4xl">🔒</div>
-                  <h3 className="mb-2 text-xl font-semibold text-docs-heading">Members Only</h3>
-                  <p className="mb-6 text-docs-muted">Sign in to read the full article. Free registration.</p>
+                  <div className="mb-4 text-4xl">🎉</div>
+                  <h3 className="mb-2 text-xl font-semibold text-docs-heading">Mid-Year Sale — Unlock Full Article</h3>
+                  <p className="mb-2 text-docs-body">Base plan from just <span className="text-white font-bold">$4.99/mo</span> or <span className="text-white font-bold">$49/yr</span></p>
+                  <p className="mb-6 text-docs-muted">Sign in to read the full article and unlock all tutorials.</p>
                   <Link
                     href="/login"
                     className="inline-flex items-center rounded-lg bg-docs-accent px-6 py-2.5 font-medium text-docs-bg shadow-lg shadow-docs-accent/20 transition hover:bg-docs-accent-hover"
                   >
-                    Sign In / Register
+                    Sign In / Register — Start Free Trial
                   </Link>
-                  <p className="mt-3 text-xs text-docs-faint">Supports Google, GitHub, and email</p>
+                  <p className="mt-3 text-xs text-docs-faint">7-day free trial · Cancel anytime · 30-day money-back</p>
                 </div>
               </div>
             </div>
