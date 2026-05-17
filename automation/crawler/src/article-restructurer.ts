@@ -17,7 +17,7 @@
  */
 
 const RESTRUCTURE_MAX_RETRIES = 3;
-const RESTRUCTURE_TIMEOUT_MS = 120000; // 120s timeout per API call (long articles need more time)
+const RESTRUCTURE_TIMEOUT_MS = 300000; // 300s timeout per API call (long articles need more time)
 
 interface RestructureResult {
   title: string;

@@ -194,31 +194,6 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
     return [];
   }
 
-  // Step 1: Get the category ID by slug
-  const { data: category } = await supabaseAdmin
-    .from('Category')
-    .select('id')
-    .eq('slug', slug)
-    .single();
-
-  if (!category) {
-    return [];
-  }
-
-  // Step 2: Get articles in this category via the join table
-  const { data: joinRows, error: joinError } = await supabaseAdmin
-    .from('_ArticleToCategory')
-    .select('A') // A = Article.id
-    .eq('B', category.id); // B = Category.id
-
-  if (joinError || !joinRows || joinRows.length === 0) {
-    if (joinError) console.error('[getArticlesByCategorySlug] Join query error:', joinError);
-    return [];
-  }
-
-  const articleIds = joinRows.map((row: any) => row.A);
-
-  // Step 3: Fetch article details
   const { data, error } = await supabaseAdmin
     .from('Article')
     .select(`
@@ -236,7 +211,7 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
       translations:ArticleTranslation(locale, title, excerpt)
     `)
     .eq('isPublished', true)
-    .in('id', articleIds)
+    .eq('Category.slug', slug)
     .order('publishedAt', { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -248,7 +223,8 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
 }
 
 export async function incrementViewCount(articleId: string) {
-  await supabase.rpc('increment_view_count', { article_id: articleId });
+  if (!supabaseAdmin) return;
+  await supabaseAdmin.rpc('increment_view_count', { article_id: articleId });
 }
 
 export async function getCategories() {
@@ -290,22 +266,12 @@ export async function getArticleCount(categorySlug?: string): Promise<number> {
     .single();
   if (!category) return 0;
 
-  // Query Article table: filter isPublished AND categories array contains the category id
   const { count, error } = await supabaseAdmin
-    .from('Article')
-    .select('*', { count: 'exact', head: true })
-    .eq('isPublished', true)
-    .contains('categories', [category.id]);
-  if (error) {
-    console.error('[getArticleCount] Category filter error:', error);
-    // Fallback: query join table directly (legacy behavior)
-    const { count: joinCount, error: joinError } = await supabaseAdmin
-      .from('_ArticleToCategory')
-      .select('A', { count: 'exact', head: true })
-      .eq('B', category.id);
-    if (joinError) { console.error('[getArticleCount] Join error:', joinError); return 0; }
-    return joinCount ?? 0;
-  }
+    .from('_ArticleToCategory')
+    .select('A', { count: 'exact', head: true })
+    .eq('B', category.id)
+    .filter('Article.isPublished', 'eq', true);
+  if (error) { console.error('[getArticleCount] Category filter error:', error); return 0; }
   return count ?? 0;
 }
 
@@ -313,31 +279,29 @@ export async function getArticleCount(categorySlug?: string): Promise<number> {
 export async function getCategoryCounts(): Promise<Record<string, number>> {
   if (!supabaseAdmin) return {};
 
-  const { data: categories } = await supabaseAdmin
-    .from('Category')
-    .select('id, slug');
+  const [{ data: categories }, { data: articles }] = await Promise.all([
+    supabaseAdmin.from('Category').select('id, slug'),
+    supabaseAdmin
+      .from('Article')
+      .select('id, categories:_ArticleToCategory!_ArticleToCategory_A_fkey(B)')
+      .eq('isPublished', true),
+  ]);
+
   if (!categories) return {};
 
+  const catById = new Map<string, string>();
   const counts: Record<string, number> = {};
-  await Promise.all(
-    categories.map(async (cat: any) => {
-      const { count, error } = await supabaseAdmin
-        .from('Article')
-        .select('*', { count: 'exact', head: true })
-        .eq('isPublished', true)
-        .contains('categories', [cat.id]);
-      if (error) {
-        // Fallback: query join table directly
-        const { count: joinCount } = await supabaseAdmin
-          .from('_ArticleToCategory')
-          .select('A', { count: 'exact', head: true })
-          .eq('B', cat.id);
-        counts[cat.slug] = joinCount ?? 0;
-      } else {
-        counts[cat.slug] = count ?? 0;
-      }
-    })
-  );
+  for (const cat of categories as { id: string; slug: string }[]) {
+    catById.set(cat.id, cat.slug);
+    counts[cat.slug] = 0;
+  }
+
+  for (const article of articles ?? []) {
+    for (const join of article.categories ?? []) {
+      const slug = catById.get(join.B as string);
+      if (slug) counts[slug]++;
+    }
+  }
   return counts;
 }
 

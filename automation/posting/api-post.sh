@@ -51,7 +51,7 @@ case "$PLATFORM" in
     RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://dev.to/api/articles" \
       -H "api-key: $DEVTO_API_KEY" \
       -H "Content-Type: application/json" \
-      -d "{\"article\":{\"title\":$TITLE_JSON,\"body_markdown\":$CONTENT_JSON,\"tags\":[\"codcompass\",\"ai\",\"knowledgebase\",\"webdev\"],\"published\":true,\"canonical_url\":\"https://codcompass.com\"}}")
+      -d "{\"article\":{\"title\":$TITLE_JSON,\"body_markdown\":$CONTENT_JSON,\"tags\":[\"codcompass\",\"ai\",\"knowledgebase\",\"webdev\"],\"published\":true}}")
     
     HTTP_CODE=$(echo "$RESPONSE" | tail -1)
     BODY=$(echo "$RESPONSE" | sed '$d')

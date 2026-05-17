@@ -80,19 +80,20 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
     }
   }
   
-  // Get current page from URL
+  // Server-side pagination
   const currentPage = parseInt(resolvedSearchParams.page || '1') || 1;
   const itemsPerPage = 12;
 
   const totalArticles = await getArticleCount();
+  const totalPages = Math.ceil(totalArticles / itemsPerPage);
+  const clampedPage = Math.min(Math.max(currentPage, 1), Math.max(totalPages, 1));
+  const clampedOffset = (clampedPage - 1) * itemsPerPage;
 
-  const offset = (currentPage - 1) * itemsPerPage;
-  const dbArticles = await getPublishedArticles(1000, 0, locale); // fetch all for now to get accurate count
-  const paginatedArticles = dbArticles.slice(offset, offset + itemsPerPage);
+  const dbArticles = await getPublishedArticles(itemsPerPage, clampedOffset, locale);
 
   // Map articles with locale-aware content
-  const articles = paginatedArticles.length > 0 
-    ? paginatedArticles.map((a: any) => {
+  const articles = dbArticles.length > 0
+    ? dbArticles.map((a: any) => {
         const content = getArticleContent(a, locale);
         const firstCat = a.categories?.[0]?.Category?.[0];
         const catSlug = firstCat?.slug || '';
@@ -231,13 +232,13 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
           </div>
 
           {/* Pagination */}
-          {articles.length > 0 && (
+          {articles.length > 0 && totalPages > 1 && (
             <div className="mt-12 flex justify-center">
               <nav className="flex items-center gap-2">
                 {/* Previous button */}
-                {currentPage > 1 && (
+                {clampedPage > 1 && (
                   <Link
-                    href={`/${locale}/kb?page=${currentPage - 1}`}
+                    href={`/${locale}/kb?page=${clampedPage - 1}`}
                     className="docs-card inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-white/[0.03]"
                   >
                     <Icon name="chevron-left" size={16} />
@@ -246,15 +247,13 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                 )}
 
                 {/* Page numbers */}
-                {Array.from({ length: Math.ceil(totalArticles / itemsPerPage) }, (_, i) => i + 1)
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
                   .filter(page => {
-                    // Show current page, first page, last page, and pages around current
-                    return page === 1 || page === Math.ceil(totalArticles / itemsPerPage) || Math.abs(page - currentPage) <= 2;
+                    return page === 1 || page === totalPages || Math.abs(page - clampedPage) <= 2;
                   })
                   .map((page, index, array) => {
-                    // Add ellipsis if there's a gap
                     const showEllipsis = index > 0 && page - array[index - 1] > 1;
-                    
+
                     return (
                       <div key={page} className="flex items-center">
                         {showEllipsis && (
@@ -263,7 +262,7 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                         <Link
                           href={`/${locale}/kb?page=${page}`}
                           className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                            page === currentPage
+                            page === clampedPage
                               ? 'bg-white text-black'
                               : 'docs-card border border-docs-border bg-docs-surface text-zinc-400 hover:bg-white/[0.03]'
                           }`}
@@ -275,9 +274,9 @@ export default async function KbIndexPage({ params, searchParams }: KbIndexPageP
                   })}
 
                 {/* Next button */}
-                {currentPage < Math.ceil(totalArticles / itemsPerPage) && (
+                {clampedPage < totalPages && (
                   <Link
-                    href={`/${locale}/kb?page=${currentPage + 1}`}
+                    href={`/${locale}/kb?page=${clampedPage + 1}`}
                     className="docs-card inline-flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-white/[0.03]"
                   >
                     Next

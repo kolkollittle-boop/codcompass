@@ -73,17 +73,6 @@ const translations = {
   },
 };
 
-// Pitfall Avoidance Checklist
-const checklistData = [
-  { id: '1', text: 'Sharding Taboo: Never split by fixed token count blindly; ignoring semantic boundaries leads to fragmented retrieval', icon: 'warning' as const },
-  { id: '2', text: 'Weight Trap: Hybrid Search default 0.5:0.5 is often mediocre; dynamic adjustment is needed', icon: 'warning' as const },
-  { id: '3', text: 'Memory Killer: Improper HNSW ef_construction settings will explode at 50GB+', icon: 'warning' as const },
-  { id: '4', text: 'Re-ranking Cost Trap: Do not re-rank top-50 entirely; filter first then process top-10~20', icon: 'warning' as const },
-  { id: '5', text: 'Metadata "False" Failure: Missing physical indexes on filter conditions causes query latency spikes', icon: 'info' as const },
-  { id: '6', text: 'Model-Split "Gap": Chunks exceeding Embedding model context will be truncated', icon: 'info' as const },
-  { id: '7', text: 'Index Update "Cliff" Jitter: Unconfigured Commit/Flush intervals cause periodic response timeouts', icon: 'shield' as const },
-];
-
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const resolvedParams = await params;
   const locale = (resolvedParams.locale as Locale) || 'en';
@@ -241,7 +230,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <ProductionBundle
               blueprintUrl={dbArticle.blueprintUrl}
               blueprintName={dbArticle.blueprintName}
-              checklist={checklistData}
               isPro={showProductionBundleAsPaid}
             />
 

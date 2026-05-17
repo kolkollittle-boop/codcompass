@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from '@/lib/supabase';
 import {
   fetchPaddleCustomerEmail,
   fetchPaddleCustomerIdsByEmail,
@@ -130,12 +130,12 @@ async function findPaidSubByPaddleCustomerForEmail(
  * Resolve Paddle-backed subscription for an email (same rules as GET /api/user/subscription).
  */
 export async function getSubscriptionPayloadForEmail(email: string): Promise<SubscriptionPayload> {
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const supabaseAdminClient = supabaseAdmin;
+  if (!supabaseAdminClient) {
+    return { plan: 'FREE', status: 'inactive', subscription: null };
+  }
 
-  const { data: user } = await supabaseAdmin
+  const { data: user } = await supabaseAdminClient
     .from('User')
     .select('id')
     .eq('email', email)
@@ -148,7 +148,7 @@ export async function getSubscriptionPayloadForEmail(email: string): Promise<Sub
   let subError: unknown = null;
 
   if (userId) {
-    const res = await supabaseAdmin
+    const res = await supabaseAdminClient
       .from('paddle_subscriptions')
       .select('*')
       .eq('user_id', userId)
@@ -157,14 +157,14 @@ export async function getSubscriptionPayloadForEmail(email: string): Promise<Sub
     subError = res.error;
   }
 
-  const { data: rowsByJsonEmail } = await supabaseAdmin
+  const { data: rowsByJsonEmail } = await supabaseAdminClient
     .from('paddle_subscriptions')
     .select('*')
     .filter('custom_data->>customer_email', 'ilike', email)
     .order('created_at', { ascending: false })
     .limit(50);
 
-  const { data: orphanPool } = await supabaseAdmin
+  const { data: orphanPool } = await supabaseAdminClient
     .from('paddle_subscriptions')
     .select('*')
     .is('user_id', null)
@@ -172,7 +172,7 @@ export async function getSubscriptionPayloadForEmail(email: string): Promise<Sub
     .limit(500);
 
   const rowsOrphan =
-    orphanPool?.filter((r) => {
+    orphanPool?.filter((r: PaddleSubRow) => {
       const ce = (r.custom_data as Record<string, unknown> | null)?.customer_email;
       return typeof ce === 'string' && ce.trim().toLowerCase() === emailLower;
     }) ?? [];
@@ -180,7 +180,7 @@ export async function getSubscriptionPayloadForEmail(email: string): Promise<Sub
   const ctmsFromPaddle = await fetchPaddleCustomerIdsByEmail(email);
   const rowsByPaddleCustomer: PaddleSubRow[] = [];
   for (const ctm of ctmsFromPaddle) {
-    const { data: rbc } = await supabaseAdmin
+    const { data: rbc } = await supabaseAdminClient
       .from('paddle_subscriptions')
       .select('*')
       .eq('paddle_customer_id', ctm)
@@ -216,11 +216,11 @@ export async function getSubscriptionPayloadForEmail(email: string): Promise<Sub
   let subscription = pickEffectivePaidSubscription(merged);
 
   if (!subscription) {
-    subscription = await findPaidSubByPaddleCustomerForEmail(email, supabaseAdmin);
+    subscription = await findPaidSubByPaddleCustomerForEmail(email, supabaseAdminClient);
   }
 
   if (subscription && !subscription.user_id && userId) {
-    await supabaseAdmin
+    await supabaseAdminClient
       .from('paddle_subscriptions')
       .update({ user_id: userId, updated_at: new Date().toISOString() })
       .eq('id', subscription.id as string);
