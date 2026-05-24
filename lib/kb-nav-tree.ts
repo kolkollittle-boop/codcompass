@@ -73,6 +73,8 @@ export function getKbNavTree(): KbNavNode[] {
     },
     { label: 'Archive', href: cat('cc20-archive') },
     { label: 'References', href: cat('cc20-references') },
+    { label: 'API Reference', href: '/kb/api-reference' },
+    { label: 'AI Chat', href: '/kb/chat' },
   ];
 }
 

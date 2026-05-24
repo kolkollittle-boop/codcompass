@@ -79,6 +79,8 @@ export default function Header({ locale = 'en' }: HeaderProps) {
 
   /** `/en/kb`, `/zh/kb`, or rewritten `/kb`; not `/kb/categories` or `kb-foo` segments */
   const onKbCategories = p.includes('/kb/categories');
+  const onApiReference = p.includes('/kb/api-reference');
+  const onChat = p.includes('/kb/chat');
   const onKbMain =
     !onKbCategories &&
     (p === '/kb' ||
@@ -89,6 +91,8 @@ export default function Header({ locale = 'en' }: HeaderProps) {
   const t = {
     kb: 'Knowledge Base',
     categories: 'Categories',
+    apiReference: 'API Reference',
+    chat: 'AI Chat',
     blog: 'Blog',
     pricing: 'Pricing',
     about: 'About',
@@ -169,6 +173,22 @@ export default function Header({ locale = 'en' }: HeaderProps) {
                 } border-b-2`}
               >
                 {t.categories}
+              </Link>
+              <Link
+                href={linkWithLocale(locale, '/kb/api-reference') as any}
+                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
+                  onApiReference ? navActive : navInactive
+                } border-b-2`}
+              >
+                {t.apiReference}
+              </Link>
+              <Link
+                href={linkWithLocale(locale, '/kb/chat') as any}
+                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
+                  onChat ? navActive : navInactive
+                } border-b-2`}
+              >
+                {t.chat}
               </Link>
               <Link
                 href={linkWithLocale(locale, '/blog') as any}
@@ -461,6 +481,20 @@ export default function Header({ locale = 'en' }: HeaderProps) {
             onClick={() => setMobileOpen(false)}
           >
             {t.categories}
+          </Link>
+          <Link
+            href={linkWithLocale(locale, '/kb/api-reference') as any}
+            className={mobileNavClass(onApiReference)}
+            onClick={() => setMobileOpen(false)}
+          >
+            {t.apiReference}
+          </Link>
+          <Link
+            href={linkWithLocale(locale, '/kb/chat') as any}
+            className={mobileNavClass(onChat)}
+            onClick={() => setMobileOpen(false)}
+          >
+            {t.chat}
           </Link>
           <Link
             href={linkWithLocale(locale, '/blog') as any}
