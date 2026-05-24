@@ -205,6 +205,16 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
 
   if (!category) return [];
 
+  // Step 1: Get article IDs from join table
+  const { data: joins } = await supabaseAdmin
+    .from('_ArticleToCategory')
+    .select('A')
+    .eq('B', category.id);
+
+  if (!joins?.length) return [];
+  const articleIds = joins.map((j: any) => j.A);
+
+  // Step 2: Fetch articles by ID list
   const { data, error } = await supabaseAdmin
     .from('Article')
     .select(`
@@ -222,7 +232,7 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
       translations:ArticleTranslation(locale, title, excerpt)
     `)
     .eq('isPublished', true)
-    .eq('categories.B', category.id)
+    .in('id', articleIds)
     .order('publishedAt', { ascending: false })
     .range(offset, offset + limit - 1);
 
