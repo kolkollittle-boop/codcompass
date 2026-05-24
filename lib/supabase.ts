@@ -43,6 +43,7 @@ export type Article = {
   likeCount: number;
   seoTitle: string | null;
   seoDescription: string | null;
+  qualityDetails: Record<string, unknown> | null;
   categories: { Category: { name: string; slug: string }[] }[];
   tags: { Tag: { name: string; slug: string }[] }[];
   translations?: Array<{
@@ -99,6 +100,7 @@ export async function getArticleBySlug(slug: string, locale?: string): Promise<A
       likeCount,
       seoTitle,
       seoDescription,
+      qualityDetails,
       difficultyLevel,
       readingTime,
       expectedOutcome,
@@ -131,6 +133,7 @@ export async function getArticleBySlug(slug: string, locale?: string): Promise<A
       likeCount,
       seoTitle,
       seoDescription,
+      qualityDetails,
       difficultyLevel,
       readingTime,
       expectedOutcome,
@@ -194,6 +197,14 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
     return [];
   }
 
+  const { data: category } = await supabaseAdmin
+    .from('Category')
+    .select('id')
+    .eq('slug', slug)
+    .single();
+
+  if (!category) return [];
+
   const { data, error } = await supabaseAdmin
     .from('Article')
     .select(`
@@ -211,7 +222,7 @@ export async function getArticlesByCategorySlug(slug: string, limit = 20, offset
       translations:ArticleTranslation(locale, title, excerpt)
     `)
     .eq('isPublished', true)
-    .eq('Category.slug', slug)
+    .eq('categories.B', category.id)
     .order('publishedAt', { ascending: false })
     .range(offset, offset + limit - 1);
 

@@ -75,6 +75,21 @@ export function getKbNavTree(): KbNavNode[] {
     { label: 'References', href: cat('cc20-references') },
     { label: 'API Reference', href: '/kb/api-reference' },
     { label: 'AI Chat', href: '/kb/chat' },
+    // ─── Legacy categories ───
+    { label: 'Frontend', href: cat('frontend') },
+    { label: 'AI & LLM', href: cat('ai-llm') },
+    { label: 'Backend', href: cat('backend') },
+    { label: 'Security', href: cat('security') },
+    { label: 'DevOps', href: cat('devops') },
+    { label: 'Mobile', href: cat('mobile') },
+    { label: '.NET / C#', href: cat('cc20-2-2-dotnet-csharp') },
+    { label: 'Product', href: cat('product') },
+    { label: 'API Development', href: cat('api') },
+    { label: 'Database', href: cat('database') },
+    { label: 'Industry Insights', href: cat('cc20-5-1-industry-insights') },
+    { label: 'Case Studies', href: cat('cc20-5-3-case-studies') },
+    { label: 'Data Architecture', href: cat('cc20-2-3-data-architecture') },
+    { label: 'Personal Branding', href: cat('cc20-3-4-personal-branding') },
   ];
 }
 
