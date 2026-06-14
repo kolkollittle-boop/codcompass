@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const locales = ['en', 'zh'];
+const locales = ['en'];
 const defaultLocale = 'en';
 
 // Files that should not be processed by the middleware
@@ -14,6 +14,7 @@ const excludedPaths = [
   '/static/',
   '/terms',
   '/privacy',
+  '/habittracker-privacy',
   '/refund',
   '/checkout',
   '/pricing',
@@ -37,14 +38,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Bare /en or /zh → home + locale cookie (no longer forced to KB)
-  if (pathname === '/en' || pathname === '/zh') {
+  // Bare /en → home + locale cookie
+  if (pathname === '/en') {
     const loc = pathname.slice(1);
     const url = request.nextUrl.clone();
     url.pathname = '/';
     const res = NextResponse.redirect(url);
     res.cookies.set('NEXT_LOCALE', loc, { path: '/' });
     return res;
+  }
+
+  // Redirect old /zh/* URLs to /en/* (zh locale removed)
+  if (pathname.startsWith('/zh/') || pathname === '/zh') {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(/^\/zh/, '/en');
+    return NextResponse.redirect(url, 301);
   }
 
   // Skip excluded paths
