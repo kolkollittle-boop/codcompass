@@ -3,8 +3,8 @@ import Footer from '@/components/Footer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - Habit Tracker',
-  description: 'Privacy policy for Habit Tracker iOS app by Aporia.',
+  title: 'Privacy Policy - DailyHabit Grid',
+  description: 'Privacy policy for DailyHabit Grid iOS app by Aporia.',
 };
 
 export default function HabitTrackerPrivacyPage() {
@@ -14,12 +14,12 @@ export default function HabitTrackerPrivacyPage() {
       <main className="flex-grow">
         <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-3xl font-bold text-white mb-2">Privacy Policy</h1>
-          <h2 className="text-xl text-palette-primary mb-8">Habit Tracker</h2>
+          <h2 className="text-xl text-palette-primary mb-8">DailyHabit Grid</h2>
           <p className="text-palette-textMuted mb-8">Effective Date: July 2026</p>
 
           <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-white prose-p:text-palette-textSecondary prose-p:leading-relaxed prose-a:text-palette-primary">
             <p>
-              Habit Tracker (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our iOS application (the &quot;App&quot;).
+              DailyHabit Grid (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our iOS application (the &quot;App&quot;).
             </p>
 
             <h2>1. Information We Collect</h2>
