@@ -15,6 +15,7 @@ const excludedPaths = [
   '/terms',
   '/privacy',
   '/habittracker-privacy',
+  '/smartexpense-privacy',
   '/refund',
   '/checkout',
   '/pricing',
