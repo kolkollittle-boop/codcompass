@@ -116,12 +116,6 @@ export default function SmartExpensePrivacyPage() {
                   <td className="py-2">RevenueCat only</td>
                 </tr>
                 <tr className="border-b border-palette-border/50">
-                  <td className="py-2 pr-4">Advertising ID (IDFA)</td>
-                  <td className="py-2 pr-4">Apple Ad Services (optional)</td>
-                  <td className="py-2 pr-4">Ad personalization</td>
-                  <td className="py-2">Google AdMob only</td>
-                </tr>
-                <tr className="border-b border-palette-border/50">
                   <td className="py-2 pr-4">Device model & iOS version</td>
                   <td className="py-2 pr-4">System APIs</td>
                   <td className="py-2 pr-4">App optimization</td>
@@ -129,12 +123,6 @@ export default function SmartExpensePrivacyPage() {
                 </tr>
               </tbody>
             </table>
-
-            <div className="bg-palette-surface/50 border border-palette-border rounded-lg p-4 my-6">
-              <p className="m-0">
-                <strong>Note:</strong> We use Google AdMob to display advertisements in the free version. AdMob may collect your device&apos;s Advertising Identifier (IDFA) if you grant permission via Apple&apos;s App Tracking Transparency (ATT) prompt. You may decline this permission without affecting core app functionality. We limit ad impressions to 5 interstitial ads per day maximum to avoid disrupting your experience.
-              </p>
-            </div>
 
             <h3>1.6 Data We Do NOT Collect</h3>
             <p>We <strong>do not</strong> collect:</p>
@@ -179,11 +167,6 @@ export default function SmartExpensePrivacyPage() {
                   <td className="py-2">Contract</td>
                 </tr>
                 <tr className="border-b border-palette-border/50">
-                  <td className="py-2 pr-4">Ad delivery</td>
-                  <td className="py-2 pr-4">IDFA (if permitted)</td>
-                  <td className="py-2">Consent (ATT prompt)</td>
-                </tr>
-                <tr className="border-b border-palette-border/50">
                   <td className="py-2 pr-4">Budget alerts & notifications</td>
                   <td className="py-2 pr-4">Local notification schedule</td>
                   <td className="py-2">Consent (system prompt)</td>
@@ -216,11 +199,6 @@ export default function SmartExpensePrivacyPage() {
                   <td className="py-2 pr-4"><strong>RevenueCat</strong></td>
                   <td className="py-2 pr-4">Subscription receipts</td>
                   <td className="py-2">In-app purchase validation</td>
-                </tr>
-                <tr className="border-b border-palette-border/50">
-                  <td className="py-2 pr-4"><strong>Google AdMob</strong></td>
-                  <td className="py-2 pr-4">IDFA (if permitted)</td>
-                  <td className="py-2">Ad serving in free version</td>
                 </tr>
                 <tr className="border-b border-palette-border/50">
                   <td className="py-2 pr-4"><strong>Supabase</strong></td>
